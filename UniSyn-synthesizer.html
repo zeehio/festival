@@ -1,0 +1,289 @@
+<html lang="en">
+<head>
+<title>UniSyn synthesizer - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Duration.html#Duration" title="Duration">
+<link rel="next" href="Diphone-synthesizer.html#Diphone-synthesizer" title="Diphone synthesizer">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="UniSyn-synthesizer"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Diphone-synthesizer.html#Diphone-synthesizer">Diphone synthesizer</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Duration.html#Duration">Duration</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">20 UniSyn synthesizer</h2>
+
+<p><a name="index-UniSyn-254"></a><a name="index-diphone-synthesis-255"></a><a name="index-waveform-synthesis-256"></a>Since 1.3 a new general synthesizer module has been included.  This
+designed to replace the older diphone synthesizer described in the
+next chapter.   A redesign was made in order to have a generalized
+waveform synthesizer, singla processing module that could be used
+even when the units being concatenated are not diphones.  Also at
+this stage the full diphone (or other) database pre-processing
+functions were added to the Speech Tool library.
+
+<h3 class="section">20.1 UniSyn database format</h3>
+
+<p><a name="index-grouped-diphones-257"></a><a name="index-ungrouped-diphones-258"></a><a name="index-separate-diphones-259"></a>The Unisyn synthesis modules can use databases in two basic
+formats, <em>separate</em> and <em>grouped</em>.  Separate is when
+all files (signal, pitchmark and coefficient files) are accessed
+individually during synthesis.  This is the standard use during
+databse development.  Group format is when a database is collected
+together into a single special file containing all information
+necessary for waveform synthesis.  This format is designed to
+be used for distribution and general use of the database.
+
+   <p>A database should consist of a set of waveforms, (which may be
+translated into a set of coefficients if the desired the signal
+processing method requires it), a set of pitchmarks and an index.  The
+pitchmarks are necessary as most of our current signal processing are
+pitch synchronous.
+
+<h4 class="subsection">20.1.1 Generating pitchmarks</h4>
+
+<p><a name="index-pitchmarking-260"></a><a name="index-laryngograph-261"></a>Pitchmarks may be derived from laryngograph files using the our
+proved program <samp><span class="file">pitchmark</span></samp> distributed with the speech
+tools.  The actual parameters to this program are still a bit of
+an art form.  The first major issue is which direction the lar
+files.  We have seen both, though it does seem to be CSTR's ones
+are most often upside down while others (e.g. OGI's) are the right way
+up.  The <code>-inv</code> argument to <samp><span class="file">pitchmark</span></samp> is specifically
+provided to cater for this.  There other issues in getting the
+pitchmarks aligned.  The basic command for generating pitchmarks
+is
+<pre class="example">     pitchmark -inv lar/file001.lar -o pm/file001.pm -otype est \
+          -min 0.005 -max 0.012 -fill -def 0.01 -wave_end
+</pre>
+   <p>The <samp><span class="file">-min</span></samp>, <samp><span class="file">-max</span></samp> and <samp><span class="file">-def</span></samp> (fill values for unvoiced
+regions), may need to be changed depending on the speaker pitch
+range.  The above is suitable for a male speaker.  The <samp><span class="file">-fill</span></samp>
+option states that unvoiced sections should be filled with equally
+spaced pitchmarks.
+
+<h4 class="subsection">20.1.2 Generating LPC coefficients</h4>
+
+<p><a name="index-LPC-analysis-262"></a><a name="index-residual-263"></a><a name="index-LPC-residual-264"></a>LPC coefficients are generated using the <samp><span class="file">sig2fv</span></samp> command.  Two
+stages are required, generating the LPC coefficients and generating
+the residual.  The prototypical commands for these are
+<pre class="example">     sig2fv wav/file001.wav -o lpc/file001.lpc -otype est -lpc_order 16 \
+         -coefs "lpc" -pm pm/file001.pm -preemph 0.95 -factor 3 \
+         -window_type hamming
+     sigfilter wav/file001.wav -o lpc/file001.res -otype nist \
+         -lpcfilter lpc/file001.lpc -inv_filter
+</pre>
+   <p><a name="index-power-normalisation-265"></a>For some databases you may need to normalize the power.  Properly
+normalizing power is difficult but we provide a simple function which may
+do the jobs acceptably.  You should do this on the waveform before
+lpc analysis (and ensure you also do the residual extraction on the normalized
+waveform rather than the original.
+<pre class="example">     ch_wave -scaleN 0.5 wav/file001.wav -o file001.Nwav
+</pre>
+   <p>This normalizes the power by maximizing the signal first then multiplying
+it by the given factor.  If the database waveforms are clean (i.e. 
+no clicks) this can give reasonable results.
+
+<h3 class="section">20.2 Generating a diphone index</h3>
+
+<p><a name="index-diphone-index-266"></a>The diphone index consists of a short header following by an
+ascii list of each diphone, the file it comes from followed by its
+start middle and end times in seconds.  For most databases this
+files needs to be generated by some database specific script.
+
+   <p>An example header is
+<pre class="example">     EST_File index
+     DataType ascii
+     NumEntries 2005
+     IndexName rab_diphone
+     EST_Header_End
+</pre>
+   <p>The most notable part is the number of entries, which you should note
+can get out of sync with the actual number of entries if you hand
+edit entries.  I.e. if you add an entry and the system still
+can't find it check that the number of entries is right.
+
+   <p>The entries themselves may take on one of two forms, full
+entries or index entries.  Full entries consist of a diphone
+name, where the phones are separated by "-"; a file name
+which is used to index into the pitchmark, LPC and waveform file;
+and the start, middle (change over point between phones) and end
+of the phone in the file in seconds of the diphone.  For example
+<pre class="example">     r-uh    edx_1001        0.225   0.261   0.320
+     r-e     edx_1002        0.224   0.273   0.326
+     r-i     edx_1003        0.240   0.280   0.321
+     r-o     edx_1004        0.212   0.253   0.320
+</pre>
+   <p>The second form of entry is an index entry which
+simply states that reference to that diphone should actually be made
+to another.  For example
+<pre class="example">     aa-ll   &amp;aa-l
+</pre>
+   <p>This states that the diphone <code>aa-ll</code> should actually use the
+diphone <code>aa-l</code>.  Note they are a number of ways to specify
+alternates for missing diphones an this method is best used for fixing
+single or small classes of missing or broken diphones.  Index
+entries may appear anywhere in the file but can't be nested.
+
+   <p>Some checks are made one reading this index to ensure times etc
+are reasonable but multiple entries for the same diphone are not, in
+that case the later one will be selected.
+
+<h3 class="section">20.3 Database declaration</h3>
+
+<p>There two major types of database <em>grouped</em> and <em>ungrouped</em>. 
+Grouped databases come as a single file containing the diphone index,
+coeficinets and residuals for the diphones.  This is the standard way
+databases are distributed as voices in Festoval.  Ungrouped
+access diphones from individual files and is designed as a method
+for debugging and testing databases before distribution.  Using
+ungrouped dataabse is slower but allows quicker changes to the index,
+and associated coefficient files and residuals without rebuilding the
+group file.
+
+   <p><a name="index-g_t_0040code_007bus_005fdiphone_005finit_007d-267"></a>A database is declared to the system through the command
+<code>us_diphone_init</code>.  This function takes a parameter list of
+various features used for setting up a database.  The features are
+     <dl>
+<dt><code>name</code><dd>An atomic name for this database, used in selecting it from the current
+set of laded database. 
+<br><dt><code>index_file</code><dd>A filename name containing either a diphone index, as descripbed above,
+or a group file.  The feature <code>grouped</code> defines the distinction
+between this being a group of simple index file. 
+<br><dt><code>grouped</code><dd>Takes the value <code>"true"</code> or <code>"false"</code>.  This defined
+simple index or if the index file is a grouped file. 
+<br><dt><code>coef_dir</code><dd>The directory containing the coefficients, (LPC or just pitchmarks in
+the PSOLA case). 
+<br><dt><code>sig_dir</code><dd>The directory containing the signal files (residual for LPC, full waveforms
+for PSOLA). 
+<br><dt><code>coef_ext</code><dd>The extension for coefficient files, typically <code>".lpc"</code> for LPC
+file and <code>".pm"</code> for pitchmark files. 
+<br><dt><code>sig_ext</code><dd>The extension for signal files, typically <code>".res"</code> for LPC residual
+files and <code>".wav"</code> for waveform files. 
+<br><dt><code>default_diphone</code><dd><a name="index-default-diphone-268"></a>The diphone to be used when the requested one doesn't exist.  No matter
+how careful you are you should always include a default diphone for
+distributed diphone database.   Synthesis will throw an error if
+no diphone is found and there is no default.  Although it is usually
+an error when this is required its better to fill in something than
+stop synthesizing.  Typical values for this are silence to silence
+or schwa to schwa. 
+<br><dt><code>alternates_left</code><dd><a name="index-diphone-alternates-269"></a><a name="index-alternate-diphones-270"></a>A list of pairs showing the alternate phone names for the left phone in
+a diphone pair.  This is list is used to rewrite the diphone name when
+the directly requested one doesn't exist.  This is the recommended
+method for dealing with systematic holes in a diphone database. 
+<br><dt><code>alternates_right</code><dd>A list of pairs showing the alternate phone names for the right phone in
+a diphone pair.  This is list is used to rewrite the diphone name when
+the directly requested one doesn't exist.  This is the recommended
+method for dealing with systematic holes in a diphone database. 
+</dl>
+
+   <p>An example database definition is
+<pre class="example">     (set! rab_diphone_dir "/projects/festival/lib/voices/english/rab_diphone")
+     (set! rab_lpc_group
+           (list
+            '(name "rab_lpc_group")
+            (list 'index_file
+                  (path-append rab_diphone_dir "group/rablpc16k.group"))
+            '(alternates_left ((i ii) (ll l) (u uu) (i@ ii) (uh @) (a aa)
+                                      (u@ uu) (w @) (o oo) (e@ ei) (e ei)
+                                      (r @)))
+            '(alternates_right ((i ii) (ll l) (u uu) (i@ ii)
+                                       (y i) (uh @) (r @) (w @)))
+            '(default_diphone @-@@)
+            '(grouped "true")))
+     (us_dipohone_init rab_lpc_group)
+</pre>
+   <h3 class="section">20.4 Making groupfiles</h3>
+
+<p><a name="index-group-files-271"></a><a name="index-diphone-group-files-272"></a>The function <code>us_make_group_file</code> will make a group file
+of the currently selected US diphone database.  It loads in all diphone
+sin the dtabaase and saves them in the named file.  An optional
+second argument allows specification of how the group file will
+be saved.   These options are as a feature list.  There
+are three possible options
+     <dl>
+<dt><code>track_file_format</code><dd>The format for the coefficient files.  By default this is
+<code>est_binary</code>, currently the only other alternative is <code>est_ascii</code>. 
+<br><dt><code>sig_file_format</code><dd>The format for the signal parts of the of the database.  By default
+this is <code>snd</code> (Sun's Audio format).  This was choosen as it has
+the smallest header and supports various sample formats.  Any format
+supported by the Edinburgh Speech Tools is allowed. 
+<br><dt><code>sig_sample_format</code><dd>The format for the samples in the signal files.  By default this
+is <code>mulaw</code>.  This is suitable when the signal files are LPC
+residuals.  LPC residuals have a much smaller dynamic range that
+plain PCM files.  Because <code>mulaw</code> representation is half the size
+(8 bits) of standard PCM files (16bits) this significantly reduces
+the size of the group file while only marginally altering the quality of
+synthesis (and from experiments the effect is not perceptible).  However
+when saving group files where the signals are not LPC residuals (e.g. 
+in PSOLA) using this default <code>mulaw</code> is not recommended and
+<code>short</code> should probably be used. 
+</dl>
+
+<h3 class="section">20.5 UniSyn module selection</h3>
+
+<p>In a voice selection a UniSyn database may be selected as follows
+<pre class="example">       (set! UniSyn_module_hooks (list rab_diphone_const_clusters ))
+       (set! us_abs_offset 0.0)
+       (set! window_factor 1.0)
+       (set! us_rel_offset 0.0)
+       (set! us_gain 0.9)
+     
+       (Parameter.set 'Synth_Method 'UniSyn)
+       (Parameter.set 'us_sigpr 'lpc)
+       (us_db_select rab_db_name)
+</pre>
+   <p>The <code>UniSyn_module_hooks</code> are run before synthesis, see the next
+selection about diphone name selection.  At present only <code>lpc</code>
+is supported by the UniSyn module, though potentially there may be
+others.
+
+   <p><a name="index-TD_002dPSOLA-273"></a><a name="index-PSOLA-274"></a>An optional implementation of TD-PSOLA <cite>moulines90</cite> has been
+written but fear of legal problems unfortunately prevents it being in
+the public distribution, but this policy should not be taken as
+acknowledging or not acknowledging any alleged patent violation.
+
+<h3 class="section">20.6 Diphone selection</h3>
+
+<p><a name="index-selection-of-diphones-275"></a><a name="index-diphone-selection-276"></a>Diphone names are constructed for each phone-phone pair in the Segment
+relation in an utterance.  If a segment has the feature in forming a
+diphone name UniSyn first checks for the feature <code>us_diphone_left</code>
+(or <code>us_diphone_right</code> for the right hand part of the diphone) then
+if that doesn't exist the feature <code>us_diphone</code> then if that doesn't
+exist the feature <code>name</code>.  Thus is is possible to specify diphone
+names which are not simply the concatenation of two segment names.
+
+   <p>This feature is used to specify consonant cluster diphone names
+for our English voices.  The hook <code>UniSyn_module_hooks</code> is run
+before selection and we specify a function to add <code>us_diphone_*</code>
+features as appropriate.  See the function <code>rab_diphone_fix_phone_name</code>
+in <samp><span class="file">lib/voices/english/rab_diphone/festvox/rab_diphone.scm</span></samp> for
+an example.
+
+   <p>Once the diphone name is created it is used to select the diphone from
+the database.  If it is not found the name is converted using the list
+of <code>alternates_left</code> and <code>alternates_right</code> as specified in
+the database declaration.  If that doesn't specify a diphone in the
+database.  The <code>default_diphone</code> is selected, and a warning is
+printed.  If no default diphone is specified or the default diphone
+doesn't exist in the database an error is thrown.
+
+   </body></html>
+

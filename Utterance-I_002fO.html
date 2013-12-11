@@ -1,0 +1,80 @@
+<html lang="en">
+<head>
+<title>Utterance I/O - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Utterances.html#Utterances" title="Utterances">
+<link rel="prev" href="Features.html#Features" title="Features">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Utterance-I%2fO"></a>
+<a name="Utterance-I_002fO"></a>
+<p>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Features.html#Features">Features</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Utterances.html#Utterances">Utterances</a>
+<hr>
+</div>
+
+<h3 class="section">14.7 Utterance I/O</h3>
+
+<p>A number of functions are available to allow an utterance's
+structure to be made available for other programs.
+
+   <p><a name="index-g_t_0040code_007butt_002esave_007d-220"></a><a name="index-g_t_0040code_007butt_002eload_007d-221"></a>The whole structure, all relations, items and features may be
+saved in an ascii format using the function <code>utt.save</code>.  This
+file may be reloaded using the <code>utt.load</code> function.  Note the
+waveform is not saved using the form.
+
+   <p><a name="index-saving-the-waveform-222"></a><a name="index-resampling-223"></a><a name="index-rescaling-a-waveform-224"></a><a name="index-g_t_0040code_007butt_002esave_002ewave_007d-225"></a><a name="index-g_t_0040code_007butt_002eimport_002ewave_007d-226"></a><a name="index-loading-a-waveform-227"></a>Individual aspects of an utterance may be selectively saved.  The
+waveform itself may be saved using the function <code>utt.save.wave</code>. 
+This will save the waveform in the named file in the format specified
+in the <code>Parameter</code> <code>Wavefiletype</code>.  All formats supported by
+the Edinburgh Speech Tools are valid including <code>nist</code>, <code>esps</code>,
+<code>sun</code>, <code>riff</code>, <code>aiff</code>, <code>raw</code>, <code>alaw</code> and <code>ulaw</code>. 
+Note the functions <code>utt.wave.rescale</code> and <code>utt.wave.resample</code> may
+be used to change the gain and sample frequency of the waveform before
+saving it.  A waveform may be imported into an existing utterance with
+the function <code>utt.import.wave</code>.  This is specifically designed to
+allow external methods of waveform synthesis.  However if you just wish
+to play an external wave or make it into an utterance you should
+consider the utterance <code>Wave</code> type.
+
+   <p><a name="index-saving-segments-228"></a><a name="index-saving-relations-229"></a><a name="index-g_t_0040code_007butt_002esave_002esegs_007d-230"></a>The segments of an utterance may be saved in a file using the function
+<code>utt.save.segs</code> which saves the segments of the named utterance in
+xlabel format.  Any other stream may also be saved using the more
+general <code>utt.save.relation</code> which takes the additional argument of
+a relation name.  The names of each item and the end feature of each
+item are saved in the named file, again in Xlabel format, other features
+are saved in extra fields.  For more elaborated saving methods you can
+easily write a Scheme function to save data in an utterance in whatever
+format is required.  See the file <samp><span class="file">lib/mbrola.scm</span></samp> for an example.
+
+   <p><a name="index-display-231"></a><a name="index-Xwaves-232"></a>A simple function to allow the displaying of an utterance in
+Entropic's Xwaves tool is provided by the function <code>display</code>. 
+It simply saves the waveform and the segments and sends appropriate
+commands to (the already running) Xwaves and xlabel programs.
+
+   <p><a name="index-resynthesis-233"></a><a name="index-synthesis-of-natural-utterances-234"></a>A function to synthesize an externally specified utterance is provided
+for by <code>utt.resynth</code> which takes two filename arguments, an xlabel
+segment file and an F0 file.  This function loads, synthesizes and plays
+an utterance synthesized from these files.  The loading is provided by
+the underlying function <code>utt.load.segf0</code>.
+
+   </body></html>
+

@@ -1,0 +1,117 @@
+<html lang="en">
+<head>
+<title>Checking an installation - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Installation.html#Installation" title="Installation">
+<link rel="prev" href="Site-initialization.html#Site-initialization" title="Site initialization">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Checking-an-installation"></a>
+<p>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Site-initialization.html#Site-initialization">Site initialization</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Installation.html#Installation">Installation</a>
+<hr>
+</div>
+
+<h3 class="section">6.4 Checking an installation</h3>
+
+<p>Once compiled and site initialization is set up you should test
+to see if Festival can speak or not.
+
+   <p>Start the system
+<pre class="example">     $ bin/festival
+     Festival Speech Synthesis System 1.4.3:release Jan 2003
+     Copyright (C) University of Edinburgh, 1996-2003. All rights reserved.
+     For details type `(festival_warranty)'
+     festival&gt; ^D
+</pre>
+   <p>If errors occur at this stage they are most likely to do
+with pathname problems.  If any error messages are printed
+about non-existent files check that those pathnames
+point to where you intended them to be.  Most of the (default)
+pathnames are dependent on the basic library path.  Ensure that
+is correct.  To find out what it has been set to, start the
+system without loading the init files.
+<pre class="example">     $ bin/festival -q
+     Festival Speech Synthesis System 1.4.3:release Jan 2003
+     Copyright (C) University of Edinburgh, 1996-2003. All rights reserved.
+     For details type `(festival_warranty)'
+     festival&gt; libdir
+     "/projects/festival/lib/"
+     festival&gt; ^D
+</pre>
+   <p>This should show the pathname you set in your <samp><span class="file">config/config</span></samp>.
+
+   <p>If the system starts with no errors try to synthesize something
+<pre class="example">     festival&gt; (SayText "hello world")
+</pre>
+   <p>Some files are only accessed at synthesis time so this may
+show up other problem pathnames.  If it talks, you're in business,
+if it doesn't, here are some possible problems.
+
+   <p><a name="index-audio-problems-47"></a>If you get the error message
+<pre class="example">     Can't access NAS server
+</pre>
+   <p>You have selected NAS as the audio output but have no server running on
+that machine or your <code>DISPLAY</code> or <code>AUDIOSERVER</code> environment
+variable is not set properly for your output device.  Either set these
+properly or change the audio output device in <samp><span class="file">lib/siteinit.scm</span></samp> as
+described above.
+
+   <p>Ensure your audio device actually works the way you think it does.  On
+Suns, the audio output device can be switched into a number of different
+output modes, speaker, jack, headphones.  If this is set to the wrong
+one you may not hear the output.  Use one of Sun's tools to change this
+(try <samp><span class="file">/usr/demo/SOUND/bin/soundtool</span></samp>).  Try to find an audio
+file independent of Festival and get it to play on your audio. 
+Once you have done that ensure that the audio output method set in
+Festival matches that.
+
+   <p>Once you have got it talking, test the audio spooling device.
+<pre class="example">     festival&gt; (intro)
+</pre>
+   <p>This plays a short introduction of two sentences, spooling the audio
+output.
+
+   <p>Finally exit from Festival (by end of file or <code>(quit)</code>) and test
+the script mode with.
+<pre class="example">     $ examples/saytime
+</pre>
+   <p>A test suite is included with Festival but it makes certain assumptions
+about which voices are installed.  It assumes that
+<code>voice_rab_diphone</code> (<samp><span class="file">festvox_rabxxxx.tar.gz</span></samp>) is the default
+voice and that <code>voice_ked_diphone</code> and <code>voice_don_diphone</code>
+(<samp><span class="file">festvox_kedxxxx.tar.gz</span></samp> and <samp><span class="file">festvox_don.tar.gz</span></samp>) are
+installed.  Also local settings in your <samp><span class="file">festival/lib/siteinit.scm</span></samp>
+may affect these tests.  However, after installation it may
+be worth trying
+<pre class="example">     gnumake test
+</pre>
+   <p>from the <samp><span class="file">festival/</span></samp> directory.  This will do various tests
+including basic utterance tests and tokenization tests.  It also checks
+that voices are installed and that they don't interfere with each other. 
+These tests are primarily regression tests for the developers of
+Festival, to ensure new enhancements don't mess up existing supported
+features.  They are not designed to test an installation is successful,
+though if they run correctly it is most probable the installation has
+worked.
+
+   </body></html>
+

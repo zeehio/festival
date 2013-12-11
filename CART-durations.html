@@ -1,0 +1,66 @@
+<html lang="en">
+<head>
+<title>CART durations - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Duration.html#Duration" title="Duration">
+<link rel="prev" href="Klatt-durations.html#Klatt-durations" title="Klatt durations">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="CART-durations"></a>
+<p>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Klatt-durations.html#Klatt-durations">Klatt durations</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Duration.html#Duration">Duration</a>
+<hr>
+</div>
+
+<h3 class="section">19.4 CART durations</h3>
+
+<p>Two very similar methods of duration prediction by CART tree
+are supported.  The first, used when parameter <code>Duration_Method</code>
+is <code>Tree</code> simply predicts durations directly for each segment. 
+The tree is set in the variable <code>duration_cart_tree</code>.
+
+   <p>The second, which seems to give better results, is used when parameter
+<code>Duration_Method</code> is <code>Tree_ZScores</code>. In this second model the
+tree predicts zscores (number of standard deviations from the mean)
+rather than duration directly.  (This follows <cite>campbell91</cite>, but we
+don't deal in syllable durations here.)  This method requires means and
+standard deviations for each phone.  The variable
+<code>duration_cart_tree</code> should contain the zscore prediction tree and
+the variable <code>duration_ph_info</code> should contain a list of phone,
+mean duration, and standard deviation for each phone in the phoneset.
+
+   <p>An example tree trained from 460 sentences spoken by Gordon is
+in <samp><span class="file">lib/gswdurtreeZ</span></samp>.  Phone means and standard deviations
+are in <samp><span class="file">lib/gsw_durs.scm</span></samp>.
+
+   <p>After prediction the segmental duration is calculated by
+the simple formula
+<pre class="example">     duration = mean + (zscore * standard deviation)
+</pre>
+   <p>For some other duration models that affect an inherent duration by
+some factor this method has been used.  If the tree predicts factors
+rather than zscores and the <code>duration_ph_info</code> entries
+are phone, 0.0, inherent duration. The above formula will generate the
+desired result.  Klatt and Klatt-like rules can be implemented in the
+this way without adding a new method.
+
+   </body></html>
+

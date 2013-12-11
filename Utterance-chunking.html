@@ -1,0 +1,95 @@
+<html lang="en">
+<head>
+<title>Utterance chunking - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="TTS.html#TTS" title="TTS">
+<link rel="next" href="Text-modes.html#Text-modes" title="Text modes">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Utterance-chunking"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Text-modes.html#Text-modes">Text modes</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="TTS.html#TTS">TTS</a>
+<hr>
+</div>
+
+<h3 class="section">9.1 Utterance chunking</h3>
+
+<p><a name="index-utterance-chunking-103"></a><a name="index-g_t_0040code_007beou_005ftree_007d-104"></a>Text to speech works by first tokenizing the file and chunking the
+tokens into utterances.  The definition of utterance breaks is
+determined by the utterance tree in variable <code>eou_tree</code>.  A default
+version is given in <samp><span class="file">lib/tts.scm</span></samp>.  This uses a decision tree to
+determine what signifies an utterance break.  Obviously blank lines are
+probably the most reliable, followed by certain punctuation.  The
+confusion of the use of periods for both sentence breaks and
+abbreviations requires some more heuristics to best guess their
+different use.  The following tree is currently used which
+works better than simply using punctuation.
+<pre class="lisp">     (defvar eou_tree
+     '((n.whitespace matches ".*\n.*\n\\(.\\|\n\\)*") ;; 2 or more newlines
+       ((1))
+       ((punc in ("?" ":" "!"))
+        ((1))
+        ((punc is ".")
+         ;; This is to distinguish abbreviations vs periods
+         ;; These are heuristics
+         ((name matches "\\(.*\\..*\\|[A-Z][A-Za-z]?[A-Za-z]?\\|etc\\)")
+          ((n.whitespace is " ")
+           ((0))                  ;; if abbrev single space isn't enough for break
+           ((n.name matches "[A-Z].*")
+            ((1))
+            ((0))))
+          ((n.whitespace is " ")  ;; if it doesn't look like an abbreviation
+           ((n.name matches "[A-Z].*")  ;; single space and non-cap is no break
+            ((1))
+            ((0)))
+           ((1))))
+         ((0)))))
+</pre>
+   <p>The token items this is applied to will always (except in the
+end of file case) include one following token, so look ahead is
+possible.  The "n." and "p." and "p.p." prefixes allow access to the
+surrounding token context.  The features <code>name</code>, <code>whitespace</code>
+and <code>punc</code> allow access to the contents of the token itself.  At
+present there is no way to access the lexicon form this tree which
+unfortunately might be useful if certain abbreviations were identified
+as such there.
+
+   <p>Note these are heuristics and written by hand not trained from data,
+though problems have been fixed as they have been observed in data.  The
+above rules may make mistakes where abbreviations appear at end of
+lines, and when improper spacing and capitalization is used.  This is
+probably worth changing, for modes where more casual text appears, such
+as email messages and USENET news messages.  A possible improvement
+could be made by analysing a text to find out its basic threshold of
+utterance break (i.e. if no full stop, two spaces, followed by a
+capitalized word sequences appear and the text is of a reasonable length
+then look for other criteria for utterance breaks).
+
+   <p>Ultimately what we are trying to do is to chunk the text into utterances
+that can be synthesized quickly and start to play them quickly to
+minimise the time someone has to wait for the first sound when starting
+synthesis.  Thus it would be better if this chunking were done on
+<em>prosodic phrases</em> rather than chunks more similar to linguistic
+sentences.  Prosodic phrases are bounded in size, while sentences are
+not.
+
+   </body></html>
+

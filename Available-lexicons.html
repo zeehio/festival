@@ -1,0 +1,79 @@
+<html lang="en">
+<head>
+<title>Available lexicons - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Lexicons.html#Lexicons" title="Lexicons">
+<link rel="prev" href="Lexicon-requirements.html#Lexicon-requirements" title="Lexicon requirements">
+<link rel="next" href="Post_002dlexical-rules.html#Post_002dlexical-rules" title="Post-lexical rules">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Available-lexicons"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Post_002dlexical-rules.html#Post_002dlexical-rules">Post-lexical rules</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Lexicon-requirements.html#Lexicon-requirements">Lexicon requirements</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Lexicons.html#Lexicons">Lexicons</a>
+<hr>
+</div>
+
+<h3 class="section">13.7 Available lexicons</h3>
+
+<p><a name="index-lexicon-176"></a>Currently Festival supports a number of different lexicons.  They are
+all defined in the file <samp><span class="file">lib/lexicons.scm</span></samp> each with a number of
+common extra words added to their addendas.  They are
+     <dl>
+<dt>&lsquo;<samp><span class="samp">CUVOALD</span></samp>&rsquo;<dd><a name="index-CUVOALD-lexicon-177"></a><a name="index-Oxford-Advanced-Learners_0027-Dictionary-178"></a>The Computer Users Version of Oxford Advanced Learner's Dictionary is
+available from the Oxford Text Archive
+<a href="ftp://ota.ox.ac.uk/pub/ota/public/dicts/710">ftp://ota.ox.ac.uk/pub/ota/public/dicts/710</a>.  It contains about
+70,000 entries and is a part of the BEEP lexicon.  It is more consistent
+in its marking of stress though its syllable marking is not what works
+best for our synthesis methods.  Many syllabic &lsquo;<samp><span class="samp">l</span></samp>&rsquo;'s, &lsquo;<samp><span class="samp">n</span></samp>&rsquo;'s,
+and &lsquo;<samp><span class="samp">m</span></samp>&rsquo;'s, mess up the syllabification algorithm, making results
+sometimes appear over reduced.  It is however our current default
+lexicon.  It is also the only lexicon with part of speech tags that
+can be distributed (for non-commercial use). 
+<br><dt>&lsquo;<samp><span class="samp">CMU</span></samp>&rsquo;<dd><a name="index-CMU-lexicon-179"></a>This is automatically constructed from <samp><span class="file">cmu_dict-0.4</span></samp> available
+from many places on the net (see <code>comp.speech</code> archives).  It is
+not in the mrpa phone set because it is American English pronunciation. 
+Although mappings exist between its phoneset (&lsquo;<samp><span class="samp">darpa</span></samp>&rsquo;) and
+&lsquo;<samp><span class="samp">mrpa</span></samp>&rsquo; the results for British English speakers are not very good. 
+However this is probably the biggest, most carefully specified lexicon
+available.  It contains just under 100,000 entries.  Our distribution
+has been modified to include part of speech tags on words we know to be
+homographs. 
+<br><dt>&lsquo;<samp><span class="samp">mrpa</span></samp>&rsquo;<dd><a name="index-mrpa-lexicon-180"></a>A version of the CSTR lexicon which has been floating about for years. 
+It contains about 25,000 entries.  A new updated free version of
+this is due to be released soon. 
+<br><dt>&lsquo;<samp><span class="samp">BEEP</span></samp>&rsquo;<dd><a name="index-BEEP-lexicon-181"></a>A British English rival for the <samp><span class="file">cmu_lex</span></samp>.  BEEP has been made
+available by Tony Robinson at Cambridge and is available in many
+archives.  It contains 163,000 entries and has been converted to the
+&lsquo;<samp><span class="samp">mrpa</span></samp>&rsquo; phoneset (which was a trivial mapping).  Although large, it
+suffers from a certain randomness in its stress markings, making use of
+it for synthesis dubious. 
+</dl>
+
+   <p>All of the above lexicons have some distribution restrictions (though
+mostly pretty light), but as they are mostly freely available we provide
+programs that can convert the originals into Festival's format.
+
+   <p><a name="index-MOBY-lexicon-182"></a>The MOBY lexicon has recently been released into the public domain and
+will be converted into our format soon.
+
+   </body></html>
+

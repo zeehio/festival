@@ -1,0 +1,86 @@
+<html lang="en">
+<head>
+<title>Basic command line options - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Quick-start.html#Quick-start" title="Quick start">
+<link rel="next" href="Simple-command-driven-session.html#Simple-command-driven-session" title="Simple command driven session">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Basic-command-line-options"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Simple-command-driven-session.html#Simple-command-driven-session">Simple command driven session</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Quick-start.html#Quick-start">Quick start</a>
+<hr>
+</div>
+
+<h3 class="section">7.1 Basic command line options</h3>
+
+<p><a name="index-command-line-options-51"></a>Festival's basic calling method is as
+
+<pre class="lisp">     festival [options] file1 file2 ...
+</pre>
+   <p>Options may be any of the following
+
+     <dl>
+<dt><code>-q</code><dd>start Festival without loading <samp><span class="file">init.scm</span></samp> or user's
+<samp><span class="file">.festivalrc</span></samp>
+<br><dt><code>-b</code><dt><code>--batch</code><dd><a name="index-batch-mode-52"></a>After processing any file arguments do not become interactive
+<br><dt><code>-i</code><dt><code>--interactive</code><dd><a name="index-interactive-mode-53"></a>After processing file arguments become interactive.  This option overrides
+any batch argument. 
+<br><dt><code>--tts</code><dd><a name="index-tts-mode-54"></a>Treat file arguments in text-to-speech mode, causing them to be
+rendered as speech rather than interpreted as commands.  When selected
+in interactive mode the command line edit functions are not available
+<br><dt><code>--command</code><dd><a name="index-command-mode-55"></a>Treat file arguments in command mode.  This is the default. 
+<br><dt><code>--language LANG</code><dd><a name="index-language-specification-56"></a>Set the default language to <var>LANG</var>.  Currently <var>LANG</var> may be
+one of <code>english</code>, <code>spanish</code> or <code>welsh</code> (depending on
+what voices are actually available in your installation). 
+<br><dt><code>--server</code><dd>After loading any specified files go into server mode.  This is
+a mode where Festival waits for clients on a known port (the
+value of <code>server_port</code>, default is 1314).  Connected
+clients may send commands (or text) to the server and expect
+waveforms back. See <a href="Server_002fclient-API.html#Server_002fclient-API">Server/client API</a>.  Note server mode
+may be unsafe and allow unauthorised access to your
+machine, be sure to read the security recommendations in
+<a href="Server_002fclient-API.html#Server_002fclient-API">Server/client API</a>
+<br><dt><code>--script scriptfile</code><dd><a name="index-script-files-57"></a><a name="index-Festival-script-files-58"></a>Run scriptfile as a Festival script file.  This is similar to
+to <code>--batch</code> but it encapsulates the command line arguments into
+the Scheme variables <code>argv</code> and <code>argc</code>, so that Festival
+scripts may process their command line arguments just like
+any other program.  It also does not load the the basic initialisation
+files as sometimes you may not want to do this.  If you wish them,
+you should copy the loading sequence from an example Festival
+script like <samp><span class="file">festival/examples/saytext</span></samp>. 
+<br><dt><code>--heap NUMBER</code><dd><a name="index-heap-size-59"></a><a name="index-Scheme-heap-size-60"></a>The Scheme heap (basic number of Lisp cells) is of a fixed size and
+cannot be dynamically increased at run time (this would complicate
+garbage collection).  The default size is 210000 which seems to be more
+than adequate for most work.  In some of our training experiments where
+very large list structures are required it is necessary to increase
+this.  Note there is a trade off between size of the heap and time it
+takes to garbage collect so making this unnecessarily big is not a good
+idea.  If you don't understand the above explanation you almost
+certainly don't need to use the option. 
+</dl>
+   In command mode, if the file name starts with a left parenthesis, the
+name itself is read and evaluated as a Lisp command.  This is often
+convenient when running in batch mode and a simple command is necessary
+to start the whole thing off after loading in some other specific files.
+
+   </body></html>
+

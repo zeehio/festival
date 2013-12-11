@@ -1,0 +1,104 @@
+<html lang="en">
+<head>
+<title>Token to word rules - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Text-analysis.html#Text-analysis" title="Text analysis">
+<link rel="prev" href="Tokenizing.html#Tokenizing" title="Tokenizing">
+<link rel="next" href="Homograph-disambiguation.html#Homograph-disambiguation" title="Homograph disambiguation">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Token-to-word-rules"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Homograph-disambiguation.html#Homograph-disambiguation">Homograph disambiguation</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Tokenizing.html#Tokenizing">Tokenizing</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Text-analysis.html#Text-analysis">Text analysis</a>
+<hr>
+</div>
+
+<h3 class="section">15.2 Token to word rules</h3>
+
+<p><a name="index-tokens-to-words-238"></a>Tokens are further analysed into lists of words.  A word
+is an atom that can be given a pronunciation by the lexicon (or
+letter to sound rules).  A token may give rise to a number
+of words or none at all.
+
+   <p>For example the basic tokens
+<pre class="example">     This pocket-watch was made in 1983.
+</pre>
+   <p>would give a word relation of
+<pre class="example">     this pocket watch was made in nineteen eighty three
+</pre>
+   <p>Becuase the relationship between tokens and word in some cases is
+complex, a user function may be specified for translating tokens into
+words.  This is designed to deal with things like numbers, email
+addresses, and other non-obvious pronunciations of tokens as zero or
+more words.  Currently a builtin function
+<code>builtin_english_token_to_words</code> offers much of the necessary
+functionality for English but a user may further customize this.
+
+   <p>If the user defines a function <code>token_to_words</code> which takes two
+arguments: a token item and a token name, it will be called by the
+<code>Token_English</code> and <code>Token_Any</code> modules.  A substantial
+example is given as <code>english_token_to_words</code> in
+<samp><span class="file">festival/lib/token.scm</span></samp>.
+
+   <p>An example of this function is in
+<samp><span class="file">lib/token.scm</span></samp>.  It is quite elaborate and covers most of the
+common multi-word tokens in English including, numbers, money symbols,
+Roman numerals, dates, times, plurals of symbols, number ranges,
+telephone number and various other symbols.
+
+   <p>Let us look at the treatment of one particular phenomena which shows
+the use of these rules.  Consider the expression "$12 million" which
+should be rendered as the words "twelve million dollars".  Note the word
+"dollars" which is introduced by the "$" sign, ends up after the end of
+the expression.  There are two cases we need to deal with as there are
+two tokens.  The first condition in the <code>cond</code> checks if the
+current token name is a money symbol, while the second condition check
+that following word is a magnitude (million, billion, trillion, zillion
+etc.)  If that is the case the "$" is removed and the remaining numbers
+are pronounced, by calling the builtin token to word function.  The
+second condition deals with the second token.  It confirms the previous
+is a money value (the same regular expression as before) and then
+returns the word followed by the word "dollars".  If it is neither of
+these forms then the builtin function is called.
+<pre class="lisp">     (define (token_to_words token name)
+     "(token_to_words TOKEN NAME)
+     Returns a list of words for NAME from TOKEN."
+      (cond
+       ((and (string-matches name "\\$[0-9,]+\\(\\.[0-9]+\\)?")
+             (string-matches (item.feat token "n.name") ".*illion.?"))
+        (builtin_english_token_to_words token (string-after name "$")))
+       ((and (string-matches (item.feat token "p.name")
+                               "\\$[0-9,]+\\(\\.[0-9]+\\)?")
+             (string-matches name ".*illion.?"))
+        (list
+         name
+         "dollars"))
+       (t
+        (builtin_english_token_to_words token name))))
+</pre>
+   <p>It is valid to make some conditions return no words, though some care
+should be taken with that, as punctuation information may no longer be
+available to later processing if there are no words related to
+a token.
+
+   </body></html>
+

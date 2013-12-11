@@ -1,0 +1,242 @@
+<html lang="en">
+<head>
+<title>Server/client API - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="API.html#API" title="API">
+<link rel="prev" href="Shell-API.html#Shell-API" title="Shell API">
+<link rel="next" href="C_002fC_002b_002b-API.html#C_002fC_002b_002b-API" title="C/C++ API">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Server%2fclient-API"></a>
+<a name="Server_002fclient-API"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="C_002fC_002b_002b-API.html#C_002fC_002b_002b-API">C/C++ API</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Shell-API.html#Shell-API">Shell API</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="API.html#API">API</a>
+<hr>
+</div>
+
+<h3 class="section">28.3 Server/client API</h3>
+
+<p><a name="index-server-mode-357"></a>Festival offers a BSD socket-based interface.  This allows
+Festival to run as a server and allow client programs to access
+it.  Basically the server offers a new command interpreter for
+each client that attaches to it.  The server is forked for each
+client but this is much faster than having to wait for a
+Festival process to start from scratch.  Also the server can
+run on a bigger machine, offering much faster synthesis.
+
+   <p><em>Note: the Festival server is inherently insecure and may allow
+arbitrary users access to your machine.</em>
+
+   <p>Every effort has been made to minimise the risk of unauthorised access
+through Festival and a number of levels of security are provided. 
+However with any program offering socket access, like <code>httpd</code>,
+<code>sendmail</code> or <code>ftpd</code> there is a risk that unauthorised access
+is possible.  I trust Festival's security enough to often run it on my
+own machine and departmental servers, restricting access to within our
+department.  Please read the information below before using
+the Festival server so you understand the risks.
+
+<h4 class="subsection">28.3.1 Server access control</h4>
+
+<p><a name="index-security-358"></a><a name="index-server-security-359"></a>The following access control is available for Festival when
+running as a server.  When the server starts it will usually
+start by loading in various commands specific for the task
+it is to be used for.  The following variables are used
+to control access.
+     <dl>
+<dt><code>server_port</code><dd>A number identifying the inet socket port.  By default this
+is 1314.  It may be changed as required. 
+<br><dt><code>server_log_file</code><dd>If nil no logging takes place, if t logging is printed to standard out
+and if a file name log messages are appended to that file. All
+connections and attempted connections are logged with a time stamp
+and the name of the client.  All commands sent from the client
+are also logged (output and data input is not logged). 
+<br><dt><code>server_deny_list</code><dd>If non-nil it is used to identify which machines are not allowed
+access to the server.  This is a list of regular expressions. 
+If the host name of the client matches any of the regexs in this
+list the client is denied access.   This overrides all other
+access methods.  Remember that sometimes hosts are identified as
+numbers not as names. 
+<br><dt><code>server_access_list</code><dd>If this is non-nil only machines whose names match at least one of the
+regexs in this list may connect as clients.  Remember that sometimes
+hosts are identified as numbers not as names, so you should probably
+exclude the IP number of machine as well as its name to be properly
+secure. 
+<br><dt><code>server_passwd</code><dd>If this is non-nil, the client must send this passwd to the server
+followed by a newline before access is given.  This is required
+even if the machine is included in the access list.  This is designed
+so servers for specific tasks may be set up with reasonable security. 
+<br><dt><code>(set_server_safe_functions FUNCNAMELIST)</code><dd>If called this can restrict which functions the client may call.  This
+is the most restrictive form of access, and thoroughly recommended.  In
+this mode it would be normal to include only the specific functions the
+client can execute (i.e. the function to set up output, and a tts
+function).  For example a server could call the following at
+set up time, thus restricting calls to only those that
+<samp><span class="file">festival_client</span></samp> <code>--ttw</code> uses.
+     <pre class="lisp">          (set_server_safe_functions
+                  '(tts_return_to_client tts_text tts_textall Parameter.set))
+</pre>
+     </dl>
+   Its is strongly recommend that you run Festival in server mode as userid
+<code>nobody</code> to limit the access the process will have, also running it
+in a chroot environment is more secure.
+
+   <p>For example suppose we wish to allow access to all machines in the CSTR
+domain except for <code>holmes.cstr.ed.ac.uk</code> and
+<code>adam.cstr.ed.ac.uk</code>.  This may be done by adding the following two
+commands to a file e.g. <code>server.scm</code>
+<pre class="lisp">     (set! server_deny_list '("holmes\\.cstr\\.ed\\.ac\\.uk"
+                              "adam\\.cstr\\.ed\\.ac\\.uk"))
+     (set! server_access_list '("[^\\.]*\\.cstr\\.ed\\.ac\\.uk"))
+</pre>
+   <p>and them running the command
+<pre class="lisp">     festival PATH_TO/server.scm --server
+</pre>
+   <p>This is not complete though as when DNS is not working <code>holmes</code> and
+<code>adam</code> will still be able to access the server (but if our DNS
+isn't working we probably have more serious problems).  However the
+above is secure in that only machines in the domain <code>cstr.ed.ac.uk</code>
+can access the server, though there may be ways to fix machines to
+identify themselves as being in that domain even when they are not.
+
+   <p>By default Festival in server mode will only accept client connections
+for <code>localhost</code>.
+
+<h4 class="subsection">28.3.2 Client control</h4>
+
+<p><a name="index-festival_005fclient-360"></a><a name="index-client-361"></a>An example client program called <samp><span class="file">festival_client</span></samp> is
+included with the system that provides a wide range of access methods
+to the server.  A number of options for the client are offered.
+
+     <dl>
+<dt><code>--server</code><dd>The name (or IP number) of the server host.  By default this
+is <samp><span class="file">localhost</span></samp> (i.e. the same machine you run the client on). 
+<br><dt><code>--port</code><dd>The port number the Festival server is running on.  By default this
+is 1314. 
+<br><dt><code>--output FILENAME</code><dd>If a waveform is to be synchronously returned, it will be saved in
+<var>FILENAME</var>.   The <code>--ttw</code> option uses this as does the
+use of the Festival command <code>utt.send.wave.client</code>.  If
+an output waveform file is received by <samp><span class="file">festival_client</span></samp>
+and no output file has been given the waveform is discarded with
+an error message. 
+<br><dt><code>--passwd PASSWD</code><dd>If a passwd is required by the server this should be stated
+on the client call.  <var>PASSWD</var> is sent plus a newline
+before any other communication takes places.  If this isn't
+specified and a passwd is required, you must enter that first,
+if the <code>--ttw</code> option is used, a passwd is required and
+none specified access will be denied. 
+<br><dt><code>--prolog FILE</code><dd><var>FILE</var> is assumed to be contain Festival commands and its contents
+are sent to the server after the passwd but before anything else.  This
+is convenient to use in conjunction with <code>--ttw</code> which otherwise
+does not offer any way to send commands as well as the text to the
+server. 
+<br><dt><code>--otype OUTPUTTYPE</code><dd>If an output waveform file is to be used this specified the output type
+of the file.  The default is <code>nist</code>, but <code>alaw</code>,
+<code>riff</code>, <code>ulaw</code> and others as supported by the Edinburgh
+Speech Tools Library are valid.  You may use raw too but note that
+Festival may return waveforms of various sampling rates depending on the
+sample rates of the databases its using.  You can of course make
+Festival only return one particular sample rate, by using
+<code>after_synth_hooks</code>.  Note that byte order will be native machine of the
+<em>client</em> machine if the output format allows it. 
+<br><dt><code>--ttw</code><dd>Text to wave is an attempt to make <code>festival_client</code> useful
+in many simple applications.  Although you can connect to the server
+and send arbitrary Festival Scheme commands, this option automatically
+does what is probably what you want most often.  When specified
+this options takes text from the specified file (or stdin),
+synthesizes it (in one go) and saves it in the specified output
+file.  It basically does the following
+     <pre class="lisp">          (Parameter.set 'Wavefiletype '&lt;output type&gt;)
+          (tts_textall "
+          &lt;file/stdin contents&gt;
+          ")))
+</pre>
+     <p>Note that this is best used for small, single utterance texts as you
+have to wait for the whole text to be synthesized before it is returned. 
+<br><dt><code>--aucommand COMMAND</code><dd>Execute <var>COMMAND</var> of each waveform returned by the server.   The
+variable <code>FILE</code> will be set when <var>COMMAND</var> is executed. 
+<br><dt><code>--async</code><dd>So that the delay between the text being sent and the first sound
+being available to play, this option in conjunction with <code>--ttw</code>
+causes the text to be synthesized utterance by utterance and be sent back
+in separated waveforms.  Using <code>--aucommand</code> each waveform my
+be played locally, and when <samp><span class="file">festival_client</span></samp> is interrupted
+the sound will stop.  Getting the client to connect to an audio
+server elsewhere means the sound will not necessarily stop when
+the <samp><span class="file">festival_client</span></samp> process is stopped. 
+<br><dt><code>--withlisp</code><dd>With each command being sent to Festival a Lisp return value is
+sent, also Lisp expressions may be sent from the server to the
+client through the command <code>send_client</code>.  If this option
+is specified the Lisp expressions are printed to standard out,
+otherwise this information is discarded. 
+</dl>
+
+   <p>A typical example use of <samp><span class="file">festival_client</span></samp> is
+<pre class="example">     festival_client --async --ttw --aucommand 'na_play $FILE' fred.txt
+</pre>
+   <p>This will use <samp><span class="file">na_play</span></samp> to play each waveform generated for the
+utterances in <samp><span class="file">fred.txt</span></samp>.  Note the <em>single</em> quotes so that
+the <code>$</code> in <code>$FILE</code> isn't expanded locally.
+
+   <p>Note the server must be running before you can talk to it.  At present
+Festival is not set up for automatic invocations through <samp><span class="file">inetd</span></samp>
+and <samp><span class="file">/etc/services</span></samp>.  If you do that yourself, note
+that it is a different type of interface as <samp><span class="file">inetd</span></samp> assumes all
+communication goes through standard in/out.
+
+   <p>Also note that each connection to the server starts a new session. 
+Variables are not persistent over multiple calls to the server so if any
+initialization is required (e.g. loading of voices) it must be done
+each time the client starts or more reasonably in the server
+when it is started.
+
+   <p><a name="index-perl-362"></a>A PERL festival client is also available in
+<samp><span class="file">festival/examples/festival_client.pl</span></samp>
+
+<h4 class="subsection">28.3.3 Server/client protocol</h4>
+
+<p><a name="index-client_002fserver-protocol-363"></a><a name="index-server_002fclient-protocol-364"></a>The client talks to the server using s-expression (Lisp).  The server
+will reply with a number of different chunks until either OK is
+returned or ER (on error).  The communication is synchronous, each
+client request can generate a number of waveform (WV) replies and/or
+Lisp replies (LP) and will be terminated with an OK (or ER).  Lisp is
+used as it has its own inherent syntax that Festival can already
+parse.
+
+   <p>The following pseudo-code will help define the protocol
+as well as show typical use
+<pre class="lisp">        fprintf(serverfd,"%s\n",s-expression);
+        do
+           ack = read three character acknowledgemnt
+           if (ack == "WV\n")
+              read a waveform
+           else if (ack == "LP\n")
+              read an s-expression
+           else if (ack == "ER\n")
+              an error occurred, break;
+        while ack != "OK\n"
+</pre>
+   <p>The server can send a waveform in an utterance to the client through the
+function <code>utt.send.wave.client</code>.  The server can send a lisp
+expression to the client through the function <em>TO BE DONE</em>.
+
+   </body></html>
+

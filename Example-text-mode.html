@@ -1,0 +1,151 @@
+<html lang="en">
+<head>
+<title>Example text mode - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="TTS.html#TTS" title="TTS">
+<link rel="prev" href="Text-modes.html#Text-modes" title="Text modes">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Example-text-mode"></a>
+<p>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Text-modes.html#Text-modes">Text modes</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="TTS.html#TTS">TTS</a>
+<hr>
+</div>
+
+<h3 class="section">9.3 Example text mode</h3>
+
+<p><a name="index-email-mode-109"></a>Here is a short example of a tts mode for reading email messages.  It
+is by no means complete but is a start at showing how you can customize
+tts modes without writing new C++ code.
+
+   <p>The first task is to define a filter that will take a saved mail
+message and remove extraneous headers and just leave the from
+line, subject and body of the message.  The filter program
+is given a file name as its first argument and should output the
+result on standard out.  For our purposes we will do this as
+a shell script.
+<pre class="example">     #!/bin/sh
+     #  Email filter for Festival tts mode
+     #  usage: email_filter mail_message &gt;tidied_mail_message
+     grep "^From: " $1
+     echo
+     grep "^Subject: " $1
+     echo
+     # delete up to first blank line (i.e. the header)
+     sed '1,/^$/ d' $1
+</pre>
+   <p>Next we define the email init function, which will be called
+when we start this mode.  What we will do is save the current
+token to words function and slot in our own new one.  We can
+then restore the previous one when we exit.
+<pre class="lisp">     (define (email_init_func)
+      "Called on starting email text mode."
+      (set! email_previous_t2w_func token_to_words)
+      (set! english_token_to_words email_token_to_words)
+      (set! token_to_words email_token_to_words))
+</pre>
+   <p>Note that <em>both</em> <code>english_token_to_words</code> and
+<code>token_to_words</code> should be set to ensure that our new
+token to word function is still used when we change voices.
+
+   <p>The corresponding end function puts the token to words function
+back.
+<pre class="lisp">     (define (email_exit_func)
+      "Called on exit email text mode."
+      (set! english_token_to_words email_previous_t2w_func)
+      (set! token_to_words email_previous_t2w_func))
+</pre>
+   <p>Now we can define the email specific token to words function.  In this
+example we deal with two specific cases.  First we deal with the common
+form of email addresses so that the angle brackets are not pronounced. 
+The second points are to recognise quoted text and immediately change the
+the speaker to the alternative speaker.
+<pre class="lisp">     (define (email_token_to_words token name)
+       "Email specific token to word rules."
+       (cond
+</pre>
+   <p>This first condition identifies the token as a bracketed email address
+and removes the brackets and splits the token into name
+and IP address.  Note that we recursively call the function
+<code>email_previous_t2w_func</code> on the email name and IP address
+so that they will be pronounced properly.  Note that because that
+function returns a <em>list</em> of words we need to append them together.
+<pre class="lisp">        ((string-matches name "&lt;.*.*&gt;")
+          (append
+           (email_previous_t2w_func token
+            (string-after (string-before name "@") "&lt;"))
+           (cons
+            "at"
+            (email_previous_t2w_func token
+             (string-before (string-after name "@") "&gt;")))))
+</pre>
+   <p>Our next condition deals with identifying a greater than sign being used
+as a quote marker.  When we detect this we select the alternative
+speaker, even though it may already be selected.  We then return no
+words so the quote marker is not spoken.  The following condition finds
+greater than signs which are the first token on a line.
+<pre class="lisp">        ((and (string-matches name "&gt;")
+              (string-matches (item.feat token "whitespace")
+                              "[ \t\n]*\n *"))
+         (voice_don_diphone)
+         nil ;; return nothing to say
+        )
+</pre>
+   <p>If it doesn't match any of these we can go ahead and use the builtin
+token to words function  Actually, we call the function that was set
+before we entered this mode to ensure any other specific rules
+still remain.  But before that we need to check if we've had a newline
+with doesn't start with a greater than sign.  In that case we
+switch back to the primary speaker.
+<pre class="lisp">        (t  ;; for all other cases
+          (if (string-matches (item.feat token "whitespace")
+                              ".*\n[ \t\n]*")
+              (voice_rab_diphone))
+          (email_previous_t2w_func token name))))
+</pre>
+   <p><a name="index-declaring-text-modes-110"></a>In addition to these we have to actually declare the text mode. 
+This we do by adding to any existing modes as follows.
+<pre class="lisp">     (set! tts_text_modes
+        (cons
+         (list
+           'email   ;; mode name
+           (list         ;; email mode params
+            (list 'init_func email_init_func)
+            (list 'exit_func email_exit_func)
+            '(filter "email_filter")))
+         tts_text_modes))
+</pre>
+   <p>This will now allow simple email messages to be dealt with in a mode
+specific way.
+
+   <p>An example mail message is included in <samp><span class="file">examples/ex1.email</span></samp>.  To
+hear the result of the above text mode start Festival, load
+in the email mode descriptions,  and call TTS on the example file.
+<pre class="example">     (tts ".../examples/ex1.email" 'email)
+</pre>
+   <p>The above is very short of a real email mode but does illustrate
+how one might go about building one.  It should be reiterated
+that text modes are new in Festival and their most effective form
+has not been discovered yet.  This will improve with time
+and experience.
+
+   </body></html>
+

@@ -1,0 +1,87 @@
+<html lang="en">
+<head>
+<title>Scheme fundamentals - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Scheme.html#Scheme" title="Scheme">
+<link rel="prev" href="Scheme-references.html#Scheme-references" title="Scheme references">
+<link rel="next" href="Scheme-Festival-specifics.html#Scheme-Festival-specifics" title="Scheme Festival specifics">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Scheme-fundamentals"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Scheme-Festival-specifics.html#Scheme-Festival-specifics">Scheme Festival specifics</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Scheme-references.html#Scheme-references">Scheme references</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Scheme.html#Scheme">Scheme</a>
+<hr>
+</div>
+
+<h3 class="section">8.2 Scheme fundamentals</h3>
+
+<p>But you want more now, don't you, not just be referred to some
+other book.  OK here goes.
+
+   <p><em>Syntax</em>: an expression is an <em>atom</em> or a <em>list</em>.  A
+list consists of a left paren, a number of expressions and right
+paren.  Atoms can be symbols, numbers, strings or other special
+types like functions, hash tables, arrays, etc.
+
+   <p><em>Semantics</em>:  All expressions can be evaluated.  Lists are
+evaluated as function calls.  When evaluating a list all the
+members of the list are evaluated first then the first item (a
+function) is called with the remaining items in the list as arguments. 
+Atoms are evaluated depending on their type: symbols are
+evaluated as variables returning their values.  Numbers, strings,
+functions, etc. evaluate to themselves.
+
+   <p>Comments are started by a semicolon and run until end of line.
+
+   <p>And that's it. There is nothing more to the language that.  But just
+in case you can't follow the consequences of that, here are
+some key examples.
+
+<pre class="lisp">     festival&gt; (+ 2 3)
+     5
+     festival&gt; (set! a 4)
+     4
+     festival&gt; (* 3 a)
+     12
+     festival&gt; (define (add a b) (+ a b))
+     #&lt;CLOSURE (a b) (+ a b)&gt;
+     festival&gt; (add 3 4)
+     7
+     festival&gt; (set! alist '(apples pears bananas))
+     (apples pears bananas)
+     festival&gt; (car alist)
+     apples
+     festival&gt; (cdr alist)
+     (pears bananas)
+     festival&gt; (set! blist (cons 'oranges alist))
+     (oranges apples pears bananas)
+     festival&gt; (append alist blist)
+     (apples pears bananas oranges apples pears bananas)
+     festival&gt; (cons alist blist)
+     ((apples pears bananas) oranges apples pears bananas)
+     festival&gt; (length alist)
+     3
+     festival&gt; (length (append alist blist))
+     7
+</pre>
+   </body></html>
+

@@ -1,0 +1,111 @@
+<html lang="en">
+<head>
+<title>Scheme I/O - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Scheme.html#Scheme" title="Scheme">
+<link rel="prev" href="Scheme-Festival-specifics.html#Scheme-Festival-specifics" title="Scheme Festival specifics">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Scheme-I%2fO"></a>
+<a name="Scheme-I_002fO"></a>
+<p>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Scheme-Festival-specifics.html#Scheme-Festival-specifics">Scheme Festival specifics</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Scheme.html#Scheme">Scheme</a>
+<hr>
+</div>
+
+<h3 class="section">8.4 Scheme I/O</h3>
+
+<p><a name="index-file-i_002fo-in-Scheme-89"></a><a name="index-i_002fo-in-Scheme-90"></a>Different Scheme's may have quite different implementations of
+file i/o functions so in this section we will describe the
+basic functions in Festival SIOD regarding i/o.
+
+   <p>Simple printing to the screen may be achieved with the function
+<code>print</code> which prints the given s-expression to the screen. 
+The printed form is preceded by a new line.  This is often useful
+for debugging but isn't really powerful enough for much else.
+
+   <p><a name="index-g_t_0040code_007bfopen_007d-91"></a><a name="index-g_t_0040code_007bfclose_007d-92"></a>Files may be opened and closed and referred to file descriptors
+in a direct analogy to C's stdio library.  The SIOD functions
+<code>fopen</code> and <code>fclose</code> work in the exactly the same
+way as their equivalently named partners in C.
+
+   <p><a name="index-g_t_0040code_007bformat_007d-93"></a><a name="index-formatted-output-94"></a>The <code>format</code> command follows the command of the same name in Emacs
+and a number of other Lisps.  C programmers can think of it as
+<code>fprintf</code>.  <code>format</code> takes a file descriptor, format string
+and arguments to print.  The file description may be a file descriptor
+as returned by the Scheme function <code>fopen</code>, it may also be <code>t</code>
+which means the output will be directed as standard out
+(cf. <code>printf</code>).  A third possibility is <code>nil</code> which will cause
+the output to printed to a string which is returned (cf. <code>sprintf</code>).
+
+   <p>The format string  closely follows the format strings
+in ANSI C, but it is not the same.  Specifically the directives
+currently supported are, <code>%%</code>, <code>%d</code>, <code>%x</code>,
+<code>%s</code>, <code>%f</code>, <code>%g</code> and <code>%c</code>.  All modifiers
+for these are also supported.  In addition <code>%l</code> is provided
+for printing of Scheme objects as objects.
+
+   <p>For example
+<pre class="lisp">     (format t "%03d %3.4f %s %l %l %l\n" 23 23 "abc" "abc" '(a b d) utt1)
+</pre>
+   <p>will produce
+<pre class="lisp">     023 23.0000 abc "abc" (a b d) #&lt;Utterance 32f228&gt;
+</pre>
+   <p>on standard output.
+
+   <p><a name="index-pretty-printing-95"></a>When large lisp expressions are printed they are difficult to read
+because of the parentheses.  The function <code>pprintf</code> prints an
+expression to a file description (or <code>t</code> for standard out).  It
+prints so the s-expression is nicely lined up and indented.  This
+is often called pretty printing in Lisps.
+
+   <p><a name="index-reading-from-files-96"></a><a name="index-loading-data-from-files-97"></a>For reading input from terminal or file, there is currently no
+equivalent to <code>scanf</code>.  Items may only be read as Scheme
+expressions.  The command
+<pre class="lisp">     (load FILENAME t)
+</pre>
+   <p><br><br>
+   will load all s-expressions in <code>FILENAME</code> and return them,
+unevaluated as a list.  Without the third argument  the <code>load</code>
+function will load and evaluate each s-expression in the file.
+
+   <p>To read individual s-expressions use <code>readfp</code>.  For
+example
+<pre class="lisp">     (let ((fd (fopen trainfile "r"))
+           (entry)
+           (count 0))
+         (while (not (equal? (set! entry (readfp fd)) (eof-val)))
+          (if (string-equal (car entry) "home")
+             (set! count (+ 1 count))))
+         (fclose fd))
+</pre>
+   <p><a name="index-g_t_0040code_007bparse_002dnumber_007d-98"></a><a name="index-g_t_0040code_007batof_007d-99"></a><a name="index-string-to-number-100"></a><a name="index-convert-string-to-number-101"></a>To convert a symbol whose print name is a number to a number
+use <code>parse-number</code>.  This is the equivalent to <code>atof</code>
+in C.
+
+   <p>Note that, all i/o from Scheme input files is assumed to be
+basically some form of Scheme data (though can be just numbers,
+tokens).  For more elaborate analysis of incoming data it is
+possible to use the text tokenization functions which offer
+a fully programmable method of reading data.
+
+   </body></html>
+

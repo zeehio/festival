@@ -1,0 +1,144 @@
+<html lang="en">
+<head>
+<title>Defining a new voice - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Voices.html#Voices" title="Voices">
+<link rel="prev" href="Building-a-new-voice.html#Building-a-new-voice" title="Building a new voice">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Defining-a-new-voice"></a>
+<p>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Building-a-new-voice.html#Building-a-new-voice">Building a new voice</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Voices.html#Voices">Voices</a>
+<hr>
+</div>
+
+<h3 class="section">24.3 Defining a new voice</h3>
+
+<p><a name="index-adding-new-voices-319"></a>As there are a number of voices available for Festival and they may or
+may not exists in different installations we have tried to make it
+as simple as possible to add new voices to the system without having
+to change any of the basic distribution.  In fact if the voices
+use the following standard method for describing themselves it
+is merely a matter of unpacking them in order for them to be used
+by the system.
+
+   <p><a name="index-g_t_0040code_007bvoice_002dpath_007d-320"></a>The variable <code>voice-path</code> conatins a list of directories where
+voices will be automatically searched for.  If this is not set it is set
+automatically by appending <samp><span class="file">/voices/</span></samp> to all paths in festival
+<code>load-path</code>.  You may add new directories explicitly to this
+variable in your <samp><span class="file">sitevars.scm</span></samp> file or your own <samp><span class="file">.festivalrc</span></samp>
+as you wish.
+
+   <p>Each voice directory is assumed to be of the form
+<pre class="example">     LANGUAGE/VOICENAME/
+</pre>
+   <p>Within the <code>VOICENAME/</code> directory itself it is assumed there is a
+file <samp><span class="file">festvox/VOICENAME.scm</span></samp> which when loaded will define the
+voice itself.  The actual voice function should be called
+<code>voice_VOICENAME</code>.
+
+   <p>For example the voices distributed with the standard Festival
+distribution all unpack in <samp><span class="file">festival/lib/voices</span></samp>.  The Amercan
+voice <samp><span class="file">ked_diphone</span></samp> unpacks into
+<pre class="example">     festival/lib/voices/english/ked_diphone/
+</pre>
+   <p>Its actual definition file is in
+<pre class="example">     festival/lib/voices/english/ked_diphone/festvox/ked_diphone.scm
+</pre>
+   <p>Note the name of the directory and the name of the Scheme definition
+file must be the same.
+
+   <p>Alternative voices using perhaps a different encoding of the database but
+the same front end may be defined in the same way by using symbolic
+links in the langauge directoriy to the main directory.  For example
+a PSOLA version of the ked voice may be defined in
+<pre class="example">     festival/lib/voices/english/ked_diphone/festvox/ked_psola.scm
+</pre>
+   <p>Adding a symbole link in <samp><span class="file">festival/lib/voices/english/</span></samp> ro
+<samp><span class="file">ked_diphone</span></samp> called <samp><span class="file">ked_psola</span></samp> will allow that voice
+to be automatically registered when Festival starts up.
+
+   <p>Note that this method doesn't actually load the voices it finds, that
+could be prohibitively time consuming to the start up process.  It
+blindly assumes that there is a file
+<samp><span class="file">VOICENAME/festvox/VOICENAME.scm</span></samp> to load.  An autoload definition
+is given for <code>voice_VOICENAME</code> which when called will load that
+file and call the real definition if it exists in the file.
+
+   <p>This is only a recommended method to make adding new voices easier, it
+may be ignored if you wish.  However we still recommend that even if you
+use your own convetions for adding new voices you consider the autoload
+function to define them in, for example, the <samp><span class="file">siteinit.scm</span></samp> file or
+<samp><span class="file">.festivalrc</span></samp>.  The autoload function takes three arguments:
+a function name, a file containing the actual definiton and a comment. 
+For example a definition of voice can be done explicitly by
+<pre class="example">     (autooad voice_f2b  "/home/awb/data/f2b/ducs/f2b_ducs"
+          "American English female f2b")))
+</pre>
+   <p>Of course you can also load the definition file explicitly if you
+wish.
+
+   <p><a name="index-g_t_0040code_007bproclaim_005fvoice_007d-321"></a>In order to allow the system to start making intellegent use of voices
+we recommend that all voice definitions include a call to the function
+<code>voice_proclaim</code> this allows the system to know some properties
+about the voice such as language, gender and dialect.  The
+<code>proclaim_voice</code> function taks two arguments a name (e.g. 
+<code>rab_diphone</code> and an assoc list of features and names.  Currently
+we require <code>language</code>, <code>gender</code>, <code>dialect</code> and
+<code>description</code>.  The last being a textual description of the voice
+itself.  An example proclaimation is
+<pre class="lisp">     (proclaim_voice
+      'rab_diphone
+      '((language english)
+        (gender male)
+        (dialect british)
+        (description
+         "This voice provides a British RP English male voice using a
+          residual excited LPC diphone synthesis method.  It uses a
+          modified Oxford Advanced Learners' Dictionary for pronunciations.
+          Prosodic phrasing is provided by a statistically trained model
+          using part of speech and local distribution of breaks.  Intonation
+          is provided by a CART tree predicting ToBI accents and an F0
+          contour generated from a model trained from natural speech.  The
+          duration model is also trained from data using a CART tree.")))
+</pre>
+   <p>There are functions to access a description.  <code>voice.description</code>
+will return the description for a given voice and will load that voice
+if it is not already loaded.  <code>voice.describe</code> will describe the
+given given voice by synthesizing the textual description using the
+current voice.  It would be nice to use the voice itself to give a self
+introduction but unfortunately that introduces of problem of decide
+which language the description should be in, we are not all as fluent in
+welsh as we'd like to be.
+
+   <p>The function <code>voice.list</code> will list the <em>potential</em> voices in
+the system.  These are the names of voices which have been found in the
+<code>voice-path</code>.  As they have not actaully been loaded they can't
+actually be confirmed as usable voices.  One solution to this would be
+to load all voices at start up time which would allow confirmation they
+exist and to get their full description through <code>proclaim_voice</code>. 
+But start up is already too slow in festival so we have to accept this
+stat for the time being.  Splitting the description of the voice from
+the actual definition is a possible solution to this problem but we have
+not yet looked in to this.
+
+   </body></html>
+

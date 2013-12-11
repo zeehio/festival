@@ -1,0 +1,46 @@
+<html lang="en">
+<head>
+<title>Klatt durations - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Duration.html#Duration" title="Duration">
+<link rel="prev" href="Average-durations.html#Average-durations" title="Average durations">
+<link rel="next" href="CART-durations.html#CART-durations" title="CART durations">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Klatt-durations"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="CART-durations.html#CART-durations">CART durations</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Average-durations.html#Average-durations">Average durations</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Duration.html#Duration">Duration</a>
+<hr>
+</div>
+
+<h3 class="section">19.3 Klatt durations</h3>
+
+<p><a name="index-Klatt-duration-rules-253"></a>If parameter <code>Duration_Method</code> is set to <code>Klatt</code> the duration
+rules from the Klatt book (<cite>allen87</cite>, chapter 9).  This method
+requires minimum and inherent durations for each phoneme in the
+phoneset.  This information is held in the variable
+<code>duration_klatt_params</code>.  Each member of this list is a
+three-tuple, of phone name, inherent duration and minimum duration.  An
+example for the mrpa phoneset is in <samp><span class="file">lib/klatt_durs.scm</span></samp>.
+
+   </body></html>
+

@@ -1,0 +1,144 @@
+<html lang="en">
+<head>
+<title>Site initialization - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Installation.html#Installation" title="Installation">
+<link rel="prev" href="Configuration.html#Configuration" title="Configuration">
+<link rel="next" href="Checking-an-installation.html#Checking-an-installation" title="Checking an installation">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Site-initialization"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Checking-an-installation.html#Checking-an-installation">Checking an installation</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Configuration.html#Configuration">Configuration</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Installation.html#Installation">Installation</a>
+<hr>
+</div>
+
+<h3 class="section">6.3 Site initialization</h3>
+
+<p><a name="index-run_002dtime-configuration-31"></a><a name="index-initialization-32"></a><a name="index-installation-initialization-33"></a><a name="index-g_t_0040file_007binit_002escm_007d-34"></a><a name="index-g_t_0040file_007bsiteinit_002escm_007d-35"></a>Once compiled Festival may be further customized for particular sites. 
+At start up time Festival loads the file <samp><span class="file">init.scm</span></samp> from its
+library directory.  This file further loads other necessary files such
+as phoneset descriptions, duration parameters, intonation parameters,
+definitions of voices etc.  It will also load the files
+<samp><span class="file">sitevars.scm</span></samp> and <samp><span class="file">siteinit.scm</span></samp> if they exist. 
+<samp><span class="file">sitevars.scm</span></samp> is loaded after the basic Scheme library functions
+are loaded but before any of the festival related functions are
+loaded.  This file is intended to set various path names before
+various subsystems are loaded.  Typically variables such
+as <code>lexdir</code> (the directory where the lexicons are held), and
+<code>voices_dir</code> (pointing to voice directories) should
+be reset here if necessary.
+
+   <p><a name="index-change-libdir-at-run_002dtime-36"></a><a name="index-run_002dtime-configuration-37"></a><a name="index-g_t_0040code_007bload_002dpath_007d-38"></a>The default installation will try to find its lexicons and voices
+automatically based on the value of <code>load-path</code> (this is derived
+from <code>FESTIVAL_HOME</code> at compilation time or by using the <code>--libdir</code>
+at run-time).  If the voices and lexicons have been unpacked into
+subdirectories of the library directory (the default) then no site
+specific initialization of the above pathnames will be necessary.
+
+   <p>The second site specific file is <samp><span class="file">siteinit.scm</span></samp>.  Typical examples
+of local initialization are as follows.  The default audio output method
+is NCD's NAS system if that is supported as that's what we use normally
+in CSTR.  If it is not supported, any hardware specific mode is the
+default (e.g. sun16audio, freebas16audio, linux16audio or mplayeraudio). 
+But that default is just a setting in <samp><span class="file">init.scm</span></samp>.  If for example
+in your environment you may wish the default audio output method to be
+8k mulaw through <samp><span class="file">/dev/audio</span></samp> you should add the following line to
+your <samp><span class="file">siteinit.scm</span></samp> file
+<pre class="lisp">     (Parameter.set 'Audio_Method 'sunaudio)
+</pre>
+   <p>Note the use of <code>Parameter.set</code> rather than <code>Parameter.def</code>
+the second function will not reset the value if it is already set. 
+Remember that you may use the audio methods <code>sun16audio</code>. 
+<code>linux16audio</code> or <code>freebsd16audio</code> only if <code>NATIVE_AUDIO</code>
+was selected in <samp><span class="file">speech_tools/config/config</span></samp> and your are
+on such machines.  The Festival variable <code>*modules*</code> contains
+a list of all supported functions/modules in a particular installation
+including audio support.  Check the value of that variable if things
+aren't what you expect.
+
+   <p>If you are installing on a machine whose audio is not directly supported
+by the speech tools library, an external command may be executed to play
+a waveform.  The following example is for an imaginary machine that can
+play audio files through a program called <samp><span class="file">adplay</span></samp> with arguments
+for sample rate and file type.  When playing waveforms, Festival, by
+default, outputs as unheadered waveform in native byte order.  In this
+example you would set up the default audio playing mechanism in
+<samp><span class="file">siteinit.scm</span></samp> as follows
+<pre class="lisp">     (Parameter.set 'Audio_Method 'Audio_Command)
+     (Parameter.set 'Audio_Command "adplay -raw -r $SR $FILE")
+</pre>
+   <p><a name="index-output-sample-rate-39"></a><a name="index-output-file-type-40"></a><a name="index-audio-command-output-41"></a><a name="index-audio-output-rate-42"></a><a name="index-audio-output-filetype-43"></a>For <code>Audio_Command</code> method of playing waveforms Festival supports
+two additional audio parameters. <code>Audio_Required_Rate</code> allows you
+to use Festivals internal sample rate conversion function to any desired
+rate.  Note this may not be as good as playing the waveform at the
+sample rate it is originally created in, but as some hardware devices
+are restrictive in what sample rates they support, or have naive
+resample functions this could be optimal.  The second addition
+audio parameter is <code>Audio_Required_Format</code> which can be
+used to specify the desired output forms of the file.  The default
+is unheadered raw, but this may be any of the values supported by
+the speech tools (including nist, esps, snd, riff, aiff, audlab, raw
+and, if you really want it, ascii).
+
+   <p>For example suppose you run Festival on a remote machine and are not
+running any network audio system and want Festival to copy files back to
+your local machine and simply cat them to <samp><span class="file">/dev/audio</span></samp>.  The
+following would do that (assuming permissions for rsh are allowed).
+<pre class="lisp">     (Parameter.set 'Audio_Method 'Audio_Command)
+     ;; Make output file ulaw 8k (format ulaw implies 8k)
+     (Parameter.set 'Audio_Required_Format 'ulaw)
+     (Parameter.set 'Audio_Command
+      "userhost=`echo $DISPLAY | sed 's/:.*$//'`; rcp $FILE $userhost:$FILE; \
+       rsh $userhost \"cat $FILE &gt;/dev/audio\" ; rsh $userhost \"rm $FILE\"")
+</pre>
+   <p>Note there are limits on how complex a command you want to put in the
+<code>Audio_Command</code> string directly.  It can get very confusing with respect
+to quoting.  It is therefore recommended that once you get past a certain
+complexity consider writing a simple shell script and calling it from
+the <code>Audio_Command</code> string.
+
+   <p><a name="index-default-voice-44"></a>A second typical customization is setting the default speaker.  Speakers
+depend on many things but due to various licence (and resource)
+restrictions you may only have some diphone/nphone databases available
+in your installation.  The function name that is the value of
+<code>voice_default</code> is called immediately after <samp><span class="file">siteinit.scm</span></samp> is
+loaded offering the opportunity for you to change it.  In
+the standard distribution no change should be required.  If you
+download all the distributed voices <code>voice_rab_diphone</code> is
+the default voice.  You may change this for a site by adding
+the following to <samp><span class="file">siteinit.scm</span></samp> or per person by changing
+your <samp><span class="file">.festivalrc</span></samp>.  For example if you wish to
+change the default voice to the American one <code>voice_ked_diphone</code>
+<pre class="lisp">     (set! voice_default 'voice_ked_diphone)
+</pre>
+   <p>Note the single quote, and note that unlike in early versions
+<code>voice_default</code> is not a function you can call directly.
+
+   <p><a name="index-g_t_0040file_007b_002efestivalrc_007d-45"></a><a name="index-user-initialization-46"></a>A second level of customization is on a per user basis.  After loading
+<samp><span class="file">init.scm</span></samp>, which includes <samp><span class="file">sitevars.scm</span></samp> and
+<samp><span class="file">siteinit.scm</span></samp> for local installation, Festival loads the file
+<samp><span class="file">.festivalrc</span></samp> from the user's home directory (if it exists).  This
+file may contain arbitrary Festival commands.
+
+   </body></html>
+

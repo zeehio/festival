@@ -1,0 +1,126 @@
+<html lang="en">
+<head>
+<title>Current voices - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Voices.html#Voices" title="Voices">
+<link rel="next" href="Building-a-new-voice.html#Building-a-new-voice" title="Building a new voice">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Current-voices"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Building-a-new-voice.html#Building-a-new-voice">Building a new voice</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Voices.html#Voices">Voices</a>
+<hr>
+</div>
+
+<h3 class="section">24.1 Current voices</h3>
+
+<p><a name="index-voices-309"></a>Currently there are a number of voices available in Festival and we
+expect that number to increase. Each is elected via a function of the
+name &lsquo;<samp><span class="samp">voice_*</span></samp>&rsquo; which sets up the waveform synthesizer, phone set,
+lexicon, duration and intonation models (and anything else necessary)
+for that speaker.  These voice setup functions are defined in
+<samp><span class="file">lib/voices.scm</span></samp>.
+
+   <p>The current voice functions are
+     <dl>
+<dt><code>voice_rab_diphone</code><dd>A British English male RP speaker, Roger.  This uses the UniSyn residual
+excited LPC diphone synthesizer.  The lexicon is the computer users
+version of Oxford Advanced Learners' Dictionary, with letter to sound
+rules trained from that lexicon.  Intonation is provided by a ToBI-like
+system using a decision tree to predict accent and end tone position. 
+The F0 itself is predicted as three points on each syllable, using
+linear regression trained from the Boston University FM database (f2b)
+and mapped to Roger's pitch range.  Duration is predicted by decision
+tree, predicting zscore durations for segments trained from the 460
+Timit sentence spoken by another British male speaker. 
+<br><dt><code>voice_ked_diphone</code><dd>An American English male speaker, Kurt.  Again this uses the UniSyn
+residual excited LPC diphone synthesizer.  This uses the CMU lexicon,
+and letter to sound rules trained from it.  Intonation as with Roger is
+trained from the Boston University FM Radio corpus.  Duration for this
+voice also comes from that database. 
+<br><dt><code>voice_kal_diphone</code><dd>An American English male speaker.  Again this uses the UniSyn residual
+excited LPC diphone synthesizer.  And like ked, uses the CMU lexicon,
+and letter to sound rules trained from it.  Intonation as with Roger is
+trained from the Boston University FM Radio corpus.  Duration for this
+voice also comes from that database.  This voice was built in two days
+work and is at least as good as ked due to us understanding the process
+better.  The diphone labels were autoaligned with hand correction. 
+<br><dt><code>voice_don_diphone</code><dd>Steve Isard's LPC based diphone synthesizer, Donovan diphones.  The
+other parts of this voice, lexicon, intonation, and duration are the
+same as <code>voice_rab_diphone</code> described above.  The
+quality of the diphones is not as good as the other voices because it
+uses spike excited LPC.  Although the quality is not as good it
+is much faster and the database is much smaller than the others. 
+<br><dt><code>voice_el_diphone</code><dd>A male Castilian Spanish speaker, using the Eduardo Lopez diphones. 
+Alistair Conkie and Borja Etxebarria did much to make this.  It has
+improved recently but is not as comprehensive as our English voices. 
+<br><dt><code>voice_gsw_diphone</code><dd>This offers a male RP speaker, Gordon, famed for many previous CSTR
+synthesizers, using the standard diphone module.  Its higher
+levels are very similar to the Roger voice above.  This voice
+is not in the standard distribution, and is unlikely to be added
+for commercial reasons, even though it sounds better than Roger. 
+<br><dt><code>voice_en1_mbrola</code><dd>The Roger diphone set using the same front end as <code>voice_rab_diphone</code>
+but uses the MBROLA diphone synthesizer for waveform synthesis.  The
+MBROLA synthesizer and Roger diphone database (called <code>en1</code>)
+is not distributed by CSTR but is available for non-commercial use
+for free from <a href="http://tcts.fpms.ac.be/synthesis/mbrola.html">http://tcts.fpms.ac.be/synthesis/mbrola.html</a>. 
+We do however provide the Festival part of the voice in
+<samp><span class="file">festvox_en1.tar.gz</span></samp>. 
+<br><dt><code>voice_us1_mbrola</code><dd>A female Amercian English voice using our standard US English front end and the
+<code>us1</code> database for the MBROLA diphone synthesizer for waveform
+synthesis.  The MBROLA synthesizer and the <code>us1</code> diphone database
+is not distributed by CSTR but is available for
+non-commercial use for free from
+<a href="http://tcts.fpms.ac.be/synthesis/mbrola.html">http://tcts.fpms.ac.be/synthesis/mbrola.html</a>.  We
+provide the Festival part of the voice in <samp><span class="file">festvox_us1.tar.gz</span></samp>. 
+<br><dt><code>voice_us2_mbrola</code><dd>A male Amercian English voice using our standard US English front end and the
+<code>us2</code> database for the MBROLA diphone synthesizer for waveform
+synthesis.  The MBROLA synthesizer and the <code>us2</code> diphone database
+is not distributed by CSTR but is available for
+non-commercial use for free from
+<a href="http://tcts.fpms.ac.be/synthesis/mbrola.html">http://tcts.fpms.ac.be/synthesis/mbrola.html</a>.  We
+provide the Festival part of the voice in <samp><span class="file">festvox_us2.tar.gz</span></samp>. 
+<br><dt><code>voice_us3_mbrola</code><dd>Another male Amercian English voice using our standard US English front
+end and the <code>us2</code> database for the MBROLA diphone synthesizer for
+waveform synthesis.  The MBROLA synthesizer and the <code>us2</code> diphone
+database is not distributed by CSTR but is available for non-commercial
+use for free from <a href="http://tcts.fpms.ac.be/synthesis/mbrola.html">http://tcts.fpms.ac.be/synthesis/mbrola.html</a>. 
+We provide the Festival part of the voice in <samp><span class="file">festvox_us1.tar.gz</span></samp>. 
+</dl>
+   <a name="index-CSLU-310"></a>Other voices will become available through time.  Groups other than CSTR
+are working on new voices.  Particularly OGI's CSLU have release a
+number of American English voices, two Mexican Spanish voices and two German
+voices.  All use OGI's their own residual excited LPC
+synthesizer which is distributed as a plug-in for Festival. 
+(see <a href="http://www.cse.ogi.edu/CSLU/research/TTS">http://www.cse.ogi.edu/CSLU/research/TTS</a> for
+details).
+
+   <p>Other languages are being worked on including German, Basque, Welsh,
+Greek and Polish already have been developed and could be release soon. 
+CSTR has a set of Klingon diphones though the text anlysis for Klingon
+still requires some work (If anyone has access to a good Klingon
+continous speech corpora please let us know.)
+
+   <p>Pointers and examples of voices developed at CSTR and elsewhere will
+be posted on the Festival home page.
+
+   </body></html>
+

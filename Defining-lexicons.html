@@ -1,0 +1,103 @@
+<html lang="en">
+<head>
+<title>Defining lexicons - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Lexicons.html#Lexicons" title="Lexicons">
+<link rel="prev" href="Lexical-entries.html#Lexical-entries" title="Lexical entries">
+<link rel="next" href="Lookup-process.html#Lookup-process" title="Lookup process">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Defining-lexicons"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Lookup-process.html#Lookup-process">Lookup process</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Lexical-entries.html#Lexical-entries">Lexical entries</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Lexicons.html#Lexicons">Lexicons</a>
+<hr>
+</div>
+
+<h3 class="section">13.2 Defining lexicons</h3>
+
+<p><a name="index-creating-a-lexicon-149"></a>As stated above, lexicons consist of three basic parts (compiled
+form, addenda and unknown word method) plus some other declarations.
+
+   <p>Each lexicon in the system has a name which allows different lexicons to
+be selected from efficiently when switching between voices during
+synthesis.  The basic steps involved in a lexicon definition are as
+follows.
+
+   <p>First a new lexicon must be created with a new name
+<pre class="lisp">     (lex.create "cstrlex")
+</pre>
+   <p>A phone set must be declared for the lexicon, to allow both
+checks on the entries themselves and to allow phone mapping between
+different phone sets used in the system
+<pre class="lisp">     (lex.set.phoneset "mrpa")
+</pre>
+   <p>The phone set must be already declared in the system.
+
+   <p><a name="index-compiling-a-lexicon-150"></a>A compiled lexicon, the construction of which is described below,
+may be optionally specified
+<pre class="lisp">     (lex.set.compile.file "/projects/festival/lib/dicts/cstrlex.out")
+</pre>
+   <p><a name="index-letter-to-sound-rules-151"></a>The method for dealing with unknown words, See <a href="Letter-to-sound-rules.html#Letter-to-sound-rules">Letter to sound rules</a>, may
+be set
+<pre class="lisp">     (lex.set.lts.method 'lts_rules)
+     (lex.set.lts.ruleset 'nrl)
+</pre>
+   <p>In this case we are specifying the use of a set of letter to sound rules
+originally developed by the U.S. Naval Research Laboratories.  The
+default method is to give an error if a word is not found in the addenda
+or compiled lexicon.  (This and other options are discussed more fully
+below.)
+
+   <p><a name="index-addenda-152"></a><a name="index-lexicon-addenda-153"></a>Finally addenda items may be added for words that are known to
+be common, but not in the lexicon and cannot reasonably be analysed by
+the letter to sound rules.
+<pre class="lisp">     (lex.add.entry
+       '( "awb" n ((( ei ) 1) ((d uh) 1) ((b @ l) 0) ((y uu) 0) ((b ii) 1))))
+     (lex.add.entry
+       '( "cstr" n ((( s ii ) 1) (( e s ) 1) (( t ii ) 1) (( aa ) 1)) ))
+     (lex.add.entry
+       '( "Edinburgh" n ((( e m ) 1) (( b r @ ) 0))) ))
+</pre>
+   <p>Using <code>lex.add.entry</code> again for the same word and part of speech
+will redefine the current pronunciation.  Note these add entries to the
+<em>current</em> lexicon so its a good idea to explicitly select the
+lexicon before you add addenda entries, particularly if you are doing
+this in your own <samp><span class="file">.festivalrc</span></samp> file.
+
+   <p>For large lists, compiled lexicons are best.  The function
+<code>lex.compile</code> takes two filename arguments, a file name containing
+a list of lexical entries and an output file where the compiled lexicon
+will be saved.
+
+   <p>Compilation can take some time and may require lots of memory, as all
+entries are loaded in, checked and then sorted before being written out
+again.  During compilation if some entry is malformed the reading
+process halts with a not so useful message.  Note that if any of your entries
+include quote or double quotes the entries will probably be misparsed
+and cause such a weird error.  In such cases try setting
+<pre class="lisp">     (debug_output t)
+</pre>
+   <p><br>before compilation.  This will print out each entry as it is read in<br>
+   which should help to narrow down where the error is.
+
+   </body></html>
+

@@ -1,0 +1,54 @@
+<html lang="en">
+<head>
+<title>Ngrams - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Tools.html#Tools" title="Tools">
+<link rel="prev" href="CART-trees.html#CART-trees" title="CART trees">
+<link rel="next" href="Viterbi-decoder.html#Viterbi-decoder" title="Viterbi decoder">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Ngrams"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Viterbi-decoder.html#Viterbi-decoder">Viterbi decoder</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="CART-trees.html#CART-trees">CART trees</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Tools.html#Tools">Tools</a>
+<hr>
+</div>
+
+<h3 class="section">25.3 Ngrams</h3>
+
+<p><a name="index-ngrams-329"></a>Bigram, trigrams, and general ngrams are used in the part
+of speech tagger and the phrase break predicter.  An Ngram
+C++ Class is defined in the speech tools library and some simple
+facilities are added within Festival itself.
+
+   <p>Ngrams may be built from files of tokens using the program
+<code>ngram_build</code> which is part of the speech tools.  See
+the speech tools documentation for details.
+
+   <p>Within Festival ngrams may be named and loaded from files
+and used when required.  The LISP function <code>load_ngram</code>
+takes a name and a filename as argument and loads the Ngram
+from that file.  For an example of its use once loaded see
+<samp><span class="file">src/modules/base/pos.cc</span></samp> or
+<samp><span class="file">src/modules/base/phrasify.cc</span></samp>.
+
+   </body></html>
+

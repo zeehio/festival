@@ -1,0 +1,77 @@
+<html lang="en">
+<head>
+<title>Diphone database format - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Diphone-synthesizer.html#Diphone-synthesizer" title="Diphone synthesizer">
+<link rel="next" href="LPC-databases.html#LPC-databases" title="LPC databases">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Diphone-database-format"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="LPC-databases.html#LPC-databases">LPC databases</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Diphone-synthesizer.html#Diphone-synthesizer">Diphone synthesizer</a>
+<hr>
+</div>
+
+<h3 class="section">21.1 Diphone database format</h3>
+
+<p>A diphone database consists of a <em>dictionary file</em>, a set
+of <em>waveform files</em>, and a set of <em>pitch mark files</em>.  These
+files are the same format as the previous CSTR (Osprey) synthesizer.
+
+   <p>The dictionary file consist of one entry per line.  Each entry
+consists of five fields: a diphone name of the form <var>P1-P2</var>, a
+filename (without extension), a floating point start position in the
+file in milliseconds, a mid position in milliseconds (change in phone),
+and an end position in milliseconds.  Lines starting with a semi-colon
+and blank lines are ignored.  The list may be in any order.
+
+   <p>For example a partial list of phones may look like.
+<pre class="example">     ch-l  r021   412.035  463.009  518.23
+     jh-l  d747   305.841  382.301  446.018
+     h-l   d748   356.814  403.54   437.522
+     #-@   d404   233.628  297.345  331.327
+     @-#   d001   836.814  938.761  1002.48
+</pre>
+   <p>Waveform files may be in any form, as long as every file is the same
+type, headered or unheadered as long as the format is supported the
+speech tools wave reading functions.  These may be standard linear PCM
+waveform files in the case of PSOLA or LPC coefficients and residual
+when using the residual LPC synthesizer. <a href="LPC-databases.html#LPC-databases">LPC databases</a>
+
+   <p>Pitch mark files consist a simple list of positions in milliseconds
+(plus places after the point) in order, one per line of each pitch mark
+in the file.  For high quality diphone synthesis these should be derived
+from laryngograph data.  During unvoiced sections pitch marks should be
+artificially created at reasonable intervals (e.g. 10 ms).  In the
+current format there is no way to determine the "real" pitch marks from
+the "unvoiced" pitch marks.
+
+   <p>It is normal to hold a diphone database in a directory with
+a number of sub-directories namely <samp><span class="file">dic/</span></samp> contain
+the dictionary file, <samp><span class="file">wave/</span></samp> for the waveform files, typically
+of whole nonsense words (sometimes this directory is called
+<samp><span class="file">vox/</span></samp> for historical reasons) and <samp><span class="file">pm/</span></samp> for
+the pitch mark files.  The filename in the dictionary entry should
+be the same for waveform file and the pitch mark file (with different
+extensions).
+
+   </body></html>
+

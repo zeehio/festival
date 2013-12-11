@@ -1,0 +1,85 @@
+<html lang="en">
+<head>
+<title>Extracting features - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Building-models-from-databases.html#Building-models-from-databases" title="Building models from databases">
+<link rel="prev" href="Labelling-databases.html#Labelling-databases" title="Labelling databases">
+<link rel="next" href="Building-models.html#Building-models" title="Building models">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Extracting-features"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Building-models.html#Building-models">Building models</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Labelling-databases.html#Labelling-databases">Labelling databases</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Building-models-from-databases.html#Building-models-from-databases">Building models from databases</a>
+<hr>
+</div>
+
+<h3 class="section">26.2 Extracting features</h3>
+
+<p><a name="index-extracting-features-342"></a><a name="index-feature-extraction-343"></a>The easiest way to extract features from a labelled database
+of the form described in the previous section is by loading
+in each of the utterance structures and dumping the desired features.
+
+   <p>Using the same mechanism to extract the features as will eventually be
+used by models built from the features has the important advantage of
+avoiding spurious errors easily introduced when collecting data.  For
+example a feature such as <code>n.accent</code> in a Festival utterance will
+be defined as 0 when there is no next accent.  Extracting all the
+accents and using an external program to calculate the next accent may
+make a different decision so that when the generated model is used a
+different value for this feature will be produced.  Such mismatches
+in training models and actual use are unfortunately common, so using
+the same mechanism to extract data for training, and for actual
+use is worthwhile.
+
+   <p>The recommedn method for extracting features is using the
+festival script <samp><span class="file">dumpfeats</span></samp>.  It basically takes a list
+of feature names and a list of utterance files and dumps the desired
+features.
+
+   <p>Features may be dumped into a single file or into separate files
+one for each utterance.  Feature names may be specified on the
+command line or in a separate file.  Extar code to define new features
+may be loaded too.
+
+   <p>For example suppose we wanted to save the features for a set of
+utterances include the duration, phone name, previous and next phone names
+for all segments in each utterance.
+<pre class="example">     dumpfeats -feats "(segment_duration name p.name n.name)" \
+               -output feats/%s.dur -relation Segment \
+               festival/utts/*.utt
+</pre>
+   <p>This will save these features in files named for the utterances they come
+from in the directory <samp><span class="file">feats/</span></samp>.  The argument to <samp><span class="file">-feats</span></samp> is
+treated as literal list only if it starts with a left parenthesis, otherwise
+it is treated as a filename contain named features (unbracketed).
+
+   <p>Extra code (for new feature definitions) may be loaded through the
+<samp><span class="file">-eval</span></samp> option.  If the argument to <samp><span class="file">-eval</span></samp> starts
+with a left parenthesis it is trated as an s-expression rather than
+a filename and is evaluated.  If argument <samp><span class="file">-output</span></samp> contains
+"%s" it will be filled in with the utterance's filename, if it
+is a simple filename the features from all utterances will be saved
+in that same file.  The features for each item in the named
+relation are saved on a single line.
+
+   </body></html>
+

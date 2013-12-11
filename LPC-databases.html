@@ -1,0 +1,116 @@
+<html lang="en">
+<head>
+<title>LPC databases - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Diphone-synthesizer.html#Diphone-synthesizer" title="Diphone synthesizer">
+<link rel="prev" href="Diphone-database-format.html#Diphone-database-format" title="Diphone database format">
+<link rel="next" href="Group-files.html#Group-files" title="Group files">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="LPC-databases"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Group-files.html#Group-files">Group files</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Diphone-database-format.html#Diphone-database-format">Diphone database format</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Diphone-synthesizer.html#Diphone-synthesizer">Diphone synthesizer</a>
+<hr>
+</div>
+
+<h3 class="section">21.2 LPC databases</h3>
+
+<p>The standard method for diphone resynthesis in the released system is
+residual excited LPC (<cite>hunt89</cite>).  The actual method of resynthesis
+isn't important to the database format, but if residual LPC synthesis
+is to be used then it is necessary to make the LPC coefficient
+files and their corresponding residuals.
+
+   <p>Previous versions of the system used a "host of hacky little scripts"
+to this but now that the Edinburgh Speech Tools supports LPC analysis
+we can provide a walk through for generating these.
+
+   <p>We assume that the waveform file of nonsense words are in a directory
+called <samp><span class="file">wave/</span></samp>.  The LPC coefficients and residuals will be, in
+this example, stored in <samp><span class="file">lpc16k/</span></samp> with extensions <samp><span class="file">.lpc</span></samp> and
+<samp><span class="file">.res</span></samp> respectively.
+
+   <p>Before starting it is worth considering power normalization.  We have
+found this important on all of the databases we have collected so far. 
+The <code>ch_wave</code> program, part of the speech tools, with the optional
+<code>-scaleN 0.4</code> may be used if a more complex method is not
+available.
+
+   <p>The following shell command generates the files
+<pre class="example">     for i in wave/*.wav
+     do
+        fname=`basename $i .wav`
+        echo $i
+        lpc_analysis -reflection -shift 0.01 -order 18 -o lpc16k/$fname.lpc \
+            -r lpc16k/$fname.res -otype htk -rtype nist $i
+     done
+</pre>
+   <p>It is said that the LPC order should be sample rate divided by one
+thousand plus 2.  This may or may not be appropriate and if you are
+particularly worried about the database size it is worth experimenting.
+
+   <p>The program <samp><span class="file">lpc_analysis</span></samp>, found in <samp><span class="file">speech_tools/bin</span></samp>,
+can be used to generate the LPC coefficients and residual.  Note
+these should be reflection coefficients so they may be quantised
+(as they are in group files).
+
+   <p>The coefficients and residual files produced by different LPC analysis
+programs may start at different offsets.  For example the Entropic's ESPS
+functions generate LPC coefficients that are offset by one frame shift
+(e.g. 0.01 seconds).  Our own <samp><span class="file">lpc_analysis</span></samp> routine has no offset. 
+The <code>Diphone_Init</code> parameter list allows these offsets to be
+specified.  Using the above function to generate the LPC files the
+description parameters should include
+<pre class="lisp">       (lpc_frame_offset 0)
+       (lpc_res_offset 0.0)
+</pre>
+   <p>While when generating using ESPS routines the description should be
+<pre class="lisp">       (lpc_frame_offset 1)
+       (lpc_res_offset 0.01)
+</pre>
+   <p>The defaults actually follow the ESPS form, that is <code>lpc_frame_offset</code>
+is 1 and <code>lpc_res_offset</code> is equal to the frame shift, if they are
+not explicitly mentioned.
+
+   <p>Note the biggest problem we have in implementing the residual excited
+LPC resynthesizer was getting the right part of the residual to line up
+with the right LPC coefficients describing the pitch mark.  Making
+errors in this degrades the synthesized waveform notably, but not
+seriously, making it difficult to determine if it is an offset problem or
+some other bug.
+
+   <p>Although we have started investigating if extracting pitch synchronous
+LPC parameters rather than fixed shift parameters gives better
+performance, we haven't finished this work.  <samp><span class="file">lpc_analysis</span></samp>
+supports pitch synchronous analysis but the raw "ungrouped"
+access method does not yet.  At present the LPC parameters are
+extracted at a particular pitch mark by interpolating over the
+closest LPC parameters.  The "group" files hold these interpolated
+parameters pitch synchronously.
+
+   <p>The American English voice <samp><span class="file">kd</span></samp> was created using the speech
+tools <samp><span class="file">lpc_analysis</span></samp> program and its set up should
+be looked at if you are going to copy it.  The British English voice
+<samp><span class="file">rb</span></samp> was constructed using ESPS routines.
+
+   </body></html>
+

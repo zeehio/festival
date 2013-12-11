@@ -1,0 +1,111 @@
+<html lang="en">
+<head>
+<title>CART trees - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Tools.html#Tools" title="Tools">
+<link rel="prev" href="Regular-expressions.html#Regular-expressions" title="Regular expressions">
+<link rel="next" href="Ngrams.html#Ngrams" title="Ngrams">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="CART-trees"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Ngrams.html#Ngrams">Ngrams</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Regular-expressions.html#Regular-expressions">Regular expressions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Tools.html#Tools">Tools</a>
+<hr>
+</div>
+
+<h3 class="section">25.2 CART trees</h3>
+
+<p><a name="index-CART-trees-326"></a>One of the basic tools available with Festival is a system for building
+and using Classification and Regression Trees (<cite>breiman84</cite>).  This
+standard statistical method can be used to predict both categorical and
+continuous data from a set of feature vectors.
+
+   <p><a name="index-wagon-327"></a>The tree itself contains yes/no questions about features and ultimately
+provides either a probability distribution, when predicting categorical
+values (classification tree), or a mean and standard deviation when
+predicting continuous values (regression tree).  Well defined techniques
+can be used to construct an optimal tree from a set of training data. 
+The program, developed in conjunction with Festival, called
+<samp><span class="file">wagon</span></samp>, distributed with the speech tools, provides a basic but
+ever increasingly powerful method for constructing trees.
+
+   <p>A tree need not be automatically constructed, CART trees have the
+advantage over some other automatic training methods, such as neural
+networks and linear regression, in that their output is more readable
+and often understandable by humans.  Importantly this makes it possible
+to modify them.  CART trees may also be fully hand constructed.  This
+is used, for example, in generating some duration models for languages we
+do not yet have full databases to train from.
+
+   <p>A CART tree has the following syntax
+<pre class="lisp">         CART ::= QUESTION-NODE || ANSWER-NODE
+         QUESTION-NODE ::= ( QUESTION YES-NODE NO-NODE )
+         YES-NODE ::= CART
+         NO-NODE ::= CART
+         QUESTION ::= ( FEATURE in LIST )
+         QUESTION ::= ( FEATURE is STRVALUE )
+         QUESTION ::= ( FEATURE = NUMVALUE )
+         QUESTION ::= ( FEATURE &gt; NUMVALUE )
+         QUESTION ::= ( FEATURE &lt; NUMVALUE )
+         QUESTION ::= ( FEATURE matches REGEX )
+         ANSWER-NODE ::= CLASS-ANSWER || REGRESS-ANSWER
+         CLASS-ANSWER ::= ( (VALUE0 PROB) (VALUE1 PROB) ... MOST-PROB-VALUE )
+         REGRESS-ANSWER ::= ( ( STANDARD-DEVIATION MEAN ) )
+</pre>
+   <p>Note that answer nodes are distinguished by their car not being atomic.
+
+   <p><a name="index-features-328"></a>The interpretation of a tree is with respect to a Stream_Item
+The <var>FEATURE</var> in a tree is a standard feature (see <a href="Features.html#Features">Features</a>).
+
+   <p>The following example tree is used in one of the Spanish voices
+to predict variations from average durations.
+<pre class="lisp">     (set! spanish_dur_tree
+      '
+     (set! spanish_dur_tree
+      '
+        ((R:SylStructure.parent.R:Syllable.p.syl_break &gt; 1 ) ;; clause initial
+         ((R:SylStructure.parent.stress is 1)
+          ((1.5))
+          ((1.2)))
+         ((R:SylStructure.parent.syl_break &gt; 1)   ;; clause final
+          ((R:SylStructure.parent.stress is 1)
+           ((2.0))
+           ((1.5)))
+          ((R:SylStructure.parent.stress is 1)
+           ((1.2))
+           ((1.0))))))
+</pre>
+   <p>It is applied to the segment stream to give a factor to multiply
+the average by.
+
+   <p><code>wagon</code> is constantly improving and with version 1.2 of the speech
+tools may now be considered fairly stable for its basic operations. 
+Experimental features are described in help it gives.  See the
+Speech Tools manual for a more comprehensive discussion of using
+<samp><span class="file">wagon</span></samp>.
+
+   <p>However the above format of trees is similar to those produced by many
+other systems and hence it is reasonable to translate their formats into
+one which Festival can use.
+
+   </body></html>
+

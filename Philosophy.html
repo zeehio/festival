@@ -1,0 +1,100 @@
+<html lang="en">
+<head>
+<title>Philosophy - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Overview.html#Overview" title="Overview">
+<link rel="next" href="Future.html#Future" title="Future">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Philosophy"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Future.html#Future">Future</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Overview.html#Overview">Overview</a>
+<hr>
+</div>
+
+<h3 class="section">5.1 Philosophy</h3>
+
+<p>One of the biggest problems in the development of speech synthesis, and
+other areas of speech and language processing systems, is that there are
+a lot of simple well-known techniques lying around which can help you
+realise your goal.  But in order to improve some part of the whole
+system it is necessary to have a whole system in which you can test and
+improve your part.  Festival is intended as that whole system in which
+you may simply work on your small part to improve the whole.  Without a
+system like Festival, before you could even start to test your new
+module you would need to spend significant effort to build a whole
+system, or adapt an existing one before you could start working on your
+improvements.
+
+   <p>Festival is specifically designed to allow the addition of new
+modules, easily and efficiently, so that development need not
+get bogged down in re-implementing the wheel.
+
+   <p>But there is another aspect of Festival which makes it more useful than
+simply an environment for researching into new synthesis techniques. 
+It is a fully usable text-to-speech system suitable for embedding in
+other projects that require speech output.  The provision of a fully
+working easy-to-use speech synthesizer in addition to just a testing
+environment is good for two specific reasons.  First, it offers a conduit
+for our research, in that our experiments can quickly and directly
+benefit users of our synthesis system.  And secondly, in ensuring we have
+a fully working usable system we can immediately see what problems exist
+and where our research should be directed rather where our whims take
+us.
+
+   <p>These concepts are not unique to Festival.  ATR's CHATR system
+(<cite>black94</cite>) follows very much the same philosophy and Festival
+benefits from the experiences gained in the development of that system. 
+Festival benefits from various pieces of previous work.  As well as
+CHATR, CSTR's previous synthesizers, Osprey and the Polyglot projects
+influenced many design decisions.  Also we are influenced by more
+general programs in considering software engineering issues, especially
+GNU Octave and Emacs on which the basic script model was based.
+
+   <p>Unlike in some other speech and language systems, software engineering is
+considered very important to the development of Festival.  Too often
+research systems consist of random collections of hacky little scripts
+and code.  No one person can confidently describe the algorithms it
+performs, as parameters are scattered throughout the system, with tricks
+and hacks making it impossible to really evaluate why the system is good
+(or bad).  Such systems do not help the advancement of speech
+technology, except perhaps in pointing at ideas that should be further
+investigated.  If the algorithms and techniques cannot be described
+externally from the program <em>such that</em> they can reimplemented by
+others, what is the point of doing the work?
+
+   <p>Festival offers a common framework where multiple techniques may be
+implemented (by the same or different researchers) so that they may
+be tested more fairly in the same environment.
+
+   <p>As a final word, we'd like to make two short statements which both
+achieve the same end but unfortunately perhaps not for the same reasons:
+<blockquote>
+Good software engineering makes good research easier
+</blockquote>
+   But the following seems to be true also
+<blockquote>
+If you spend enough effort on something it can be shown to be better
+than its competitors. 
+</blockquote>
+
+   </body></html>
+

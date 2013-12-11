@@ -1,0 +1,61 @@
+<html lang="en">
+<head>
+<title>Synthesizers in development - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Other-synthesis-methods.html#Other-synthesis-methods" title="Other synthesis methods">
+<link rel="prev" href="MBROLA.html#MBROLA" title="MBROLA">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Synthesizers-in-development"></a>
+<p>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="MBROLA.html#MBROLA">MBROLA</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Other-synthesis-methods.html#Other-synthesis-methods">Other synthesis methods</a>
+<hr>
+</div>
+
+<h3 class="section">22.3 Synthesizers in development</h3>
+
+<p>In addition to the above synthesizers Festival also
+supports CSTR's older PSOLA synthesizer written by Paul Taylor. 
+But as the newer diphone synthesizer produces similar quality
+output and is a newer (and hence a cleaner) implementation
+further development of the older module is unlikely.
+
+   <p><a name="index-selection_002dbased-synthesis-287"></a>An experimental unit seleciton synthesis module is included in
+<samp><span class="file">modules/clunits/</span></samp> it is an implementation of <cite>black97c</cite>.  It
+is included for people wishing to continue reserach in the area rather
+than as a fully usable waveform synthesis engine.  Although it sometimes
+gives excellent results it also sometimes gives amazingly bad ones too. 
+We included this as an example of one possible framework for selection-based
+synthesis.
+
+   <p>As one of our funded projects is to specifically develop new selection
+based synthesis algorithms we expect to include more models within later
+versions of the system.
+
+   <p>Also, now that Festival has been released other groups are working
+on new synthesis techniques in the system.  Many of these will
+become available and where possible we will give pointers from
+the Festival home page to them.  Particularly there is an alternative
+residual excited LPC module implemented at the Center for Spoken
+Language Understanding (CSLU) at the Oregon Graduate Institute (OGI).
+
+   </body></html>
+

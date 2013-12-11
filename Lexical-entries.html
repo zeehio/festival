@@ -1,0 +1,84 @@
+<html lang="en">
+<head>
+<title>Lexical entries - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Lexicons.html#Lexicons" title="Lexicons">
+<link rel="next" href="Defining-lexicons.html#Defining-lexicons" title="Defining lexicons">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Lexical-entries"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Defining-lexicons.html#Defining-lexicons">Defining lexicons</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Lexicons.html#Lexicons">Lexicons</a>
+<hr>
+</div>
+
+<h3 class="section">13.1 Lexical entries</h3>
+
+<p><a name="index-lexical-entries-142"></a>Lexical entries consist of three basic parts, a head word, a part of
+speech and a pronunciation.  The headword is what you might normally
+think of as a word e.g. &lsquo;<samp><span class="samp">walk</span></samp>&rsquo;, &lsquo;<samp><span class="samp">chairs</span></samp>&rsquo; etc.  but it might be
+any token.
+
+   <p><a name="index-part-of-speech-tag-143"></a><a name="index-POS-144"></a><a name="index-part-of-speech-map-145"></a>The part-of-speech field currently consist of a simple atom (or nil if
+none is specified).  Of course there are many part of speech tag sets
+and whatever you mark in your lexicon must be compatible with the
+subsystems that use that information.  You can optionally set a part of
+speech tag mapping for each lexicon.  The value should be a reverse
+assoc-list of the following form
+<pre class="lisp">     (lex.set.pos.map
+        '((( punc fpunc) punc)
+          (( nn nnp nns nnps ) n)))
+</pre>
+   <p>All part of speech tags not appearing in the left hand side of a pos map
+are left unchanged.
+
+   <p><a name="index-pronunciation-146"></a>The third field contains the actual pronunciation of the word.  This
+is an arbitrary Lisp S-expression.  In many of the lexicons distributed
+with Festival this entry has internal format, identifying syllable
+structure, stress markigns and of course the phones themselves.  In
+some of our other lexicons we simply list the phones with stress marking
+on each vowel.
+
+   <p>Some typical example entries are
+
+<pre class="lisp">     ( "walkers" n ((( w oo ) 1) (( k @ z ) 0)) )
+     ( "present" v ((( p r e ) 0) (( z @ n t ) 1)) )
+     ( "monument" n ((( m o ) 1) (( n y u ) 0) (( m @ n t ) 0)) )
+</pre>
+   <p><a name="index-homographs-147"></a>Note you may have two entries with the same headword, but different
+part of speech fields allow differentiation.  For example
+
+<pre class="lisp">     ( "lives" n ((( l ai v z ) 1)) )
+     ( "lives" v ((( l i v z ) 1)) )
+</pre>
+   <p>See <a href="Lookup-process.html#Lookup-process">Lookup process</a>, for a description of how multiple entries with the
+same headword are used during lookup.
+
+   <p><a name="index-lexical-stress-148"></a>By current conventions, single syllable function words should have no
+stress marking, while single syllable content words should be stressed.
+
+   <p><em>NOTE:</em> the POS field may change in future to contain more complex
+formats.  The same lexicon mechanism (but different lexicon) is
+used for holding part of speech tag distributions for the POS prediction
+module.
+
+   </body></html>
+

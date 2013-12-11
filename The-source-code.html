@@ -1,0 +1,154 @@
+<html lang="en">
+<head>
+<title>The source code - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Programming.html#Programming" title="Programming">
+<link rel="next" href="Writing-a-new-module.html#Writing-a-new-module" title="Writing a new module">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="The-source-code"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Writing-a-new-module.html#Writing-a-new-module">Writing a new module</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Programming.html#Programming">Programming</a>
+<hr>
+</div>
+
+<h3 class="section">27.1 The source code</h3>
+
+<p><a name="index-source-346"></a>The ultimate authority on what happens in the system lies
+in the source code itself.  No matter how hard we try, and how
+automatic we make it, the source code will always be ahead
+of the documentation.  Thus if you are going to be using Festival in
+a serious way, familiarity with the source is essential.
+
+   <p>The lowest level functions are catered for in the Edinburgh
+Speech Tools, a separate library distributed with Festival.  The
+Edinburgh Speech Tool Library offers the basic utterance structure,
+waveform file access, and other various useful low-level functions
+which we share between different speech systems in our work. 
+See <a href="../speechtools/index.html#Top">Overview</a>.
+
+   <p><a name="index-directory-structure-347"></a>The directory structure for the Festival distribution reflects
+the conceptual split in the code.
+
+     <dl>
+<dt><samp><span class="file">./bin/</span></samp><dd>The user-level executable binaries and scripts that are part of the
+festival system.  These are simple symbolic links to the binaries
+or if the system is compiled with shared libraries small wrap-around
+shell scripts that set <code>LD_LIBRARY_PATH</code> appropriately
+<br><dt><samp><span class="file">./doc/</span></samp><dd>This contains the texinfo documentation for the whole system.  The
+<samp><span class="file">Makefile</span></samp> constructs the info and/or html version as desired. 
+Note that the <code>festival</code> binary itself is used to generate the lists
+of functions and variables used within the system, so must be compiled
+and in place to generate a new version of the documentation. 
+<br><dt><samp><span class="file">./examples/</span></samp><dd>This contains various examples.  Some are explained within this manual,
+others are there just as examples. 
+<br><dt><samp><span class="file">./lib/</span></samp><dd>The basic Scheme parts of the system, including <samp><span class="file">init.scm</span></samp> the
+first file loaded by <code>festival</code> at start-up time.  Depending on
+your installation, this directory may also contain subdirectories
+containing lexicons, voices and databases.  This directory and its
+sub-directories are used by Festival at run-time. 
+<br><dt><samp><span class="file">./lib/etc/</span></samp><dd>Executables for Festival's internal use.  A subdirectory containing
+at least the audio spooler will be automatically created (one for each
+different architecture the system is compiled on).  Scripts are
+added to this top level directory itself. 
+<br><dt><samp><span class="file">./lib/voices/</span></samp><dd>By default this contains the voices used by Festival including their
+basic Scheme set up functions as well as the diphone databases. 
+<br><dt><samp><span class="file">./lib/dicts/</span></samp><dd>This contains various lexicon files distributed as part of the
+system. 
+<br><dt><samp><span class="file">./config/</span></samp><dd>This contains the basic <samp><span class="file">Makefile</span></samp> configuration files for
+compiling the system (run-time configuration is handled by Scheme
+in the <samp><span class="file">lib/</span></samp> directory).  The file <samp><span class="file">config/config</span></samp> created
+as a copy of the standard <samp><span class="file">config/config-dist</span></samp> is the installation
+specific configuration.  In most cases a simpel copy of the
+distribution file will be sufficient. 
+<br><dt><samp><span class="file">./src/</span></samp><dd>The main C++/C source for the system. 
+<br><dt><samp><span class="file">./src/lib/</span></samp><dd>Where the <samp><span class="file">libFestival.a</span></samp> is built. 
+<br><dt><samp><span class="file">./src/include/</span></samp><dd>Where include files shared between various parts of the system
+live.  The file <samp><span class="file">festival.h</span></samp> provides access to most of
+the parts of the system. 
+<br><dt><samp><span class="file">./src/main/</span></samp><dd>Contains the top level C++ files for the actual executables. 
+This is directory where the executable binary <samp><span class="file">festival</span></samp>
+is created. 
+<br><dt><samp><span class="file">./src/arch/</span></samp><dd>The main core of the Festival system.  At present everything is held in
+a single sub-directory <samp><span class="file">./src/arc/festival/</span></samp>.  This contains the
+basic core of the synthesis system itself.  This directory contains lisp
+front ends to access the core utterance architecture, and phonesets,
+basic tools like, client/server support, ngram support, etc, and an
+audio spooler. 
+<br><dt><samp><span class="file">./src/modules/</span></samp><dd>In contrast to the <samp><span class="file">arch/</span></samp> directory this contains the non-core
+parts of the system.  A set of basic example modules are included with
+the standard distribution.  These are the parts that do the synthesis,
+the other parts are just there to make module writing easier. 
+<br><dt><samp><span class="file">./src/modules/base/</span></samp><dd>This contains some basic simple modules that weren't quite big enough
+to deserve their own directory.  Most importantly it includes the
+<code>Initialize</code> module called by many synthesis methods which sets
+up an utterance structure and loads in initial values.  This directory
+also contains phrasing, part of speech, and word (syllable and phone
+construction from words) modules. 
+<br><dt><samp><span class="file">./src/modules/Lexicon/</span></samp><dd>This is not really a module in the true sense (the <code>Word</code> module
+is the main user of this).  This contains functions to construct, compile,
+and access lexicons (entries of words, part of speech and
+pronunciations).  This also contains a letter-to-sound rule system. 
+<br><dt><samp><span class="file">./src/modules/Intonation/</span></samp><dd>This contains various intonation systems, from the very simple
+to quite complex parameter driven intonation systems. 
+<br><dt><samp><span class="file">./src/modules/Duration/</span></samp><dd>This contains various duration prediction systems, from the very simple
+(fixed duration) to quite complex parameter driven duration systems. 
+<br><dt><samp><span class="file">./src/modules/UniSyn/</span></samp><dd>A basic diphone synthesizer system, supporting a simple database format
+(which can be grouped into a more efficient binary representation).  It
+is multi-lingual, and allows multiple databases to be loaded at once. 
+It offers a choice of concatenation methods for diphones: residual
+excited LPC or PSOLA (TM) (which is not distributed)
+<br><dt><samp><span class="file">./src/modules/Text/</span></samp><dd>Various text analysis functions, particularly the tokenizer and
+utterance segmenter (from arbitrary files).  This directory
+also contains the support for text modes and SGML. 
+<br><dt><samp><span class="file">./src/modules/donovan/</span></samp><dd>An LPC based diphone synthesizer.  Very small and neat. 
+<br><dt><samp><span class="file">./src/modules/rxp/</span></samp><dd>The Festival/Scheme front end to
+An XML parser written by Richard Tobin from University of Edinburgh's
+Language Technology Group.. rxp is now part of the speech tools
+rather than just Festival. 
+<br><dt><samp><span class="file">./src/modules/parser</span></samp><dd>A simple interface the the Stochastic Context Free Grammar parser in
+the speech tools library. 
+<br><dt><samp><span class="file">./src/modules/diphone</span></samp><dd>An optional module contain the previouslty used diphone synthsizer. 
+<br><dt><samp><span class="file">./src/modules/clunits</span></samp><dd>A partial implementation of a cluster unit selection algorithm
+as described in <cite>black97c</cite>. 
+<br><dt><samp><span class="file">./src/modules/Database rjc_synthesis</span></samp><dd>This consist of a new set of modules for doing waveform synthesis.  They
+are inteneded to unit size independent (e.g. diphone, phone, non-uniform
+unit).  Also selection, prosodic modification, joining and signal
+processing are separately defined.  Unfortunately this code has
+not really been exercised enough to be considered stable to be used
+in the default synthesis method, but those working on new synthesis
+techniques may be interested in integration using these new modules. 
+They may be updated before the next full release of Festival. 
+<br><dt><samp><span class="file">./src/modules/*</span></samp><dd>Other optional directories may be contained here containing
+various research modules not yet part of the standard distribution. 
+See below for descriptions of how to add modules to the basic
+system. 
+</dl>
+   One intended use of Festival is offer a software system where
+new modules may be easily tested in a stable environment.  We
+have tried to make the addition of new modules easy, without requiring
+complex modifications to the rest of the system.
+
+   <p>All of the basic modules should really be considered merely as example
+modules.  Without much effort all of them could be improved.
+
+   </body></html>
+

@@ -1,0 +1,103 @@
+<html lang="en">
+<head>
+<title>Example utterance types - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Utterances.html#Utterances" title="Utterances">
+<link rel="prev" href="Utterance-types.html#Utterance-types" title="Utterance types">
+<link rel="next" href="Utterance-modules.html#Utterance-modules" title="Utterance modules">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Example-utterance-types"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Utterance-modules.html#Utterance-modules">Utterance modules</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Utterance-types.html#Utterance-types">Utterance types</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Utterances.html#Utterances">Utterances</a>
+<hr>
+</div>
+
+<h3 class="section">14.3 Example utterance types</h3>
+
+<p><a name="index-utterance-examples-204"></a>A number of utterance types are currently supported.  It is easy to add
+new ones but the standard distribution includes the following.
+
+     <dl>
+<dt><code>Text</code><dd><a name="index-g_t_0040code_007bText_007d-utterance-205"></a>Raw text as a string.
+     <pre class="lisp">          (Utterance Text "This is an example")
+</pre>
+     <br><dt><code>Words</code><dd><a name="index-g_t_0040code_007bWords_007d-utterance-206"></a>A list of words
+     <pre class="lisp">          (Utterance Words (this is an example))
+</pre>
+     <p>Words may be atomic or lists if further features need to be specified. 
+For example to specify a word and its part of speech you
+can use
+     <pre class="lisp">          (Utterance Words (I (live (pos v)) in (Reading (pos n) (tone H-H%))))
+</pre>
+     <p>Note: the use of the tone feature requires an intonation mode that
+supports it.
+
+     <p>Any feature and value named in the input will be added to the Word
+item. 
+<br><dt><code>Phrase</code><dd>This allows explicit phrasing and features on Tokens to be specified. 
+The input consists of a list of phrases each contains a list of tokens.
+     <pre class="lisp">          (Utterance
+           Phrase
+           ((Phrase ((name B))
+             I saw the man
+             (in ((EMPH 1)))
+             the park)
+            (Phrase ((name BB))
+             with the telescope)))
+</pre>
+     <p>ToBI tones and accents may also be specified on Tokens but these will
+only take effect if the selected intonation method uses them. 
+<br><dt><code>Segments</code><dd><a name="index-g_t_0040code_007bSegments_007d-utterance-207"></a>This allows specification of segments, durations and F0 target
+values.
+     <pre class="lisp">          (Utterance
+           Segments
+           ((# 0.19 )
+            (h 0.055 (0 115))
+            (@ 0.037 (0.018 136))
+            (l 0.064 )
+            (ou 0.208 (0.0 134) (0.100 135) (0.208 123))
+            (# 0.19)))
+</pre>
+     <p>Note the times are in <em>seconds</em> NOT milliseconds.  The format of
+each segment entry is segment name, duration in seconds, and list of
+target values.  Each target value consists of a pair of point into the
+segment (in seconds) and F0 value in Hz. 
+<br><dt><code>Phones</code><dd><a name="index-g_t_0040code_007bPhones_007d-utterance-208"></a>This allows a simple specification of a list of phones.  Synthesis
+specifies fixed durations (specified in <code>FP_duration</code>, default 100
+ms) and monotone intonation (specified in <code>FP_F0</code>, default 120Hz). 
+This may be used for simple checks for waveform synthesizers etc.
+     <pre class="lisp">          (Utterance Phones (# h @ l ou #))
+</pre>
+     <p><a name="index-g_t_0040code_007bSayPhones_007d-209"></a>Note the function <code>SayPhones</code> allows synthesis and playing of
+lists of phones through this utterance type. 
+<br><dt><code>Wave</code><dd><a name="index-g_t_0040code_007bWave_007d-utterance-210"></a>A waveform file.  Synthesis here simply involves loading
+the file.
+     <pre class="lisp">          (Utterance Wave fred.wav)
+</pre>
+     </dl>
+   <a name="index-g_t_0040code_007bTokens_007d-utterance-211"></a><a name="index-g_t_0040code_007bSegF0_007d-utterance-212"></a>Others are supported, as defined in <samp><span class="file">lib/synthesis.scm</span></samp> but are
+used internally by various parts of the system.  These include
+<code>Tokens</code> used in TTS and <code>SegF0</code> used by <code>utt.resynth</code>.
+
+   </body></html>
+

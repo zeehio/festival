@@ -1,0 +1,79 @@
+<html lang="en">
+<head>
+<title>Duration - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Intonation.html#Intonation" title="Intonation">
+<link rel="next" href="UniSyn-synthesizer.html#UniSyn-synthesizer" title="UniSyn synthesizer">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Duration"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="UniSyn-synthesizer.html#UniSyn-synthesizer">UniSyn synthesizer</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Intonation.html#Intonation">Intonation</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">19 Duration</h2>
+
+<p><a name="index-duration-249"></a>A number of different duration prediction modules are available with
+varying levels of sophistication.
+
+   <p>Segmental duration prediction is done by the module <code>Duration</code>
+which calls different actual methods depending on the parameter
+<code>Duration_Method</code>.
+
+   <p><a name="index-duration-stretch-250"></a>All of the following duration methods may be further affected by both a
+global duration stretch and a per word one.
+
+   <p>If the parameter <code>Duration_Stretch</code> is set, all absolute durations
+predicted by any of the duration methods described here are multiplied by
+the parameter's value.  For example
+<pre class="lisp">     (Parameter.set 'Duration_Stretch 1.2)
+</pre>
+   <p><br>will make everything speak more slowly.<br>
+
+
+   <p><a name="index-local-duration-stretch-251"></a>In addition to the global stretch method, if the feature
+<code>dur_stretch</code> on the related <code>Token</code> is set it will also be
+used as a multiplicative factor on the duration produced by the selected
+method.  That is <code>R:Syllable.parent.parent.R:Token.parent.dur_stretch</code>. 
+There is a lisp function <code>duration_find_stretch</code> wchi will return
+the combined gloabel and local duration stretch factor for a given
+segment item.
+
+   <p>Note these global and local methods of affecting the duration produced
+by models are crude and should be considered hacks.  Uniform
+modification of durations is not what happens in real speech.  These
+parameters are typically used when the underlying duration method is
+lacking in some way.  However these can be useful.
+
+   <p>Note it is quite easy to implement new duration methods in Scheme
+directly.
+
+<ul class="menu">
+<li><a accesskey="1" href="Default-durations.html#Default-durations">Default durations</a>:    Fixed length durations
+<li><a accesskey="2" href="Average-durations.html#Average-durations">Average durations</a>
+<li><a accesskey="3" href="Klatt-durations.html#Klatt-durations">Klatt durations</a>:      Klatt rules from book. 
+<li><a accesskey="4" href="CART-durations.html#CART-durations">CART durations</a>:       Tree based durations
+</ul>
+
+   </body></html>
+

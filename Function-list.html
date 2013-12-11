@@ -1,0 +1,1347 @@
+<html lang="en">
+<head>
+<title>Function list - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Variable-list.html#Variable-list" title="Variable list">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Function-list"></a>
+<p>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Variable-list.html#Variable-list">Variable list</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">34 Function list</h2>
+
+<p>This chapter contains a list of functions currently defined within
+Festival available for general use.  This list is automatically
+generated from the documentation strings of the functions as they are
+defined within the system, so has some chance in being up-to-date.
+
+   <p>Note some of the functions which have origins in the SIOD system itself
+are little used in Festival and may not work fully, particularly, the
+arrays.
+
+   <p>Cross references to sections elsewhere in the manual are given where
+appropriate.
+
+     <dl>
+<dt><code>(% X Y)</code><dd>Return X%Y. 
+<br><dt><code>(%%closure ENVIRONMENT CODE)</code><dd>Make a closure from given environment and code. 
+<br><dt><code>(%%closure-code CLOSURE)</code><dd>Return code part of closure. 
+<br><dt><code>(%%closure-env CLOSURE)</code><dd>Return environment part of closure. 
+<br><dt><code>(%%stack-limit AMOUNT SILENT)</code><dd>Set stacksize to AMOUNT, if SILENT is non nil do it silently. 
+<br><dt><code>(* NUM1 NUM2 ...)</code><dd>Returns the product of NUM1 and NUM2 ...  An error is given is any
+argument is not a number. 
+<br><dt><code>(*catch TAG . BODY)</code><dd>Evaluate BODY, if a *throw occurs with TAG then return value specified
+by *throw. 
+<br><dt><code>(*throw TAG VALUE)</code><dd>Jump to *catch with TAG, causing *catch to return VALUE. 
+<br><dt><code>(+ NUM1 NUM2 ...)</code><dd>Returns the sum of NUM1 and NUM2 ...  An error is given is any argument
+is not a number. 
+<br><dt><code>(- NUM1 NUM2)</code><dd>Returns the difference between NUM1 and NUM2.  An error is given is any
+argument is not a number. 
+<br><dt><code>(/ NUM1 NUM2)</code><dd>Returns the quotient of NUM1 and NUM2.  An error is given is any
+argument is not a number. 
+<br><dt><code>(:backtrace [FRAME])</code><dd>This function called *immediately* after an error will display a backtrace
+of the functions evaluated before the error.  With no arguments it
+lists all stack frames, with the (possibly shortened) forms that were
+evaluated at that level.  With a numeric argument it displays
+the form at that level in full.  This function only works at
+top level in the read-eval-print loop (command interpreter).  Note
+that any valid command will leave the backtrace stack empty. Also
+note that backtrace itself does not reset the backtrace, unless you
+make an error in calling it. 
+<br><dt><code>(&lt; NUM1 NUM2)</code><dd>Returns t if NUM1 is less than NUM2, nil otherwise.  An error is
+given is either argument is not a number. 
+<br><dt><code>(&lt;= NUM1 NUM2)</code><dd>Returns t if NUM1 is less than or equal to NUM2, nil otherwise.  An error is
+given is either argument is not a number. 
+<br><dt><code>(&gt; NUM1 NUM2)</code><dd>Returns t if NUM1 is greater than NUM2, nil otherwise.  An error is
+given is either argument is not a number. 
+<br><dt><code>(&gt;= NUM1 NUM2)</code><dd>Returns t if NUM1 is greater than or equal to NUM2, nil otherwise. 
+An error is given is either argument is not a number. 
+<br><dt><code>(acost:build_disttabs UTTTYPES PARAMS)</code><dd>Built matrices of distances between each ling_item in each each list
+of ling_items in uttypes.   Uses acoustic weights in PARAMS and save
+the result as a matrix for later use. 
+<br><dt><code>(acost:file_difference FILENAME1 FILENAME2 PARAMS)</code><dd>Load in the two named tracks and find the acoustic difference over all
+based on the weights in PARAMS. 
+<br><dt><code>(acost:utt.load_coeffs UTT PARAMS)</code><dd>Load in the acoustic coefficients into UTT and set the Acoustic_Coeffs
+feature for each segment in UTT. 
+<br><dt><code>(add-doc-var VARNAME DOCSTRING)</code><dd>Add document string DOCSTRING to VARNAME.  If DOCSTRING is nil
+this has no effect.  If VARNAME already has a document string replace
+it with DOCSTRING. 
+<br><dt><code>(and CONJ1 CONJ2 ... CONJN)</code><dd>Evaluate each conjunction CONJn in turn until one evaluates to nil. 
+Otherwise return value of CONJN. 
+<br><dt><code>(append L0 L1 ...)</code><dd>Append each list to the first list in turn. 
+<br><dt><code>(append LIST1 LIST2)</code><dd>Returns LIST2 appended to LIST1, LIST1 is distroyed. 
+<br><dt><code>(apply FUNC ARGS)</code><dd>Call FUNC with ARGS as arguments. 
+<br><dt><code>(apply_hooks HOOK OBJ)</code><dd>Apply HOOK(s) to OBJ.  HOOK is a function or list of functions that
+take one argument. 
+<br><dt><code>(apply_method METHOD UTT)</code><dd>Apply the appropriate function to utt defined in parameter. 
+<br><dt><code>(approx-equal? a b diff)</code><dd>True is the difference between a b is less than diff.  This allows equality
+between floats which may have been written out and read in and hence have
+slightly different precision. 
+<br><dt><code>(aref ARRAY INDEX)</code><dd>Return ARRAY[INDEX]
+<br><dt><code>(aset ARRAY INDEX VAL)</code><dd>Set ARRAY[INDEX] = VAL
+<br><dt><code>(assoc KEY A-LIST)</code><dd>Return pair with KEY in A-LIST or nil. 
+<br><dt><code>(assoc_string key alist)</code><dd>Look up key in alist using string-equal.  This allow indexing by
+string rather than just symbols. 
+<br><dt><code>(assq ITEM ALIST)</code><dd>Returns pairs from ALIST whose car is ITEM or nil if ITEM is not in ALIST. 
+<br><dt><code>(atom X)</code><dd>True if X is not a cons cells, nil otherwise. 
+<br><dt><code>(audio_mode MODE)</code><dd>Control audio specific modes.  Five subcommands are supported. If
+MODE is async, start the audio spooler so that Festival need not wait
+for a waveform to complete playing before continuing.  If MODE is
+sync wait for the audio spooler to empty, if running, and they cause
+future plays to wait for the playing to complete before continuing. 
+Other MODEs are, close which waits for the audio spooler to finish
+any waveforms in the queue and then closes the spooler (it will restart
+on the next play), shutup, stops the current waveform playing and empties
+the queue, and query which lists the files in the queue.  The queue may
+be up to five waveforms long. [see <a href="Audio-output.html#Audio-output">Audio output</a>]
+<br><dt><code>(backquote FORM)</code><dd>Backquote function for expanding forms in macros. 
+<br><dt><code>(basename PATH SUFFIX)</code><dd>Return a string with directory removed from basename.  If SUFFIX is
+specified remove that from end of PATH.  Basically the same function
+as the UNIX command of the same name. 
+<br><dt><code>(begin . BODY)</code><dd>Evaluate s-expressions in BODY returning value of from last expression. 
+<br><dt><code>(english_token_to_words TOKENSTREAM TOKENNAME)</code><dd>Returns a list of words expanded from TOKENNAME.  Note that as this
+function may be called recursively TOKENNAME may not be the name of
+TOKENSTREAM. 
+<br><dt><code>(Builtin_PostLex UTT)</code><dd>Post-lexical rules.  Currently only vowel reduction applied to each
+syllable using postlex_vowel_reduce_cart_tree, and the table of
+vowel reduction pairs in postlex_vowel_reduce_table. 
+<br><dt><code>(caar X)</code><dd>Return the (car (car X)). 
+<br><dt><code>(caddr X)</code><dd>Return the (car (cdr (cdr X))). 
+<br><dt><code>(cadr X)</code><dd>Return the (car (cdr X)). 
+<br><dt><code>(car DATA1)</code><dd>Returns car of DATA1.  If DATA1 is nil or a symbol, return nil. 
+<br><dt><code>(cd DIRNAME)</code><dd>Change directory to DIRNAME, if DIRNAME is nil or not specified
+change directory to user's HOME directory. 
+<br><dt><code>(cdar X)</code><dd>Return the (cdr (car X)). 
+<br><dt><code>(cdddr X)</code><dd>Return the (cdr (cdr (cdr X))). 
+<br><dt><code>(cddr X)</code><dd>Return the (cdr (cdr X)). 
+<br><dt><code>(cdr DATA1)</code><dd>Returns cdr of DATA1.  If DATA1 is nil or a symbol, return nil. 
+<br><dt><code>(cl_mapping UTT PARAMS)</code><dd>Impose prosody upto some percentage, and not absolutely. 
+<br><dt><code>(Pauses UTT)</code><dd>Predict pause insertion. 
+<br><dt><code>(Classic_Phrasify UTT)</code><dd>Creates phrases from words, if pos_supported is non-nil, a more elaborate
+system of prediction is used.  Here probability models based on part of
+speech and B/NB distribution are used to predict breaks.  This system
+uses standard Viterbi decoding techniques. If pos_supported is nil,
+a simple CART-based prediction model is used. [see <a href="Phrase-breaks.html#Phrase-breaks">Phrase breaks</a>]
+<br><dt><code>(Classic_POS UTT)</code><dd>Predict part of speech tags for the existing word stream.  If the variable
+pos_lex_name is nil nothing happens, otherwise it is assumed to point to
+a lexicon file giving part of speech distribution for words. An ngram
+model file should be in pos_ngram_name.  The system uses standard
+Viterbi decoding techniques. [see <a href="POS-tagging.html#POS-tagging">POS tagging</a>]
+<br><dt><code>(Classic_PostLex utt)</code><dd>Apply post lexical rules (both builtin and those specified in
+postlex_rules_hooks). 
+<br><dt><code>(Classic_Word UTT)</code><dd>Build the syllable/segment/SylStructure from the given words using the
+Lexicon.  Uses part of speech information in the lexicon look up if
+present. 
+<br><dt><code>(clunits:list)</code><dd>List names of currently loaded cluster databases. 
+<br><dt><code>(clunits:load_all_coefs FILEIDLIST)</code><dd>Load in coefficients, signal and join coefficients for each named
+fileid.  This is can be called at startup to to reduce the load time
+during synthesis (though may make the image large). 
+<br><dt><code>(clunits:load_db PARAMS)</code><dd>Load index file for cluster database and set up params, and select it. 
+<br><dt><code>(clunits:select NAME)</code><dd>Select a previously loaded cluster database. 
+<br><dt><code>(Clunits_Get_Units UTT)</code><dd>Construct Unit relation from the selected units in Segment and extract
+their parameters from the clunit db. 
+<br><dt><code>(Clunits_Select UTT)</code><dd>Select units from current databases using cluster selection method. 
+<br><dt><code>(Clunits_Simple_Wave UTT)</code><dd>Naively concatenate signals together into a single wave (for debugging). 
+<br><dt><code>(Clunits_SmoothedJoin_Wave UTT)</code><dd>smoothed join. 
+<br><dt><code>(Clunits_Windowed_Wave UTT)</code><dd>Use hamming window over edges of units to join them, no prosodic
+modification though. 
+<br><dt><code>(combine_waves)</code><dd>Join all the waves together into the desired output file
+and delete the intermediate ones. 
+<br><dt><code>(compile-file FILENAME)</code><dd>Compile lisp forms in FILENAME.scm to FILENAME.bin. 
+<br><dt><code>(compile_library)</code><dd>Compile all the scheme files in the library directory. 
+<br><dt><code>(cons DATA1 DATA2)</code><dd>Construct cons pair whose car is DATA1 and cdr is DATA2. 
+<br><dt><code>(cons-array DIM KIND)</code><dd>Construct array of size DIM and type KIND.  Where KIND may be one of
+double, long, string or lisp. 
+<br><dt><code>(copy-list LIST)</code><dd>Return new list with same members as LIST. 
+<br><dt><code>(debug_output ARG)</code><dd>If ARG is non-nil cause all future debug output to be sent to cerr,
+otherwise discard it (send it to /dev/null). 
+<br><dt><code>(def_feature_docstring FEATURENAME FEATUREDOC)</code><dd>As some feature are used directly of stream items with no
+accompanying feature function, the features are just values on the feature
+list.  This function also those features to have an accompanying
+documentation string. 
+<br><dt><code>(define (FUNCNAME ARG1 ARG2 ...) . BODY)</code><dd>Define a new function call FUNCNAME with arguments ARG1, ARG2 ... and
+BODY. 
+<br><dt><code>(defmac-macro MACRONAME FORM)</code><dd>Define a macro.  Macro expand FORM in-line. 
+<br><dt><code>(defPhoneSet PHONESETNAME FEATURES PHONEDEFS)</code><dd>Define a new phoneset named PHONESETNAME.  Each phone is described with a
+set of features as described in FEATURES.  Some of these FEATURES may
+be significant in various parts of the system.  Copying an existing
+description is a good start. [see <a href="Phonesets.html#Phonesets">Phonesets</a>]
+<br><dt><code>(defSynthType TYPE . BODY)</code><dd>Define a new wave synthesis type.  TYPE is an atomic type that
+identifies the type of synthesis. BODY is evaluated with argument
+utt, when utt.synth is called with an utterance of type TYPE. 
+[see <a href="Utterance-types.html#Utterance-types">Utterance types</a>]
+<br><dt><code>(defUttType TYPE . BODY)</code><dd>Define a new utterance type.  TYPE is an atomic type that is specified
+as the first argument to the function Utterance.  BODY is evaluated
+with argument utt, when utt.synth is called with an utterance of type
+TYPE.  You almost always require the function Initialize first. 
+[see <a href="Utterance-types.html#Utterance-types">Utterance types</a>]
+<br><dt><code>(delete-file FILENAME)</code><dd>Delete named file. 
+<br><dt><code>(delq ITEM LIST)</code><dd>Destructively delete ITEM from LIST, returns LIST, if ITEM is not first
+in LIST, cdr of LIST otherwise.  If ITEM is not in LIST, LIST is
+returned unchanged. 
+<br><dt><code>(describe_all_modules)</code><dd>Print descriptions of all proclaimed modules
+<br><dt><code>(describe_module MOD)</code><dd>Describe the module named by the symbol MOD. 
+<br><dt><code>(diphone_present? STR)</code><dd>Checks whether the given STRing corresponds to any diphone in the
+current database. 
+<br><dt><code>(directory-entries DIRECTORY &amp;opt NOFLAGDIR)</code><dd>Return a list of the entries in the directory. If NOFLAGDIR is non-null
+don't check to see which are directories. 
+<br><dt><code>(display utt)</code><dd>Display an utterance's waveform, F0 and segment labels in Xwaves. 
+Xwaves must be running on the current machine, with a labeller for
+this to work. 
+<br><dt><code>(doc SYMBOL)</code><dd>Return documentation for SYMBOL. 
+<br><dt><code>(Donovan_Init PARAMS)</code><dd>Initialize the Donovan LPC diphone database.  PARAMS are an assoc list
+of parameter name and value.  The two parameters are index_file (value is
+a pathname for "diphlocs.txt") and diphone_file (value is a pathname
+for "lpcdiphs.bin").  [see <a href="LPC-diphone-synthesizer.html#LPC-diphone-synthesizer">LPC diphone synthesizer</a>]
+<br><dt><code>(Donovan_Synthesize UTT)</code><dd>Synthesize a waveform using the Donovan LPC diphone synthesizer. 
+This is called from Synthesize when the Synth_Method Parameter has the
+value Donovan. [see <a href="LPC-diphone-synthesizer.html#LPC-diphone-synthesizer">LPC diphone synthesizer</a>]
+<br><dt><code>(downcase SYMBOL)</code><dd>Returns a string with the downcased version of SYMBOL's printname. 
+<br><dt><code>(du_voice.get_jc_f0_weight DU_VOICE)</code><dd>Gets the joincost f0 weight
+<br><dt><code>(du_voice.get_jc_f0_weight DU_VOICE)</code><dd>Gets the joincost f0 weight
+<br><dt><code>(du_voice.get_jc_f0_weight DU_VOICE)</code><dd>Gets the joincost f0 weight
+<br><dt><code>(du_voice.getDiphoneCoverage DU_VOICE FILENAME)</code><dd>prints diphone coverage information for this voice
+use filename '-' for stdout. 
+<br><dt><code>(du_voice.precomputeJoinCosts DU_VOICE PHONELIST)</code><dd>Calculate and store the join costs for all instances of phones present
+in the phone list. 
+<br><dt><code>(du_voice.prosodic_modification DU_VOICE)</code><dd>Status of prosodic modification on or off. 
+<br><dt><code>(du_voice.regetUnits DU_VOICE UTT)</code><dd>Voice object DU_VOICE looks at the unit relation in utterance UTT
+redoes the viterbi, respecting candidates flagged for omission
+<br><dt><code>(du_voice.set_jc_f0_weight DU_VOICE FLOAT)</code><dd>Sets the joincost f0 weight (default 1)
+<br><dt><code>(du_voice.set_jc_power_weight DU_VOICE FLOAT)</code><dd>Sets the joincost power weight (default 1)
+<br><dt><code>(du_voice.set_jc_spectral_weight DU_VOICE FLOAT)</code><dd>Sets the joincost spectral weight (default 1)
+<br><dt><code>(du_voice.set_ob_pruning_beam DU_VOICE BEAMFLOAT)</code><dd>Sets the observation beam pruning parameter for Viterbi search
+<br><dt><code>(du_voice.set_prosodic_modification DU_VOICE INT)</code><dd>Turns prosodic modification on or off (default is 0 [off])
+This will only work if durations and f0 targets are provided
+<br><dt><code>(du_voice.set_pruning_beam DU_VOICE BEAMFLOAT)</code><dd>Sets the beam pruning parameter for Viterbi search
+<br><dt><code>(du_voice.set_target_cost_weight DU_VOICE FLOAT)</code><dd>Sets the target cost weight (default is 1)
+<br><dt><code>(du_voice.set_tc_rescoring_beam DU_VOICE BEAMFLOAT)</code><dd>Sets the target cost rescoring beam width for Viterbi search (set to -1.0 to disable)
+<br><dt><code>(du_voice.set_tc_rescoring_weight DU_VOICE WEIGHTFLOAT)</code><dd>Sets the target cost rescoring weight for Viterbi search (set to 0.0 to disable)
+<br><dt><code>(du_voice.setDiphoneBackoff DU_VOICE LIST)</code><dd>Adds diphone backoff rules to the voice. 
+<br><dt><code>(du_voice.setJoinCost DU_VOICE JOINCOST)</code><dd>Sets the voice joincost function. 
+If t is specified then the default joincost is used. 
+<br><dt><code>(du_voice.setTargetCost DU_VOICE TARGETCOST)</code><dd>Sets the voice targetcost  function. 
+If t is specified then the default targetcost is used. 
+If nil is specified then a null targetcost is used. 
+If a closure is specified, this is called as the target cost. 
+If 'apml is specified and apml targetcost is uses. 
+<br><dt><code>(du_voice_function DU_VOICE)</code><dd>Does something to a DU_VOICE only
+<br><dt><code>(Duration utt)</code><dd>Predict segmental durations using Duration_Method defined in Parameters. 
+Four methods are currently available: averages, Klatt rules, CART tree
+based, and fixed duration. 
+<br><dt><code>(Duration_Averages UTT)</code><dd>Label all segments with their average duration found from the assoc
+list of phone names to averages in phoneme_durations.  This module is
+called through the module Duration when the Parameter Duration_Method
+is set to Averages. [see <a href="Average-durations.html#Average-durations">Average durations</a>]
+<br><dt><code>(Duration_Default UTT)</code><dd>Label all segments with a fixed duration of 100ms.  This module is
+called through the module Duration when the Parameter Duration_Method
+is unset or set to Default. [see <a href="Default-durations.html#Default-durations">Default durations</a>]
+<br><dt><code>(duration_find_stretch utt seg)</code><dd>Find any relavant duration stretch. 
+<br><dt><code>(Duration_Klatt UTT)</code><dd>This uses an implementation of the Klatt Duration rules to predict
+durations for each segment in UTT.  It uses the information in
+duration_klatt_params for mean and lower bound for each phone. This
+module is called through the module Duration when the Parameter
+Duration_Method is set to Klatt.  This method modifies its predicted
+durations by the factor set in the Parameter Duration_Stretch (if set). 
+[see <a href="Klatt-durations.html#Klatt-durations">Klatt durations</a>]
+<br><dt><code>(Duration_LogZScores utt)</code><dd>Predicts duration to segments using the CART tree in duration_logzscore_tree
+and duration_logzscore_tree_silence which produces a zscore of the log
+duration.  The variable duration_logzscore_ph_info contains (log) means
+and std for each phone in the set. 
+<br><dt><code>(Duration_Tree UTT)</code><dd>Uses the CART tree in duration_cart_tree to predict absolute durations
+for each segment in UTT. This module is called through the module
+Duration when the Parameter Duration_Method is set to Tree.  This
+method modifies its predicted durations by the factor set in the
+Parameter Duration_Stretch (if set). [see <a href="CART-durations.html#CART-durations">CART durations</a>]
+<br><dt><code>(Duration_Tree_ZScores UTT)</code><dd>Uses the CART tree in duration_cart_tree to predict z scores duration
+values for each segment in UTT.  The z scores are converted back to
+absolute values by the assoc list of phones to means and standard
+deviations in the variable duration_ph_info.  This module is called
+through the module Duration when the Parameter Duration_Method is set
+to Tree_ZScores.  This method modifies its predicted durations by the
+factor set in the Parameter Duration_Stretch (if set). 
+[see <a href="CART-durations.html#CART-durations">CART durations</a>]
+<br><dt><code>(duration_unzscore phname zscore table)</code><dd>Look up phname in table and convert xscore back to absolute domain. 
+<br><dt><code>(english_token_to_words TOKEN NAME)</code><dd>Returns a list of words for NAME from TOKEN.  This allows the
+user to customize various non-local, multi-word, context dependent
+translations of tokens into words.  If this function is unset only
+the builtin translation rules are used, if this is set the builtin
+rules are not used unless explicitly called. [see <a href="Token-to-word-rules.html#Token-to-word-rules">Token to word rules</a>]
+<br><dt><code>(env-lookup VARNAME ENVIRONMENT)</code><dd>Return value of VARNAME in ENVIRONMENT. 
+<br><dt><code>(eof_val)</code><dd>Returns symbol used to indicate end of file.  May be used (with eq?) 
+to determine when end of file occurs while reading files. 
+<br><dt><code>(eq? DATA1 DATA2)</code><dd>Returns t if DATA1 and DATA2 are the same object. 
+<br><dt><code>(equal? A B)</code><dd>t if s-expressions A and B are recursively equal, nil otherwise. 
+<br><dt><code>(eqv? DATA1 DATA2)</code><dd>Returns t if DATA1 and DATA2 are the same object or equal numbers. 
+<br><dt><code>(error MESSAGE DATA)</code><dd>Prints MESSAGE about DATA and throws an error. 
+<br><dt><code>(eval DATA)</code><dd>Evaluate DATA and return result. 
+<br><dt><code>(exit [RCODE])</code><dd>Exit from program, if RCODE is given it is given as an argument to
+the system call exit. 
+<br><dt><code>(exp NUM)</code><dd>Return e**NUM. 
+<br><dt><code>(extract_tokens FILE TOKENS OUTFILE)</code><dd>Find all occurrences of TOKENS in FILE and output specified context around
+the token.  Results are appended to OUTFILE, if OUTFILE is nil, output
+goes to stdout. 
+<br><dt><code>(f2b_lts WORD FEATURES)</code><dd>Letter to sound rule system for f2b (American English), uses the NRL
+LTS ruleset and maps the result to the radio phone set. 
+<br><dt><code>(fasdump FILENAME FORMS)</code><dd>Fast dump FORMS into FILENAME. 
+<br><dt><code>(fasl-close TABLE)</code><dd>Close fasl table. 
+<br><dt><code>(fasl-open FILENAME MODE)</code><dd>Open fasl FILENAME as MODE. Returns a fasl-table. 
+<br><dt><code>(fasload FILENAME ARGS)</code><dd>Fast load FILENAME. 
+<br><dt><code>(fasload_library FILENAME)</code><dd>Load binary file from library
+<br><dt><code>(fast-print P TABLE)</code>
+<br><dt><code>(fast-read TABLE)</code>
+<br><dt><code>(fclose FILEP)</code><dd>Close filepoint FILEP. 
+<br><dt><code>(feats.get FEATS FEATNAME)</code><dd>Return value of FEATNAME (which may be a simple feature name or a
+pathname) in FEATS.  If FEATS is nil a new feature set is created
+<br><dt><code>(feats.make)</code><dd>Return an new empty features object. 
+<br><dt><code>(feats.present FEATS FEATNAME)</code><dd>Return t is FEATNAME is present in FEATS, nil otherwise. 
+<br><dt><code>(feats.remove FEATS FEATNAME)</code><dd>Remove feature names FEATNAME from FEATS. 
+<br><dt><code>(feats.set FEATS FEATNAME VALUE)</code><dd>Set FEATNAME to VALUE in FEATS. 
+<br><dt><code>(feats.tolisp FEATS)</code><dd>Gives a lisp representation of the features, this is a debug function
+and may or may not exist tomorrow. 
+<br><dt><code>(feats.value_sort FEATURES NAME)</code>
+<br><dt><code>(festival_warranty)</code><dd>Display Festival's copyright and warranty. [see <a href="Copying.html#Copying">Copying</a>]
+<br><dt><code>(fflush FILEP)</code><dd>Flush FILEP. If FILEP is nil, then flush stdout. 
+<br><dt><code>(find_month_from_number token string-number)</code><dd>Find the textual representation of the month from the given string number
+<br><dt><code>find_peak_seg_anchor ie pk_pos</code><dd>Part of the workings of peak_segment_anchor. 
+<br><dt><code>(Fixed_Prosody UTT)</code><dd>Add fixed duration and fixed monotone F0 to the sgements in UTT. 
+Uses values of FP_duration and FP_F0 as fixed values. 
+<br><dt><code>(flatten LIST)</code><dd>Return flatend list (list of all atoms in LIST). 
+<br><dt><code>(fopen FILENAME HOW)</code><dd>Return file pointer for FILENAME opened in mode HOW. 
+<br><dt><code>(format FD FORMATSTRING ARG0 ARG1 ...)</code><dd>Output ARGs to FD using FROMATSTRING.  FORMATSTRING is like a printf
+formatstrng.  FD may be a filedescriptor, or t (standard output) or
+nil (return as a string).  Note not all printf format directive are
+supported.  %l is additionally support for Lisp objects. 
+[see <a href="Scheme-I_002fO.html#Scheme-I_002fO">Scheme I/O</a>]
+<br><dt><code>(fread BUFFER FILE)</code><dd>BUFFER is a string of length N, N bytes are read from FILE into
+BUFFER. 
+<br><dt><code>(fringe_command SERVER PACKAGE OPERATION ARGS)</code><dd>Send command to the fringe server SERVER. 
+ARGS should be an association list of key-value pairs. 
+<br><dt><code>(fringe_command_string SERVER COMMAND)</code><dd>Send COMMAND to the fringe server SERVER. 
+<br><dt><code>(fringe_connect SERVER)</code><dd>Re-open the connection to the server. 
+<br><dt><code>(fringe_disconnect SERVER)</code><dd>Close the connection to the server. 
+<br><dt><code>(fringe_read_server_table &amp;opt FILENAME)</code><dd>Read the users table of fringe servers, or the table
+in FILENAME if given. 
+<br><dt><code>(fringe_server &amp;opt NAME)</code><dd>Return a connection to a fringe server with the given name. 
+If name is omitted it defaults to "fringe". 
+<br><dt><code>(fringe_servers)</code><dd>Returns a list of the know fringe servers. This doesn't
+guarantee that they are still running. 
+<br><dt><code>(fseek FILEP OFFSET DIRECTION)</code><dd>Position FILEP to OFFSET. If DIRECTION is 0 offset is from start of file. 
+If DIRECTION is 1, offset is from current position.  If DIRECTION is
+2 offset is from end of file. 
+<br><dt><code>(ftell FILEP)</code><dd>Returns position in file FILEP is currently pointing at. 
+<br><dt><code>(fwarning MODE)</code><dd>For controlling various levels of warning messages.  If MODE is nil, or
+not specified stop all warning messages from being displayed.  If MODE
+display warning messages. 
+<br><dt><code>(fwrite BUFFER FILE)</code><dd>Write BUFFER into FILE. 
+<br><dt><code>(gc)</code><dd>Collect garbage now, where gc method supports it. 
+<br><dt><code>(gc-status OPTION)</code><dd>Control summary information during garbage collection.  If OPTION is t,
+output information at each garbage collection, if nil do gc silently. 
+<br><dt><code>(Gen_Viterbi UTT)</code><dd>Applies viterbi search algorithm based on the parameters in
+gen_vit_params.  Basically allows user candidate selection function
+combined with ngrams. 
+<br><dt><code>(get SYM KEY)</code><dd>Get property named KEY for SYM. 
+<br><dt><code>(get_anchor_value sylSyl seg_num)</code><dd>Gets the c/v value of the segment within a syllable. 
+<br><dt><code>(get_param name params default)</code><dd>Get named parameters in params returning default if its not present. 
+<br><dt><code>(get_url URL OUTFILE)</code><dd>Get URL and put contents in OUTFILE. Currently only http, and file
+type URLs are supported. 
+<br><dt><code>(getc FILEP)</code><dd>Get next character from FILEP.  Character is returned as a number. If
+FILEP is nil, or not specified input comes from stdin. 
+<br><dt><code>(getenv VARNAME)</code><dd>Returns value of UNIX environment variable VARNAME, or nil if VARNAME
+is unset. 
+<br><dt><code>(getpid)</code><dd>Return process id. 
+<br><dt><code>(href TABLE KEY)</code><dd>Return value in hash table TABLE with KEY. 
+<br><dt><code>(hset TABLE KEY VALUE)</code><dd>Set hash table TABLE KEY to VALUE. 
+<br><dt><code>(hts21_mlsa_resynthesis TRACK)</code><dd>Return a WAVE synthesized from the F0/MCEP TRACK. 
+<br><dt><code>(HTS21_Synthesis UTT)</code><dd>Synthesize a waveform using the HTS 2.1 Engine and the current models
+<br><dt><code>(HTS_Synthesis UTT)</code><dd>Synthesize a waveform using the hts_engine and the current models
+<br><dt><code>(if COND TRUEPART FALSEPART)</code><dd>If COND evaluates to non-nil evaluate TRUEPART and return result,
+otherwise evaluate and return FALSEPART.  If COND is nil and FALSEPART
+is nil, nil is returned. 
+<br><dt><code>(Initialize UTT)</code><dd>This module should be called first on all utterances it does some
+necessary initialization of the utterance and loads the base
+streams with the information from the input form. 
+<br><dt><code>(insert_final_pause UTT)</code><dd>Always have a final silence if the utterance is non-empty. 
+<br><dt><code>(insert_initial_pause UTT)</code><dd>Always have an initial silence if the utterance is non-empty. 
+Insert a silence segment after the last segment in WORDITEM in UTT. 
+<br><dt><code>(insert_pause UTT WORDITEM)</code><dd>Insert a silence segment after the last segment in WORDITEM in UTT. 
+<br><dt><code>(Int_Targets utt)</code><dd>The second stage in F0 prediction.  This generates F0 targets
+related to segments using one of three methods, a simple hat,
+linear regression based on ToBI markings, and a simple declining
+slope.  This second part deals with actual F0 values and durations,
+while the previous section only deals with accent (and boundary tone)
+assignment. [see <a href="Intonation.html#Intonation">Intonation</a>]
+<br><dt><code>(Int_Targets_5_LR UTT)</code><dd>Predict Target F0 points using linear regression from factors such as
+accent, tone, stress, position in phrase etc.  This utterance module is
+called through the module Int_Targets when the Parameter Int_Method is
+set to ToBI, even though this technique is not restricted to the ToBI
+labelling system. [see <a href="Tree-intonation.html#Tree-intonation">Tree intonation</a>]
+<br><dt><code>(Int_Targets_Default UTT)</code><dd>This module creates two Targets causing a simple downward continuous
+F0 through the whole utterance.  The code is in an appropriate named file
+called duffint.  This module is called when the Parameter
+Int_Method is not set or set to Default.  This module is called through
+the Int_Targets module.  Optional parameters for a start value (default
+130) and end value (default 110) may be set in the variable
+diffint_params.  This can be used to generate a monotone intonation
+with a setting like (set! duffint_params '((start 100) (end 100))). 
+[see <a href="Default-intonation.html#Default-intonation">Default intonation</a>]
+<br><dt><code>(Int_Targets_General UTT)</code><dd>Add targets based on the functions defined in int_general_params.  This
+method allows quite detailed control over the general of targets per
+syllable, see manual for details and examples.  This module is called
+when the Parameter Int_Method is set to General.  This module is called
+through the Int_Targets module. [see <a href="General-intonation.html#General-intonation">General intonation</a>]
+<br><dt><code>(Int_Targets_LR UTT)</code><dd>Predict Target F0 points using linear regression from factors such as
+accent, tone, stress, position in phrase etc.  This utterance module is
+called through the module Int_Targets when the Parameter Int_Method is
+set to ToBI, even though this technique is not restricted to the ToBI
+labelling system. [see <a href="Tree-intonation.html#Tree-intonation">Tree intonation</a>]
+<br><dt><code>(Int_Targets_Relation UTT)</code><br><dt><code>(Int_Targets_Simple UTT)</code><dd>Naively add targets for hat shaped accents for each accent in the
+IntEvent stream.  This module is called when the Parameter Int_Method is
+set to Simple.  This module is called through the Int_Targets module. 
+[see <a href="Simple-intonation.html#Simple-intonation">Simple intonation</a>]
+<br><dt><code>(Int_Targets_Tilt utt)</code><dd>Assign Tilt parameters to each IntEvent and then generate the
+F0 contour and assign targets. 
+<br><dt><code>(intern ATOM)</code><dd>Intern ATOM on the oblist. 
+<br><dt><code>(Intonation utt)</code><dd>Select between different intonation modules depending on the Parameter
+Int_Method.  Currently offers three types: Simple, hats on each content
+word; ToBI, a tree method for predicting ToBI accents; and Default a
+really bad method with a simple downward sloping F0.  This is the first
+of a two-stage intonation prediction process.  This adds accent-like
+features to syllables, the second, Int_Targets generates the F0 contour
+itself. [see <a href="Intonation.html#Intonation">Intonation</a>]
+<br><dt><code>(Intonation_Default UTT)</code><dd>this method is such a bad intonation module that it does nothing at all. 
+This utterance module is called when the Parameter Int_Method is not
+set or  set to Default.  This module is called through the Intonation
+module. [see <a href="Default-intonation.html#Default-intonation">Default intonation</a>]
+<br><dt><code>(Intonation_Simple)</code><dd>Assign accents to each content word, creating an IntEvent stream. This
+utterance module is called when the Parameter Int_Method is set to
+Simple.  This module is called through the Intonation module. 
+[see <a href="Simple-intonation.html#Simple-intonation">Simple intonation</a>]
+<br><dt><code>(Intonation_Tilt utt)</code><dd>Assign accent and boundary IntEvents to each syllable, and fill in
+spaces with silence and connections. 
+<br><dt><code>(Intonation_Tree UTT)</code><dd>Use the CART trees in int_tone_cart_tree and int_accent_cart_tree to
+create an IntEvent stream of tones and accents related to syllables. 
+This module is called through the Intonation module and is selected
+when the Parameter Int_Method is ToBI. [see <a href="Tree-intonation.html#Tree-intonation">Tree intonation</a>]
+<br><dt><code>(intro)</code><dd>Synthesize an introduction to the Festival Speech Synthesis System. 
+<br><dt><code>(intro-spanish)</code><dd>Synthesize an introduction to the Festival Speech Synthesis System
+in spanish.  Spanish voice must already be selected for this. 
+<br><dt><code>(item.add_link ITEMFROM ITEMTO)</code><dd>Add a link from ITEMFROM to ITEMTO is the relation ITEMFROM is in. 
+<br><dt><code>(item.append_daughter ITEM1 ITEM2)</code><dd>Add a ITEM2 a new daughter (right-most) to ITEM1 in the relation of
+ITEM1. If ITEM2 is of type item then it is added directly otherwise
+ITEM2 is treated as a description of an item and a one is created
+with that description (name features). 
+<br><dt><code>(item.daughter1 ITEM)</code><dd>Return the first daughter of ITEM, or nil if there is none. 
+<br><dt><code>(item.daughter1_to s relname)</code><dd>Follow daughter1 links of s in its current relation until an item
+is found that is also in relname, is s is in relname it is returned. 
+The return item is returned in relation relname, or nil if there is
+nothing in relname. 
+<br><dt><code>(item.daughter2 ITEM)</code><dd>Return the second daughter of ITEM, or nil if there is none. 
+<br><dt><code>(item.daughtern ITEM)</code><dd>Return the last daughter of ITEM, or nil if there is none. 
+<br><dt><code>(item.daughter1_to s relname)</code><dd>Follow daughtern links of s in its current relation until an item
+is found that is also in relname, is s is in relname it is returned. 
+The return item is returned in relation relname, or nil if there is
+nothing in relname. 
+<br><dt><code>(item.daughters parent)</code><dd>Return a list of all daughters of parent. 
+<br><dt><code>(item.delete ITEM)</code><dd>Remove this item from all relations it is in and delete it. 
+<br><dt><code>(item.down ITEM)</code><dd>Return the item below ITEM, or nil if there is none. 
+<br><dt><code>(item.exchange_tree FROM TO)</code><dd>Exchanged contents of FROM and TO, and descendants of FROM and TO. 
+Returns t if successful, or nil if FROM or TO contain each other. 
+<br><dt><code>(item.feat ITEM FEATNAME)</code><dd>Return value of FEATNAME (which may be a simple feature name or a
+pathname) of ITEM. 
+<br><dt><code>(item.feat.present item feat)</code><dd>nil if feat doesn't existing in this item, non-nil otherwise. 
+<br><dt><code>(item.features ITEM EVALUATE_FEATURES))</code><dd>Returns all features in ITEM as an assoc list. 
+<br><dt><code>(item.first_leaf ITEM)</code><dd>Returns he left most leaf in the tree dominated by ITEM.  This
+is like calling item.daughter1 recursively until an item with no
+daughters is found. 
+<br><dt><code>(item.get_utt ITEM)</code><dd>Get utterance from given ITEM (if possible). 
+<br><dt><code>(item.insert ITEM1 ITEM2 DIRECTION)</code><dd>Insert ITEM2 in ITEM1's relation with respect to DIRECTION.  If DIRECTION
+is unspecified, after, is assumed.  Valid DIRECTIONS as before, after,
+above and below.  Use the functions item.insert_parent and
+item.append_daughter for specific tree adjoining.  If ITEM2 is of
+type item then it is added directly, otherwise it is treated as a
+description of an item and new one is created. 
+<br><dt><code>(item.insert_parent ITEM1 ITEM2)</code><dd>Insert a new parent between this ITEM1 and its parentm in ITEM1's
+relation.  If ITEM2 is of type item then it is added directly,
+otherwise it is treated as a description of an item and  one is created
+with that description (name features). 
+<br><dt><code>(item.last_leaf ITEM)</code><dd>Returns he right most leaf in the tree dominated by ITEM.  This
+is like calling item.daughtern recursively until an item with no
+daughters is found. 
+<br><dt><code>(item.relation.leafs item relname)</code><dd>Return a list of the leafs of this item in this relation. 
+<br><dt><code>(item.link1 ITEM)</code><dd>Return first item linked to ITEM in current relation. 
+<br><dt><code>(item.link2 ITEM)</code><dd>Return second item linked to ITEM in current relation. 
+<br><dt><code>(item.linkedfrom ITEM)</code><dd>Return the item tht is linked to ITEM. 
+<br><dt><code>(item.linkn ITEM)</code><dd>Return last item linked to ITEM in current relation. 
+<br><dt><code>(item.merge FROM TO)</code><dd>Merge FROM into TO making them the same items.  All features in FROM
+are merged into TO and all references to FROM are made to point to TO. 
+<br><dt><code>(item.move_tree FROM TO)</code><dd>Move contents, and descendants of FROM to TO. Old daughters of TO are
+deleted.  FROM will be deleted too if it is being viewed as the same
+same relation as TO.  FROM will be deleted from its current place in
+TO's relation. Returns t if successful, returns nil if TO is within FROM. 
+<br><dt><code>(item.name ITEM)</code><dd>Returns the name of ITEM. [see <a href="Accessing-an-utterance.html#Accessing-an-utterance">Accessing an utterance</a>]
+<br><dt><code>(item.next ITEM)</code><dd>Return the next ITEM in the current relation, or nil if there is
+no next. 
+<br><dt><code>(item.next_item ITEM)</code><dd>Will give next item in this relation visiting every item in the
+relation until the end.  Traverses in pre-order, root followed by
+daughters (then siblings). 
+<br><dt><code>(item.next_leaf ITEM)</code><dd>Return the next leaf item (i.e. one with no daughters) in this
+relation.  Note this may traverse up and down the relation tree
+significantly to find it. 
+<br><dt><code>(item.next_link ITEM)</code><dd>Return next item licked to the same item ITEM is linked to. 
+<br><dt><code>(item.parent ITEM)</code><dd>Return the item of ITEM, or nil if there is none. 
+<br><dt><code>(item.parent_to s relname)</code><dd>Find the first ancestor of s in its current relation that is also in
+relname.  s is treated as an ancestor of itself so if s is in relname
+it is returned.  The returned value is in will be in relation relname
+or nil if there isn't one. 
+<br><dt><code>(item.prepend_daughter ITEM1 ITEM2)</code><dd>Add a ITEM2 a new daughter (left-most) to ITEM1 in the relation of ITEM1. 
+If ITEM2 is of type item then it is added directly otherwise
+ITEM2 is treated as a description of an item and a one is created
+with that description (name features). 
+<br><dt><code>(item.prev ITEM)</code><dd>Return the previous ITEM in the current relation, or nil if there
+is no previous. 
+<br><dt><code>(item.raw_feat ITEM FEATNAME)</code><dd>Return value of FEATNAME as native features structure
+(which may be a simple feature name or a
+pathname) of ITEM. 
+<br><dt><code>(item.relation ITEM RELATIONNAME)</code><dd>Return the item such whose relation is RELATIONNAME.  If ITEM
+is not in RELATIONNAME then nil is return. 
+<br><dt><code>(item.relation.append_daughter parent relname daughter)</code><dd>Make add daughter to parent as a new daughter in relname. 
+<br><dt><code>(item.relation.daughter1 item relname)</code><dd>Return the first daughter of this item in this relation. 
+<br><dt><code>(item.relation.daughter2 item relname)</code><dd>Return the second daughter of this item in this relation. 
+<br><dt><code>(item.relation.daughtern item relname)</code><dd>Return the final daughter of this item in this relation. 
+<br><dt><code>(item.relation.daughters parent relname)</code><dd>Return a list of all daughters of parent by relname. 
+<br><dt><code>(item.relation.first item relname)</code><dd>Return the most previous item from this item in this relation. 
+<br><dt><code>(item.relation.insert si relname newsi direction)</code><dd>Insert newsi in relation relname with respect to direction.  If
+direction is ommited after is assumed, valid directions are after
+before, above and below.  Note you should use
+item.relation.append_daughter for tree adjoining.  newsi maybe
+a item itself of a LISP description of one. 
+<br><dt><code>(item.relation.leafs item relname)</code><dd>Return a list of the leafs of this item in this relation. 
+<br><dt><code>(item.relation.name ITEM)</code><dd>Return the name of the relation this ITEM is currently being viewed
+through. 
+<br><dt><code>(item.relation.next item relname)</code><dd>Return the next item in this relation. 
+<br><dt><code>(item.relation.parent item relname)</code><dd>Return the parent of this item in this relation. 
+<br><dt><code>(item.relation.prev item relname)</code><dd>Return the previous item in this relation. 
+<br><dt><code>(item.relation.remove ITEM RELATIONNAME)</code><dd>Remove this item from Relation, if it apears in no other relation it
+will be deleted too, in contrast item.delete will remove an item
+from all other relations, while this just removes it from this relation. 
+Note this will also remove all daughters of this item in this
+relation from this relation. 
+<br><dt><code>(item.relations ITEM)</code><dd>Return a list of names of the relations this item is in. 
+<br><dt><code>(item.remove_feature ITEM FNAME)</code><dd>Remove feature named FNAME from ITEM.  Returns t is successfully
+remove, nil if not found. 
+<br><dt><code>(item.root s)</code><dd>Follow parent link until s has no parent. 
+<br><dt><code>(item.set_feat ITEM FEATNAME VALUE)</code><dd>Set FEATNAME to VALUE in ITEM. 
+<br><dt><code>(item.set_function ITEM FEATNAME FEATFUNCNAME)</code><dd>Set FEATNAME to feature function name FEATFUNCNAME in ITEM. 
+<br><dt><code>(item.set_name ITEM NAME)</code><dd>Sets ITEM's name to NAME. [see <a href="Accessing-an-utterance.html#Accessing-an-utterance">Accessing an utterance</a>]
+<br><dt><code>(item.up ITEM)</code><dd>Return the item above ITEM, or nil if there is none. 
+<br><dt><code>(lambda (ARG1 ARG2 ...) . BODY)</code><dd>Create closure (anonymous function) with arguments ARG1, ARG2 ... and
+BODY. 
+<br><dt><code>(language-location NAME DIR DOCSTRING)</code><dd>Record the location of a language. Called for each language found on language-path. 
+Can be called in site-init or .festivalrc for additional languages which
+exist elsewhere. 
+<br><dt><code>(language.list)</code><dd>List of all (potential) languages in the system.  This checks the language-location
+list of potential languages found be scanning the language-path at start up time. 
+<br><dt><code>(language.names.add LANGUAGE ALIASES)</code><dd>Describe a language to the systen. LANGUAGE should be atomic name, that
+conventionally will have language_ prepended to name the basic selection
+function. ALIASES is a list of names for that language. 
+<br><dt><code>(language.select LANG)</code><dd>Call function to set up language LANG.  This is normally done by
+prepending language_ to LANG and call it as a function. 
+<br><dt><code>(last A)</code><dd>Last (cdr) element in list A. 
+<br><dt><code>(lastline STRING)</code><dd>Returns the part of the string which between the last newline and the
+end of string. 
+<br><dt><code>(length LIST)</code><dd>Return length of LIST, or 0 if LIST is not a list. 
+<br><dt><code>(let-internal STUFF)</code><dd>Internal function used to implement let. 
+<br><dt><code>(let ((VAR1 VAL1) (VAR2 VAL2) ...) . BODY)</code><dd>Evaluate BODY in an environment where VAR1 is set to VAL1, VAR2 is set
+to VAL2 etc. 
+<br><dt><code>(lex.add.entry ENTRY)</code><dd>Add ENTRY to the addenda of the current lexicon.  As the addenda is
+checked before the compiled lexicon or letter to sound rules, this will
+cause ENTRY to be found before all others. If a word already in the
+addenda is added again the most recent addition will be found (part of
+speech tags are respected in the look up).  [see <a href="Lexical-entries.html#Lexical-entries">Lexical entries</a>]
+<br><dt><code>(lex.compile ENTRYFILE COMPILEFILE)</code><dd>Compile the list of lexical entries in ENTRYFILE into a compiled file in
+COMPILEFILE.  [see <a href="Defining-lexicons.html#Defining-lexicons">Defining lexicons</a>]
+<br><dt><code>(lex.create LEXNAME)</code><dd>Create a new lexicon of name LEXNAME.  If it already exists, the old one
+is deleted first.  [see <a href="Defining-lexicons.html#Defining-lexicons">Defining lexicons</a>]
+<br><dt><code>(lex.entrycount WORD)</code><dd>Return the number of entries in the compiled lexicon that match this
+word.  This is used in detecting homographs. 
+<br><dt><code>(lex.list)</code><dd>List names of all currently defined lexicons. 
+<br><dt><code>(lex.lookup WORD FEATURES)</code><dd>Lookup word in current lexicon.  The addenda is checked first, if WORD
+with matching FEATURES (so far this is only the part of speech tag) is
+not found the compiled lexicon is checked.  Only if the word is still not
+found the letter to sound rules (or whatever method specified by the
+current lexicon's lts.method is used). [see <a href="Lookup-process.html#Lookup-process">Lookup process</a>]
+<br><dt><code>(lex.lookup_all WORD)</code><dd>Return list of all entries in the addenda and compiled lexicon that
+match this word.  The letter to sound rules and user defined unknown
+word function is ignored. 
+<br><dt><code>(lex.select LEXNAME)</code><dd>Select LEXNAME as current lexicon.  The name of the previously selected
+lexicon is returned. 
+<br><dt><code>(lex.set.compile.file COMPFILENAME)</code><dd>Set the current lexicon's compile file to COMPFILENAME.  COMPFILENAME
+is a compiled lexicon file created by lex.compile. 
+[see <a href="Defining-lexicons.html#Defining-lexicons">Defining lexicons</a>]
+<br><dt><code>(lex.set.lts.method METHOD)</code><dd>Set the current lexicon's letter-to-sound method to METHOD.  METHOD
+can take any of the following values: Error (the default) signal a
+festival error if a word is not found in the lexicon; lts_rules use the
+letter to sound rule set named by lts_ruleset; none return
+simply nil in the pronunciation field; function use call the two argument
+function lex_user_unknown_word (as set by the user) with the word and
+features to provide an entry. [see <a href="Letter-to-sound-rules.html#Letter-to-sound-rules">Letter to sound rules</a>]
+<br><dt><code>(lex.set.lts.ruleset RULESETNAME)</code><dd>Set the current lexicon's letter-to-sound ruleset to RULESETNAME. 
+A ruleset of that name must already be defined.  This is used if
+lts.method is set to lts_rules. [see <a href="Letter-to-sound-rules.html#Letter-to-sound-rules">Letter to sound rules</a>]
+<br><dt><code>(lex.set.phoneset PHONESETNAME)</code><dd>Set current lexicon's phone set to PHONESETNAME.  PHONESETNAME must be
+a currently defined (and, of course, loaded) phone set. 
+[see <a href="Defining-lexicons.html#Defining-lexicons">Defining lexicons</a>]
+<br><dt><code>(lex.set.pos.map POSMAP)</code><dd>A reverse assoc-list mapping part of speech tags to the lexical
+part of speech tag set. [see <a href="Lexical-entries.html#Lexical-entries">Lexical entries</a>]
+<br><dt><code>(lex.set.post_hooks HOOKS)</code><dd>Set a function or list of functions that are to be applied to the entry
+after lookup.  Returns previous value [see <a href="Lexical-entries.html#Lexical-entries">Lexical entries</a>]
+<br><dt><code>(lex.set.pre_hooks HOOKS)</code><dd>Set a function or list of functions that are to be applied to the entry
+before lookup.  Returns previous value [see <a href="Lexical-entries.html#Lexical-entries">Lexical entries</a>]
+<br><dt><code>(lex.syllabify.phstress PHONELIST)</code><dd>Syllabify the given phone list (if current phone set).  Vowels may have
+the numerals 0, 1, or 2 as suffixes, if so these are taken to be stress
+for the syllable they are in.  This format is similar to the entry format
+in the CMU and BEEP lexicons. [see <a href="Defining-lexicons.html#Defining-lexicons">Defining lexicons</a>]
+<br><dt><code>(lex_user_unknown_word WORD FEATS)</code><dd>Function called by lexicon when 'function type letter to sound rules
+is defined.  It is the user's responsibility to defined this function
+themselves when they want to deal with unknown words themselves. 
+<br><dt><code>(library_expand_filename FILENAME)</code><dd>Search for filename by appending FILENAME to each member of load-path. 
+Full expanded pathname is returned.  If not found in load-path FILENAME
+is returned. 
+<br><dt><code>(linear_regression ITEM MODEL)</code><dd>Use linear regression MODEL on ITEM.  MODEL consists of a list
+of features, weights and optional map list.  E.g. ((Intercept 100)
+(tobi_accent 10 (H* !H*))). 
+<br><dt><code>(list A0 A1 ...)</code><dd>Return list containing A0 A1 ... 
+<br><dt><code>(load FILENAME OPTION)</code><dd>Load s-expressions in FILENAME.  If OPTION is nil or unspecified evaluate
+each s-expression in FILENAME as it is read, if OPTION is t, return them
+unevaluated in a list. 
+<br><dt><code>(load_library FILENAME)</code><dd>Load file from library, appends FILENAME to each path in load-path
+until a valid file is found. If none found loads name itself
+<br><dt><code>(log NUM)</code><dd>Return natural log of NUM. 
+<br><dt><code>(lr_predict ITEM LRMODEL)</code><dd>Apply the linear regression model LRMODEL to ITEM in.  This
+returns float value by summing the product of the coeffients and values
+returned by the specified features in ITEM. [see <a href="Linear-regression.html#Linear-regression">Linear regression</a>]
+<br><dt><code>(lts.apply WORD RULESETNAME)</code><dd>Apply lts ruleset RULESETNAME to word returning result. 
+[see <a href="Letter-to-sound-rules.html#Letter-to-sound-rules">Letter to sound rules</a>]
+<br><dt><code>(lts.in.alphabet WORD RULESETNAME)</code><dd>Returns t is all characters in symbol word (or items in list WORD)
+are in the alphabet of letter to sound ruleset name RULESETNAME.  nil
+otherwise. [see <a href="Letter-to-sound-rules.html#Letter-to-sound-rules">Letter to sound rules</a>]
+<br><dt><code>(lts.list)</code><dd>Return list of all current defined LTS rulesets. 
+<br><dt><code>(lts.ruleset NAME RULES SETS)</code><dd>Define a new set of letter to sound rules. [see <a href="Letter-to-sound-rules.html#Letter-to-sound-rules">Letter to sound rules</a>]
+<br><dt><code>(make-a-doc FILENAME DOCLIST)</code><dd>Make a texinfo document in FILENAME as a texinfo table, items are
+from DOCLIST.  DOCLIST names which doclist to use, it may be
+one of 'function, 'features or 'vars. 
+<br><dt><code>(make-doc)</code><dd>Find function and variable document strings and save them in texinfo
+format to respective files. 
+<br><dt><code>(make-list SIZE VALUE)</code><dd>Return list of SIZE with each member VALUE. 
+<br><dt><code>(make_du_voice BASENAMES DATADIRS SAMPLERATE)</code><dd>Creates a Diphone UnitSelection Voice, using the list of file basenames
+in LISP list BASENAMES, and the four directory strings in the DATADIRS list. 
+The voice waveform data files are sampled at SAMPLERATE. 
+<br><dt><code>(make_du_voice_module BASENAMES DATADIRS SAMPLERATE)</code><dd>Creates a Diphone UnitSelection Voice Module, using the list of file basenames
+in LISP list BASENAMES, and the four directory strings in the DATADIRS list. 
+The voice waveform data files are sampled at SAMPLERATE. 
+<br><dt><code>(make_tmp_filename)</code><dd>Return name of temporary file. 
+<br><dt><code>(manual SECTION)</code><dd>Display SECTION in the manual.  SECTION is a string identifying
+a manual section (it could be an initial substring.  If SECTION
+is nil or unspecifed then the Manual table of contents is displayed. 
+This uses netscape to display the manual page so you must have that
+(use variable manual-browser to identify it) and the variable
+manual-url pointing to a copy of the manual. [see <a href="Getting-some-help.html#Getting-some-help">Getting some help</a>]
+<br><dt><code>(manual-sym SYMBOL)</code><dd>Display the section in the manual that SYMBOL's docstring has
+identified as the most relevant.  The section is named on the
+last line of a documentation string with no newlines within it
+prefixed by "[see " with a "]" just immediately before the end
+of the documentation string.  The manual section name is translated to
+the section in the HTML version of the manual and a URL is
+and sent to Netscape for display.  [see <a href="Getting-some-help.html#Getting-some-help">Getting some help</a>]
+<br><dt><code>(map_to_relation UTT Source_relation Target_relation new_relation)</code><dd>From the F0 contour in F0_relation, create a set of pitchmarks
+in PM_relation. If END_TIME is not nil, Extra pitchmarks will be
+created at the default interval up to this point
+<br><dt><code>(mapcar FUNCTION ARGS [ARGS2])</code><dd>Apply FUNCTION to each member of ARGS (and [ARGS2]), returning list of
+return values. 
+<br><dt><code>(num_tokens x)</code><dd>This is probably controversial, but its good to have a maximum number
+of tokens in an utterance.  You really dont want to wait on very long
+utterances, some utts can be thousands of words long, these maybe
+shouldn't be spoken, but we do have to deal with them. 
+<br><dt><code>(MBROLA_Synth UTT)</code><dd>Synthesize using MBROLA as external module.  Basically dump the info
+from this utterance. Call MBROLA and reload the waveform into utt. 
+[see <a href="MBROLA.html#MBROLA">MBROLA</a>]
+<br><dt><code>(me_mlsa TRACK STRTRACK)</code><dd>Return a WAVE resynthesized using Mixed Excitation MLSA. 
+<br><dt><code>(member ITEM LIST)</code><dd>Returns subset of LIST whose car is ITEM if it exists, nil otherwise. 
+<br><dt><code>(member_string STRING LIST)</code><dd>Returns subset of LIST whose car is STRING if it exists, nil otherwise. 
+<br><dt><code>(mlpg TRACK)</code><dd>Return a track suitable for mlsa from a TRACK with dynamics in it. 
+<br><dt><code>(mlsa_resynthesis TRACK STRTRACK)</code><dd>Return a WAVE synthesized from the F0/MCEP TRACK, STRTRACK is non-nil, use mixed excitation. 
+<br><dt><code>(module_description MOD)</code><dd>Returns the description record of the module named by symbol MOD
+<br><dt><code>(month_range SC)</code><dd>1 if SC's name is &gt; 0 and &lt; 32, 0 otherwise. 
+<br><dt><code>(mt_accent syl)</code><dd>Accent or 0 if none. 
+<br><dt><code>(mt_break syl)</code><dd>Break or 0 if none. 
+<br><dt><code>(mt_close n)</code><dd>The number of consituents this is the end of, Effectively the
+number of closing brackets after this word. 
+<br><dt><code>(mt_fssw s)</code><dd>1 if first stressed syllable in word, 0 otherwise. 
+<br><dt><code>(mt_lssp s)</code><dd>1 if last stressed syllable in phrase, 0 otherwise. 
+<br><dt><code>(nfssw s)</code><dd>1 if second or later stressed syllable in word, 0 otherwise. 
+<br><dt><code>(mt_num_s s)</code><dd>The number of s MetricalValues from here to a w or top. 
+<br><dt><code>(mt_num_w s)</code><dd>The number of w MetricalValues from here to a s or top. 
+<br><dt><code>(mt_open n)</code><dd>The number of consituents this is the start of, Effectively the
+number of opening brackets before this word. 
+<br><dt><code>(mt_postype syl)</code><dd>Returns single, initial, final or middle. 
+<br><dt><code>(mt_strong s)</code><dd>1 if all MetricalValues a s to a word, 0 otherwise. 
+<br><dt><code>(MultiProbParse UTT)</code><dd>Parse part of speech tags in Word relation.  Unlike ProbParse this
+allows multiple sentences to appear in the one utterance.  The CART
+tree in eos_tree is used to define end of sentence.  Loads the
+grammar from scfg_grammar_filename and saves the best parse
+in the Syntax Relation. 
+<br><dt><code>(play_wave FILENAME)</code><dd>Play given wavefile
+<br><dt><code>(nconc A B)</code><dd>Destructively append B to A, if A is nil return B. 
+<br><dt><code>(ngram.load NAME FILENAME)</code><dd>Load an ngram from FILENAME and store it named NAME for later access. 
+<br><dt><code>(nint NUMBER)</code><dd>Returns nearest int to NUMBER. 
+<br><dt><code>(not DATA)</code><dd>Returns t if DATA is nil, nil otherwise. 
+<br><dt><code>(nth N LIST)</code><dd>Returns nth car of LIST, 0 is car. 
+<br><dt><code>(nth_cdr N LIST)</code><dd>Returns nth cdr of LIST, 0 is LIST. 
+<br><dt><code>(null? DATA)</code><dd>Returns t if DATA is nil, nil otherwise. 
+<br><dt><code>(num_digits SC)</code><dd>Returns number of digits (actually chars) is SC's name. 
+<br><dt><code>(num_postvocalic_c syl)</code><dd>Finds the number of postvocalic consonants in a syllable. 
+<br><dt><code>(number? DATA)</code><dd>Returns t if DATA is a number, nil otherwise. 
+<br><dt><code>(oblist)</code><dd>Return oblist. 
+<br><dt><code>(or DISJ1 DISJ2 ...)</code><dd>Evaluate each disjunction DISJn in turn until one evaluates to non-nil. 
+Otherwise return nil. 
+<br><dt><code>(pair? DATA)</code><dd>Returns t if DATA is a cons cell, nil otherwise. 
+<br><dt><code>(Param.def NAME VAL)</code><dd>Set parameter NAME to VAL if not already set
+<br><dt><code>(Param.get NAME)</code><dd>Get parameter NAME's value (nil if unset)
+<br><dt><code>(Param.set NAME VAL)</code><dd>Set parameter NAME to VAL (deleting any previous setting)
+<br><dt><code>(Parameter.def NAME VAL)</code><dd>Set parameter NAME to VAL if not already set.  This is an OLD function
+you shold use Param.def instead. 
+<br><dt><code>(Parameter.get NAME)</code><dd>Get parameter NAME's value (nil if unset).  This is an OLD function
+and may not exist in later versions (or change functionality).  This
+function (unlike Param.get) may return sylbols (rather than strings
+if the val doesn't contain whitespace (to allow older functions to
+still work. 
+<br><dt><code>(Parameter.set NAME VAL)</code><dd>Set parameter NAME to VAL (deleting any previous setting).  This is
+an old function and you should use Param.set instead. 
+<br><dt><code>(parse-number SYMBOL)</code><dd>Returns a number form a symbol or string whose print name is a number. 
+<br><dt><code>(parse_url URL)</code><dd>Split URL into a list (protocol host port path) suitable
+for giving to fopen. 
+<br><dt><code>(path-append DIRECTORY-PATH ADDITION1 ADDITION2 ...)</code><dd>Return a the path for ADDITION in DIRECTORY. 
+<br><dt><code>(path-as-directory PATHNAME)</code><dd>Return PATH as a directory name. 
+<br><dt><code>(path-as-file PATHNAME)</code><dd>Return PATH as a non-directory name. 
+<br><dt><code>(path-basename PATHNAME)</code><dd>Return name part of PATH. 
+<br><dt><code>(path-is-dirname PATHNAME)</code><dd>Is PATH a directory name. 
+<br><dt><code>(path-is-filename PATHNAME)</code><dd>Is PATH a non-directory name. 
+<br><dt><code>(Pause_optional_deleting_B_X utt)</code><dd>
+Delete all phone symbols starting with 'B_' from the segemt relation
+(a B_150 e.g. is a 150ms pause) if symbol 'Pause_delete_B_X is defined.
+
+     <br><dt><code>(Pauses utt)</code><dd>Insert pauses where required. 
+<br><dt><code>peak_segment_anchor ie</code><dd>Determines what segment acts as the anchor for a peak. 
+Returns number of segments from start of accented syllable
+to peak. 
+<br><dt><code>peak_wi_seg segment pk_pos</code><dd>Finds if a peak occurs w/i a segment
+<br><dt><code>(phone_feature phone feat)</code><dd>Return the feature for given phone in current phone set, or 0
+if it doesn't exist. 
+<br><dt><code>(Phoneset.description OPTIONS)</code><dd>Returns a lisp for of the current phoneme set.  Options is a list of
+parts of the definition you require.  OPTIONS may include, silences,
+phones, features and/or name.  If nil all are returned. 
+<br><dt><code>(Phoneset.list)</code><dd>List the names of all currently defined Phonesets. 
+<br><dt><code>(PhoneSet.select PHONESETNAME)</code><dd>Select PHONESETNAME as current phoneset. [see <a href="Phonesets.html#Phonesets">Phonesets</a>]
+<br><dt><code>(PhoneSet.silences LIST)</code><dd>Declare LIST of phones as silences.  The first in the list should be
+the "most" silent. [see <a href="Phonesets.html#Phonesets">Phonesets</a>]
+<br><dt><code>(Phrasify utt)</code><dd>Construct phrasify over Words module. 
+<br><dt><code>(POS utt)</code><dd>Apply part of speech tagging (and possible parsing too) to Word
+relation. 
+<br><dt><code>(position thing l)</code><dd>What position is thing in l, -1 if it doesn't exist. 
+<br><dt><code>(PostLex utt)</code><dd>Apply post lexical rules to segment stream.  These may be almost
+arbitrary rules as specified by the particular voice, through the
+postlex_hooks variable.  A number of standard post lexical rule
+sets are provided including reduction, posessives etc.  These
+rules are also used to mark standard segments with their cluster
+information used in creating diphone names. 
+<br><dt><code>(postlex_a utt)</code><dd>If POS of "a" is "nn" and segment feature "reducable", set it to 0. 
+This is a bugfix, but still requires the target cost function to add a
+penalty if a candidate is reducable but the target is not.  expro_target_cost
+does that. 
+<br><dt><code>(postlex_apos_s_check UTT)</code><dd>Deal with possesive s for English (American and British).  Delete
+schwa of 's if previous is not an alveolar or palatal fricative or affricative, and
+change voiced to unvoiced s if previous is not voiced. 
+<br><dt><code>(postlex_intervoc_r UTT)</code><dd>
+Remove any word-final /r/ which is phrase-final or not going
+to be inter-vocalic i.e. the following words does not start
+with a vowel.
+
+     <p>NOTE: in older versions of unilex-rpx.out for Festival, there
+is no word-final /r/.
+
+     <br><dt><code>(postlex_stop_deletion utt)</code><dd>
+Delete any stop or affricative (phone which has a closure)
+immediately followed by another stop or affricative.
+
+     <p>Also save the identity of the deleted phone for the
+context cost functions.  Consider:
+
+     <p>backtrack /b a k t r a k/ -&gt; /b a t r a k/
+(actually Jenny reduces : /b a k_cl k t_cl t r a k/ -&gt; /b a k_cl t r a k/)
+If we then look for a diphone /a t/ we want to favour
+candidates coming from the same context i.e. which
+are actually a reduced /a k t/.  In the data base,
+the 1st /a/ gets the feature right_context=k and the
+/t/ gets the fearture left_context=k.
+
+     <br><dt><code>(postlex_the_vs_thee utt)</code><dd>Unnreduce the schwa in "the" when a vowel follows. 
+Reduce the vowel in "the" when no vowel follows (this
+requires a lexicon entry for "the" with feature "reduced",
+otherwise there will be no reduction). 
+<br><dt><code>(postlex_the_vs_thee_changeflag utt)</code><dd>Unnreduce the schwa in "the" when a vowel follows. 
+Reduce the vowel in "the" when no vowel follows (this
+requires a lexicon entry for "the" with feature "reduced",
+otherwise there will be no reduction). 
+<br><dt><code>(postlex_unilex_vowel_reduction utt)</code><dd>Perform vowel reduction based on unilex specification of what can be reduced. 
+<br><dt><code>(pow X Y)</code><dd>Return X**Y. 
+<br><dt><code>(pprintf EXP [FD])</code><dd>Pretty print EXP to FD, if FD is nil print to the screen. 
+<br><dt><code>(print DATA)</code><dd>Print DATA to stdout if textual form.  Not a pretty printer. 
+<br><dt><code>(print_string DATA)</code><dd>Returns a string representing the printing of DATA. 
+<br><dt><code>(printfp DATA FILEP)</code><dd>Print DATA to file indicated by file pointer FILEP.  File pointers are
+are created by fopen. 
+<br><dt><code>(probe_file FILENAME)</code><dd>Returns t if FILENAME exists and is readable, nil otherwise. 
+<br><dt><code>(ProbParse UTT)</code><dd>Parse part of speech tags in Word relation.  Loads the grammar
+from scfg_grammar_filename and saves the best parse
+in the Syntax Relation. 
+<br><dt><code>(proclaim_voice NAME DESCRIPTION)</code><dd>Describe a voice to the systen.  NAME should be atomic name, that
+conventionally will have voice_ prepended to name the basic selection
+function.  OPTIONS is an assoc list of feature and value and must
+have at least features for language, gender, dialect and
+description.  The first there of these are atomic, while the description
+is a text string describing the voice. 
+<br><dt><code>(provide FILENAME)</code><dd>Adds FNAME to the variable provided (if not already there).  This means
+that future calls to (require FILENAME) will not cause FILENAME to
+be re-loaded. 
+<br><dt><code>(putc ECHAR FILEP)</code><dd>Put ECHAR (a number) as a character to FILEP.  If FILEP is nil or not
+specified output goes to stdout. 
+<br><dt><code>(putprop SYM VAL KEY)</code><dd>Put property VAL named KEY for SYM. 
+<br><dt><code>(puts STRING FILEP)</code><dd>Write STRING (print name of symbol) to FILEP.  If FILEP is nil or not
+specified output goes to stdout. 
+<br><dt><code>(pwd)</code><dd>Returns current directory as a string. 
+<br><dt><code>(quit)</code><dd>Exit from program, does not return. 
+<br><dt><code>(quote DATA)</code><dd>Return data (unevaluated). 
+<br><dt><code>(rand)</code><dd>Returns a pseudo random number between 0 and 1 using the libc rand()
+function. 
+<br><dt><code>(read)</code><dd>Read next s-expression from stdin and return it. 
+<br><dt><code>(read-from-string SYMBOL)</code><dd>Return first s-expression in print name of SYMBOL. 
+<br><dt><code>(readfp FILEP)</code><dd>Read and return next s-expression from file indicated by file pointer
+FILEP.  File pointers are created by fopen. 
+<br><dt><code>(remove ITEM LIST)</code><dd>(Non-destructively) remove ITEM from LIST. 
+<br><dt><code>(remove-duplicates LIST)</code><dd>Remove duplicate items in LIST. 
+<br><dt><code>(remove_leading_zeros name)</code><dd>Remove leading zeros from given string. 
+<br><dt><code>(remove_leadtrail_underscores name)</code><dd>Get rid of leading and trailing underscores that may be used for emphasis,
+not this is called when there are underscores at the beginning and end but
+there may not be an equal number of them. 
+<br><dt><code>(replace BEFORE AFTER)</code><dd>Destructively replace contents of cons cell BEFORE with those of
+AFTER. 
+<br><dt><code>(request FILENAME)</code><dd>Checks if FNAME is already provided (member of variable provided) if not
+tries to loads it, appending ".scm" to FILENAME.  Uses load_library
+to find the file. Unlike require, fname isn't found no error occurs
+<br><dt><code>(require FILENAME)</code><dd>Checks if FNAME is already provided (member of variable provided) if not
+loads it, appending ".scm" to FILENAME.  Uses load_library to find
+the file. 
+<br><dt><code>(require_module l)</code><dd>Check that certain compile-time modules are included in this installation. 
+l may be a single atom or list of atoms.  Each item in l must appear in
+*modules* otherwise an error is throw. 
+<br><dt><code>(reverse LIST)</code><dd>Returns destructively reversed LIST. 
+<br><dt><code>(replacd A B)</code><dd>Destructively replace the cdr of A with B. 
+<br><dt><code>(save-forms FILENAME FORMS HOW)</code><dd>Save FORMS in FILENAME.  If HOW is a appending FORMS to FILENAME,
+or if HOW is w start from the beginning of FILENAME. 
+<br><dt><code>Saves the waveform and records its so it can be joined into a</code><dd>a single waveform at the end. 
+<br><dt><code>(save_seg_mbrola_entry ENTRY NAME START DUR TARGS FD)</code><dd>Entry contains, (name duration num_targs start 1st_targ_pos 1st_targ_val). 
+<br><dt><code>(save_segments_mbrola UTT FILENAME)</code><dd>Save segment information in MBROLA format in filename.  The format is
+phone duration (ms) [% position F0 target]*. [see <a href="MBROLA.html#MBROLA">MBROLA</a>]
+<br><dt><code>(save_waves_during_tts)</code><dd>Save each waveform in the current directory in files "tts_file_XXX.wav". 
+use (save_waves_during_tts_STOP) to stop saving waveforms
+<br><dt><code>(save_waves_during_tts_STOP)</code><dd>Stop saving waveforms when doing tts. 
+<br><dt><code>(SayPhones PHONES)</code><dd>PHONES is a list of phonemes.  This uses the Phones type utterance
+to synthesize and play the given phones.  Fixed duration specified in
+FP_duration and fixed monotone duration (FP_F0) are used to generate
+prosody. 
+<br><dt><code>(SayText TEXT)</code><dd>TEXT, a string, is rendered as speech. 
+<br><dt><code>(search-for-languages)</code><dd>Search down language-path to locate languages. 
+<br><dt><code>(search-for-voices)</code><dd>Search down voice-path to locate voices. 
+<br><dt><code>(search-for-voices-multisyn)</code><dd>Search down multisyn voice-path to locate multisyn voices. 
+<br><dt><code>(seg_word_final seg)</code><dd>Is this segment word final? 
+<br><dt><code>(segment_dpitch UTT SEG)</code><dd>Returns delta pitch, this pitch minus previous pitch. 
+<br><dt><code>(segs_to_peak sylSyl pk_pos)</code><dd>Determines the number of segments from the start of a syllable
+to an intonation peak
+<br><dt><code>(select_language LANG)</code><dd>Chooses language. 
+<br><dt><code>(send-url-to-netscape URL)</code><dd>Send given URL to netscape for display.  This is primarily used to
+display parts of the manual referenced in documentation strings. 
+<br><dt><code>(send_sexpr_to_client SEXPR)</code><dd>Sends given sexpression to currently connected client. 
+<br><dt><code>(set! SYMBOL VAL)</code><dd>Set SYMBOL to have value VAL, returns VAL. 
+<br><dt><code>(set-car! CONS1 DATA1)</code><dd>Set car of CONS1 to be DATA1.  Returns CONS1. If CONS1 not of type
+consp an error is is given.  This is a destructive operation. 
+<br><dt><code>(set-cdr! CONS1 DATA1)</code><dd>Set cdr of CONS1 to be DATA1.  Returns CONS1. If CONS1 not of type
+consp an error is is given.  This is a destructive operation. 
+<br><dt><code>(set-symbol-value! SYMBOLNAME VALUE)</code><dd>Set SYMBOLNAME's value to VALUE, this is much faster than set! but use
+with caution. 
+<br><dt><code>(set_backtrace arg)</code><dd>If arg is non-nil a backtrace will be display automatically after errors
+if arg is nil, a backtrace will not automatically be displayed (use
+(:backtrace) for display explicitly. 
+<br><dt><code>(set_module_description MOD DESC)</code><dd>Set the description for the module named MOD. 
+<br><dt><code>(set_server_safe_functions LIST)</code><dd>Sets restricted list to LIST.  When restricted list is non-nil only
+functions whose names appear in this list may be executed.  This
+is used so that clients in server mode may be restricted to a small
+number of safe commands.  [see <a href="Server_002fclient-API.html#Server_002fclient-API">Server/client API</a>]
+<br><dt><code>(setenv VARNAME VALUE)</code><dd>Set the UNIX environment variable VARNAME to VALUE. 
+<br><dt><code>(setup_beep_lex)</code><dd>Lexicon derived from the British English Example Pronunciation dictionary
+(BEEP) from Tony Robinson  ajr@eng.cam.ac.uk.  Around 160,000 entries. 
+<br><dt><code>(setup_cmu6_lex)</code><dd>Lexicon derived from the CMU lexicon (cmudict-0.6), around 100,000 entries,
+in the radio phoneset (sort of darpa-like).  Includes letter to sound
+rule model trained from this data, the format of this lexicon is suitable
+for the UniSyn metrical phonology modules.  That is the entries are
+not syllabified,
+<br><dt><code>(setup_cmu_lex)</code><dd>Lexicon derived from the CMU lexicon (cmudict-0.4), around 100,000 entries,
+in the radio phoneset (sort of darpa-like).  Includes letter to sound
+rule model trained from this data, and uses the lexical stress predictor
+from OALD. 
+<br><dt><code>(setup_cmumt_lex)</code><dd>Lexicon derived from the CMU lexicon (cmudict-0.4), around 100,000 entries,
+in the radio phoneset (sort of darpa-like).  Includes letter to sound
+rule model trained from this data, and uses the lexical stress predictor
+from OALD. 
+<br><dt><code>(setup_cstr_lexicon)</code><dd>Define and setup the CSTR lexicon.  The CSTR lexicon consists
+of about 25,000 entries in the mrpa phone set.  A large number of
+specific local entries are also added to the addenda. 
+<br><dt><code>(setup_moby_lexicon)</code><dd>Define and setup the MOBY lexicon.  This is derived from the public
+domain version of the Moby (TM) Pronunciator II lexicon.  It can be
+converted automatically to British English mrpa phoneset which of
+course is sub-optimal.  It contains around 120,000 entries and has part
+of speech information for homographs. 
+<br><dt><code>(setup_oald_lexicon)</code><dd>Define and setup the CUVOALD lexicon.  This is derived from the
+Computer Users Version of the Oxford Advanced Learners' Dictionary
+of Current English.  This version includes a trained set of letter
+to sound rules which have also been used to reduce the actual lexicon
+size by over half, for those entries that the lts model gets exactly
+the same. 
+<br><dt><code>(socket_open HOST PORT HOW)</code><dd>Open a file descriptor to the BSD socket on HOST at PORT.  HOW may
+be "r" or "w" for a read only or write only filedescriptor.  If
+HOW is unspecified or NIL, "w" is assumed.  If HOW is "rw" then
+a list of two file descriptors is returned, the first for reading
+the second for writing.  Take care when using the bidiectional socket
+that deadlock doesn't occur. 
+<br><dt><code>(sort-and-dump-docstrings DOCSTRINGS FILEFP)</code><dd>DOCSTRINGS is an assoc list of name and document string var-docstrings
+or func-docstrings.  This very individual function sorts the list and
+prints out the documentation strings as texinfo list members to FILEFP. 
+<br><dt><code>(sqrt NUM)</code><dd>Return square root of NUM. 
+<br><dt><code>(srand SEED)</code><dd>Seeds the libc pseudo random number generator with the integer SEED. 
+<br><dt><code>(string-after ATOM AFTER)</code><dd>Returns an atom whose printname is the substring of ATOM's printname
+which appears after AFTER.  This is a wraparound for the EST_String.after
+function in C++, and hence has the same conditions for boundary cases. 
+<br><dt><code>(string-append STR1 STR2 ...)</code><dd>Return a string made from the concatenation of the print names of STR1
+STR2 ... 
+<br><dt><code>(string-before ATOM BEFORE)</code><dd>Returns an atom whose printname is the substring of ATOM's printname
+which appears before BEFORE.  This is a wraparound for the EST_String.before
+function in C++, and hence has the same conditions for boundary cases. 
+<br><dt><code>(string-equal ATOM1 ATOM2)</code><dd>Returns t if ATOM's printname is equal to ATOM's print name, otherwise
+it returns nil. 
+<br><dt><code>(string-length SYMBOL)</code><dd>Return the number of characters in the print name of SYMBOL. 
+<br><dt><code>(string-matches ATOM REGEX)</code><dd>Returns t if ATOM's printname matches the regular expression REGEX,
+otherwise it returns nil. 
+<br><dt><code>(sub_utt ITEM)</code><dd>Return a new utterance that contains a copy of this item and all its
+descendants and related descendants. 
+<br><dt><code>(substring STRING START LENGTH)</code><dd>Return a substring of STRING starting at START of length LENGTH. 
+<br><dt><code>(sxhash OBJ N)</code><dd>Return hashing value for OBJ, in range n. 
+<br><dt><code>(symbol-bound? VARNAME)</code><dd>Return t is VARNAME has a value, nil otherwise. 
+<br><dt><code>(symbol-value SYMBOLNAME)</code><dd>Returns the value of SYMBOLNAME, an error is given SYMBOLNAME is not a
+bound symbol. 
+<br><dt><code>(symbol? DATA)</code><dd>Returns t if DATA is a symbol, nil otherwise. 
+<br><dt><code>(symbolconc SYMBOL1 SYMBOL2 ...)</code><dd>Form new symbol by concatenation of the print forms of each of SYMBOL1
+SYMBOL2 etc. 
+<br><dt><code>(symbolexplode SYMBOL)</code><dd>Returns list of atoms one for each character in the print name of SYMBOL. 
+<br><dt><code>(SynthText TEXT)</code><dd>TEXT, a string, is rendered as speech. 
+<br><dt><code>(system COMMAND)</code><dd>Execute COMMAND (a string) with the UNIX shell. 
+<br><dt><code>(targets_to_f0 UTT)</code><dd>Make f0 relation, and place an f0 contour in it, using F0 targets
+from the Target Relation
+
+     <br><dt><code>(terpri FILEP)</code><dd>Print newline to FILEP, is FILEP is nil or not specified a newline it
+is printed to stdout. 
+<br><dt><code>(Text UTT)</code><dd>From string in input form tokenize and create a token stream. 
+<br><dt><code>(the-environment)</code><dd>Returns the current (SIOD) environment. 
+<br><dt><code>(tilt_add_intevent utt syl name)</code><dd>Add a new IntEvent related to syl with name. 
+<br><dt><code>(tilt_assign_parameters utt)</code><dd>Assigned tilt parameters to IntEvents, depending on the value
+of the Parameter tilt_method uses wagon trees (cart) or linear
+regression models (lr). 
+<br><dt><code>(tilt_assign_parameters_lr utt)</code><dd>Assing parameters (start_f0, tilt, amplitude, peak_pos and duration)
+to each IntEvent. Prediction by linear regression models
+<br><dt><code>(tilt_assign_parameters_wagon utt)</code><dd>Assing parameters (start_f0, tilt, amplitude, peak_pos and duration)
+to each IntEvent.  Uses Wagon trees to predict values
+<br><dt><code>(tilt_assign_params_lr ie lrmodels)</code><dd>Assign the names parameters to ie using the trees and names in
+trees. 
+<br><dt><code>(tilt_assign_params_wagon ie trees)</code><dd>Assign the names parameters to ie using the trees and names in
+trees. 
+<br><dt><code>(tilt_map_f0_range utt)</code><dd>In order fo better trained models to be used for voices which don't
+have the necessary data to train models from the targets may be mapped
+to a different pitch range.  Note this is not optimal as pitch ranges
+don't map that easily, but the the results can sometimes be better than
+using a less sophisticated F0 generation model.  The method used
+is to define the mean and standard deviation of the speaker the
+model was trained on and the mean and standard deciation of the
+desired speaker.  Mapping is by converting the actual F0 value
+to zscores (distance from mean in number of stddev) and back into
+the other domain.  The variable int_tilt_params is used to find
+the values. 
+<br><dt><code>(tilt_validate utt)</code><dd>Checks that the predicted tilt parameter fall with reasonable
+limits and modify them where possible to be more reasonable. 
+<br><dt><code>(time)</code><dd>Returns number of seconds since start of epoch (if OS permits it
+countable). 
+<br><dt><code>(time_to_next_vowel syl)</code><dd>The time from vowel_start to next vowel_start
+<br><dt><code>(tok_allcaps sc)</code><dd>Returns 1 if sc's name is all capitals, 0 otherwise
+<br><dt><code>(tok_rex sc)</code><dd>Returns 1 if King like title is within 3 tokens before or 2 after. 
+<br><dt><code>(tok_rex sc)</code><dd>Returns 1 if this is a King-like name. 
+<br><dt><code>(tok_roman_to_numstring ROMAN)</code><dd>Takes a string of roman numerals and converts it to a number and
+then returns the printed string of that.  Only deals with numbers up to 50. 
+<br><dt><code>(tok_section_name sc)</code><dd>Returns 1 if sc's name is in list of things that are section/chapter
+like. 
+<br><dt><code>(tok_string_as_letters NAME)</code><dd>Return list of letters marked as letter part of speech made
+by exploding NAME. 
+<br><dt><code>(Token UTT)</code><dd>Build a Word stream from the Token stream, analyzing compound words
+numbers etc as tokens into words. Respects the Parameter Language
+to choose the appropriate token to word module. 
+<br><dt><code>(Token_Any UTT)</code><dd>Build a Word stream from the Token stream, in a language independent way,
+which means that all simple tokens should be in the lexicon, or analysed
+by letter to sound rules. 
+<br><dt><code>(token_end_punc UTT WORD)</code><dd>If punctuation at end of related Token and if WORD is last word
+in Token return punc, otherwise 0. 
+<br><dt><code>(Token_English UTT)</code><dd>Build a Word stream from the Token stream, for English (American and
+British English), analyzing compound words, numbers, etc. as tokens
+into words. 
+<br><dt><code>(token_money_expand type)</code><dd>Convert shortened form of money identifier to words if of a known type. 
+<br><dt><code>(token_no_starting_quote TOKEN)</code><dd>Check to see if a single quote (or backquote) appears as prepunctuation
+in this token or any previous one in this utterance.  This is used to
+disambiguate ending single quote as possessive or end quote. 
+<br><dt><code>(Token_POS UTT)</code><dd>Assign feature token_pos to tokens thats match CART trees in the
+variable token_pos_cart_trees.  These are used for gross level pos
+such as identifying how numbers should be pronunced. 
+<br><dt><code>(tok_pos sc)</code><dd>Returns a general pos for sc's name. 
+numeric   All digits
+number    float or comma'd numeric
+sym       Contains at least one non alphanumeric
+month     has month name (or abbrev)
+day       has day name (or abbrev)
+rootname  else downcased alphabetic. 
+Note this can be used to find token_pos but isn't used directly as
+its not disciminatory enough. 
+<br><dt><code>(Token_Spanish UTT)</code><dd>Build a Word stream from the Token stream, for Castillian Spanish,
+analyzing compound words, numbers etc as tokens into words. 
+<br><dt><code>(english_token_to_words TOKEN NAME)</code><dd>Returns a list of words for NAME from TOKEN.  This allows the
+user to customize various non-local, multi-word, context dependent
+translations of tokens into words.  If this function is unset only
+the builtin translation rules are used, if this is set the builtin
+rules are not used unless explicitly called. [see <a href="Token-to-word-rules.html#Token-to-word-rules">Token to word rules</a>]
+<br><dt><code>(Token_Welsh UTT)</code><dd>Build a Word stream from the Token stream, for Welsh, analyzing
+compound words, numbers etc as tokens into words. 
+<br><dt><code>(zerostart sc)</code><dd>Returns, 1 if first char of sc's name is 0, 0 otherwise. 
+<br><dt><code>(track.copy TRACK)</code><dd>Return a copy of TRACK. 
+<br><dt><code>(track.get TRACK X Y)</code><dd>Get value of X Y in TRACK. 
+<br><dt><code>(track.get_time TRACK X)</code><dd>Get time of X in TRACK. 
+<br><dt><code>(track.index_below TRACK TIME)</code><dd>Returns the first frame index before this time. 
+<br><dt><code>(track.insert TRACK1 X1 TRACK2 X2 COUNT)</code><dd>Insert TRACK2 from X2 to X2+COUNT into TRACK1 at X1.  TRACK1 is resized
+as required. 
+<br><dt><code>(track.load FILENAME FILETYPE ISHIFT)</code><dd>Load and return a track from FILENAME.  Respect FILETYPE is specified
+and ISHIFT if specified. 
+<br><dt><code>(track.num_channels TRACK)</code><dd>Returns number of channels in TRACK. 
+<br><dt><code>(track.num_frames TRACK)</code><dd>Returns number of frames in TRACK. 
+<br><dt><code>(track.resize TRACK NEWFRAMES NEWCHANNELS)</code><dd>Resize TRACK to have NEWFRAMES number of frames and NEWCHANNELS
+number of channels.  If TRACK is nil a new track is made of the
+requested size. 
+<br><dt><code>(track.save TRACK FILENAME FILETYPE)</code><dd>Save TRACK in FILENAME, in format FILETYPE, est is used if FILETYPE
+is unspecified or nil. 
+<br><dt><code>(track.set TRACK X Y V)</code><dd>Set position X Y to V in TRACK. 
+<br><dt><code>(track.set_time TRACK X TIME)</code><dd>Set time at X to TIME in TRACK. 
+<br><dt><code>(tts FILE MODE)</code><dd>Convert FILE to speech.  MODE identifies any special treatment
+necessary for FILE.  This is simply a front end to tts_file but
+puts the system in async audio mode first. [see <a href="TTS.html#TTS">TTS</a>]
+<br><dt><code>(tts_file FILE MODE)</code><dd>Low level access to tts function, you probably want to use the function
+tts rather than this one.  Render data in FILE as speech.  Respect
+MODE.  Currently modes are defined through the variable tts_text_modes. 
+<br><dt><code>(tts_file_xml FILE)</code><dd>Low level tts processor for XML files.  This assumes that element
+instructions are set up in the variable xxml_elements. 
+<br><dt><code>(find_text_mode FILE ALIST)</code><dd>Search through ALIST for one that matches FILE.  Returns nil if
+nothing macthes. 
+<br><dt><code>(tts_return_to_client)</code><dd>This function is called by clients who wish to return waveforms of
+their text samples asynchronously.  This replaces utt.play in tts_hooks
+with utt.send.wave.client. 
+<br><dt><code>(tts_text STRING mode)</code><dd>Apply tts on given string.  That is, segment it into utterances and
+apply tts_hooks to each utterance.  This is naively done by saving the
+string to a file and calling tts_file on that file.  This differs from
+SayText which constructs a single utterance for the whole given text. 
+<br><dt><code>(tts_textall STRING MODE)</code><dd>Apply tts to STRING.  This function is specifically designed for
+use in server mode so a single function call may synthesize the string. 
+This function name maybe added to the server safe functions. 
+<br><dt><code>(tts_textasterisk STRING MODE)</code><dd>Apply tts to STRING.  This function is specifically designed for
+use in server mode so a single function call may synthesize the string. 
+This function name may be added to the server safe functions. 
+<br><dt><code>(typeof OBJ)</code><dd>Returns typeof of given object. 
+<br><dt><code>(Unilex_Word UTT)</code><dd>Build the syllable/segment/SylStructure from the given words using the
+Lexicon.  Uses part of speech information in the lexicon look up if
+present. 
+<br><dt><code>(UniSyn_Duration utt)</code><dd>predicts Segment durations is some speficied way but holds the
+result in a way necessary for other Unisyn code. 
+<br><dt><code>(Unisyn_Pauses UTT)</code><dd>Predict pause insertion in a Unisyn utterance structure. 
+<br><dt><code>(unwind-protect NORMALFORM ERRORFORM)</code><dd>If an error is found while evaluating NORMALFORM catch it and evaluate
+ERRORFORM and continue.  If an error occurs while evaluating NORMALFORM
+all file open evaluating NORMALFORM up to the error while be automatically
+closed.  Note interrupts (ctrl-c) is not caught by this function. 
+<br><dt><code>(upcase SYMBOL)</code><dd>Returns a string with the upcased version of SYMBOL's printname. 
+<br><dt><code>(us_db_params)</code><dd>Return parameters of current UniSyn database. 
+<br><dt><code>(us_db_select NAME)</code><dd>Select named UniSyn database. 
+<br><dt><code>(us_diphone_init DIPHONE_NAME)</code><dd>Initialise UniSyn diphone synthesizer with database DIPHONE_NAME. 
+<br><dt><code>(us_ps_synthesis UTT SIGPR)</code><dd>Synthesize utterance UTT using signal processing technique SIGPR
+for the UniSyn pitch-synchronous synthesizer. 
+<br><dt><code>(us_f0_to_pitchmarks UTT F0_relation PM_relation END_TIME)</code><dd>From the F0 contour in F0_relation, create a set of pitchmarks
+in PM_relation. If END_TIME is not nil, Extra pitchmarks will be
+created at the default interval up to this point
+<br><dt><code>(us_ps_synthesis UTT SIGPR)</code><dd>Synthesize utterance UTT using signal processing technique SIGPR
+for the UniSyn pitch-synchronous synthesizer. 
+<br><dt><code>(us_td_synthesis UTT FILTER_METHOD OLA_METHOD)</code><dd>Synthesize utterance UTT using signal processing technique SIGPR
+for the UniSyn pitch-synchronous synthesizer. 
+<br><dt><code>(warp_utterance UTT (Wavefile Pitchmark_file))</code><dd>Change waveform to match prosodic specification of utterance. 
+<br><dt><code>(us_get_synthesis UTT)</code><dd>Construct a unit stream in UTT comprising suitable diphones. The unit
+stream produced is suitable for immediate use in us_ps_synthesis. 
+<br><dt><code>(us_insert_initial_pause UTT)</code><dd>Always have an initial silence if the utterance is non-empty. 
+Insert a silence segment after the last segment in WORDITEM in UTT. 
+<br><dt><code>(us_insert_pause UTT WORDITEM)</code><dd>Insert a silence segment after the last segment in WORDITEM in UTT. 
+<br><dt><code>(us_linear_smooth_amplitude UTT)</code><dd>Perform linear amplitute smoothing on diphone joins. 
+<br><dt><code>(us_list_dbs)</code><dd>List names of UniSyn databases currently loaded. 
+<br><dt><code>(us_make_group_file FILENAME PARAMS)</code><dd>Make a group file from the currently specified diphone set.  PARAMS
+is an optional assoc list and allows specification of the
+track_file_format (default est_binary), sig_file_format (default
+snd) and sig_sample_format (default mulaw).  This is recommended
+for LPC databases.  For PSOLA based databases the sig_sample_format
+should probably be set to short. 
+<br><dt><code>(us_mapping UTT method)</code><dd>Synthesize utterance UTT using signal processing technique SIGPR
+for the UniSyn pitch-synchronous synthesizer. 
+<br><dt><code>(us_unit_concat UTT)</code><dd>Concat coef and wave information in unit stream into a single
+Frames structure storing the result in the Frame relation
+<br><dt><code>(us_init_raw_concat UTT).</code><br><dt><code>(utf8explode utf8string)</code><dd>Returns a list of utf-8 characters in given string. 
+<br><dt><code>(utt.copy_relation UTT FROM TO)</code><dd>copy relation "from" to a new relation "to". Note that items
+are NOT copied, simply linked into the new relation
+<br><dt><code>(utt.copy_relation_and_items UTT FROM TO)</code><dd>copy relation and contents of items "from" to a new relation "to"
+<br><dt><code>(utt.evaluate UTT)</code><dd>evaluate all the features in UTT, replacing feature functions
+with their evaluation. 
+<br><dt><code>(utt.evaluate.relation UTT)</code><dd>evaluate all the features in RELATION in UTT, replacing feature functions
+with their evaluation. 
+<br><dt><code>(utt.feat UTT FEATNAME)</code><dd>Return value of feature name in UTT. 
+<br><dt><code>(utt.features UTT RELATIONNAME FUNCLIST)</code><dd>Get vectors of feature values for each item in RELATIONNAME in UTT. 
+[see <a href="Features.html#Features">Features</a>]
+<br><dt><code>(utt.flat_repr UTT)</code><dd>Returns a flat, string representation of the linguistic information
+contained in fully formed utterance structure UTT. 
+<br><dt><code>(utt.id UTT id_number)</code><dd>Return the item in UTT whose id matches id_number. 
+<br><dt><code>(utt.import.track UTT FILENAME RELATION FEATURE_NAME)</code><dd>Load track in FILENAME into UTT in R:RELATION.first.FEATURE_NAME. 
+Deletes RELATION if it already exists. (you maybe want to use track.load
+directly rather than this legacy function. 
+<br><dt><code>(utt.import.wave UTT FILENAME APPEND)</code><dd>Load waveform in FILENAME into UTT in R:Wave.first.wave.  If APPEND
+is specified and non-nil append this to the current waveform. 
+<br><dt><code>(utt.load UTT FILENAME)</code><dd>Loads UTT with the streams and stream items described in FILENAME. 
+The format is Xlabel-like as saved by utt.save.  If UTT is nil a new
+utterance is created, loaded and returned.  If FILENAME is "-"
+the data is read from stdin. 
+<br><dt><code>(utt.play UTT)</code><dd>Play waveform in utt by current audio method. 
+<br><dt><code>(utt.relation UTT RELATIONNAME)</code><dd>Return root item of relation RELATIONNAME in UTT. 
+<br><dt><code>(utt.relation.append UTT RELATIONNAME ITEM)</code><dd>Append ITEM to top of RELATIONNAM in UTT.  ITEM may be
+a LISP description of an item or an item itself. 
+<br><dt><code>(utt.relation.create UTT RELATIONNAME)</code><dd>Create new relation called RELATIONNAME in UTT. 
+<br><dt><code>(utt.relation.delete UTT RELATIONNAME)</code><dd>Delete relation from utt, it the stream items are not linked elsewhere
+in the utterance they will be deleted too. 
+<br><dt><code>(utt.relation.feat UTT RELNAME FEATNAME)</code><dd>Return value of FEATNAME on relation RELNAME in UTT. 
+<br><dt><code>(utt.relation.first UTT RELATIONNAME)</code><dd>Returns a the first item in this relation. 
+<br><dt><code>(utt.relation.items UTT RELATIONNAME)</code><dd>Return a list of stream items in RELATIONNAME in UTT. 
+If this relation is a tree, the parent streamitem is listed before its
+daughters. 
+<br><dt><code>(utt.relation.last UTT RELATIONNAME)</code><dd>Returns a the last item in this relation. 
+<br><dt><code>(utt.relation.leafs UTT RELATIONNAME)</code><dd>Returns a list of all the leafs in this relation. 
+<br><dt><code>(utt.relation.load UTT RELATIONNAME FILENAME)</code><dd>Loads (and creates) RELATIONNAME from FILENAME into UTT.  FILENAME
+should contain simple Xlabel format information.  The label part
+may contain the label proper followed by semi-colon separated
+pairs of feature and value. 
+<br><dt><code>(utt.relation.present UTT RELATIONNAME)</code><dd>Returns t if UTT caontains a relation called RELATIONNAME, nil otherwise. 
+<br><dt><code>(utt.relation.print UTT NAME)</code><dd>print contents of relation NAME
+<br><dt><code>(utt.relation.remove_feat UTT RELNAME FEATNAME)</code><dd>Remove FEATNAME on relation RELNAME in UTT. 
+<br><dt><code>(utt.relation.remove_item_feat UTT RELNAME FEATNAME)</code><dd>Remove FEATNAME on every item in relation RELNAME in UTT. 
+<br><dt><code>(utt.relation.set_feat UTT RELNAME FEATNAME VALUE)</code><dd>Set FEATNAME to VALUE on relation RELNAME in UTT. 
+<br><dt><code>(utt.relation_tree UTT RELATIONNAME)</code><dd>Return a tree of stream items in RELATIONNAME in UTT.  This will give a
+simple list if the relation has no ups and downs. 
+[see <a href="Accessing-an-utterance.html#Accessing-an-utterance">Accessing an utterance</a>]
+<br><dt><code>(utt.relationnames UTT)</code><dd>List of all relations in this utterance. 
+<br><dt><code>(utt.resynth LABFILE F0FILE)</code><dd>Resynthesize an utterance from a label file and F0 file (in any format
+supported by the Speech Tool Library).   This loads, synthesizes and
+plays the utterance. 
+<br><dt><code>(utt.save UTT FILENAME TYPE)</code><dd>Save UTT in FILENAME in an Xlabel-like format.  If FILENAME is "-"
+then print output to stdout.  TYPE may be nil or est_ascii
+<br><dt><code>(utt.save.f0 UTT FILENAME)</code><dd>Save F0 of UTT as esps track file in FILENAME. 
+<br><dt><code>(utt.save UTT RELATIONNAME FILENAME EVALUATE_FEATURES)</code><dd>Save relation RELATIONNAME in FILENAME in an Xlabel-like format. 
+If FILENAME is "-" then print output to stdout. 
+<br><dt><code>(utt.save.segs UTT FILE)</code><dd>Save segments of UTT in a FILE in xlabel format. 
+<br><dt><code>(utt.save.til_events UTT FILENAME)</code><dd>Save tilt events in UTT to FILENAME in a format suitable for
+ev_synth. 
+<br><dt><code>(utt.save.track utt filename relation feature)</code><dd>DEPRICATED use trace.save instead. 
+<br><dt><code>(utt.save.wave UTT FILENAME FILETYPE)</code><dd>Save waveform in UTT in FILENAME with FILETYPE (if specified) or
+using global parameter Wavefiletype. 
+<br><dt><code>(utt.save.words UTT FILE)</code><dd>Save words of UTT in a FILE in xlabel format. 
+<br><dt><code>(utt.send.wave.asterisk UTT)</code><dd>Sends wave in UTT to client.  If not in server mode gives an error
+Note the client must be expecting to receive the waveform. The waveform
+is rescaled and resampled according to what asterisk needs
+<br><dt><code>(utt.send.wave.client UTT)</code><dd>Sends wave in UTT to client.  If not in server mode gives an error
+Note the client must be expecting to receive the waveform. 
+<br><dt><code>(utt.set_feat UTT FEATNAME VALUE)</code><dd>Set feature FEATNAME with VALUE in UTT. 
+<br><dt><code>(utt.synth UTT)</code><dd>The main synthesis function.  Given UTT it will apply the
+functions specified for UTT's type, as defined with deffUttType
+and then those demanded by the voice.  After modules have been
+applied synth_hooks are applied to allow extra manipulation. 
+[see <a href="Utterance-types.html#Utterance-types">Utterance types</a>]
+<br><dt><code>(utt.tag_unit UTT INT)</code><dd>Tags the candidate used in Unit INT in the Unit relation for omission in
+subsequent reruns of viterbi search for the unit sequence. 
+<br><dt><code>(utt.type UTT)</code><dd>Returns the type of UTT. 
+<br><dt><code>(utt.wave UTT)</code><dd>Get waveform from wave (R:Wave.first.wave). 
+<br><dt><code>(utt.wave.resample UTT RATE)</code><dd>Resample waveform in UTT to RATE (if it is already at that rate it remains
+unchanged). 
+<br><dt><code>(utt.wave.rescale UTT FACTOR NORMALIZE)</code><dd>Modify the gain of the waveform in UTT by GAIN.  If NORMALIZE is
+specified and non-nil the waveform is maximized first. 
+<br><dt><code>(Utterance TYPE DATA)</code><dd>Build an utterance of type TYPE from DATA.  Different TYPEs require
+different types of data.  New types may be defined by defUttType. 
+[see <a href="Utterance-types.html#Utterance-types">Utterance types</a>]
+<br><dt><code>(voice-location NAME DIR DOCSTRING)</code><dd>Record the location of a voice. Called for each voice found on voice-path. 
+Can be called in site-init or .festivalrc for additional voices which
+exist elsewhere. 
+<br><dt><code>(voice-location NAME ROOTNAME DIR DOCSTRING)</code><dd>Record the location of a voice. Called for each voice found on voice-path. 
+Can be called in site-init or .festivalrc for additional voices which
+exist elsewhere. 
+<br><dt><code>(voice.addModule VOICE BASENAMES DATADIRS SAMPLERATE)</code><dd>Creates a Diphone UnitSelection Voice Module, using the list of file basenames
+in LISP list BASENAMES, and the three directory strings in the remaining
+argument DATADIRS and adds it to the current voice. The voice waveform data
+files are sampled at SAMPLERATE. 
+<br><dt><code>(voice.debugLevel VOICE LEVEL)</code><dd>Query and/or set the level of debugging for VOICE to LEVEL (positive int). 
+A level of 0 switches off all debugging messages in the voice.  Leaving
+level unspecified simply returns the current level. 
+<br><dt><code>(voice.describe NAME)</code><dd>Describe voice NAME by saying its description.  Unfortunately although
+it would be nice to say that voice's description in the voice itself
+its not going to work cross language.  So this just uses the current
+voice.  So here we assume voices describe themselves in English
+which is pretty anglo-centric, shitsurei shimasu. 
+<br><dt><code>(voice.description NAME)</code><dd>Output description of named voice.  If the named voice is not yet loaded
+it is loaded. 
+<br><dt><code>(voice.getName VOICE)</code><dd>Gets the name of a voice. 
+<br><dt><code>(voice.getUnits VOICE UTT)</code><dd>Voice object VOICE looks at the segment relation in utterance UTT
+and adds a suitable unit sequence in the Unit relation. 
+<br><dt><code>(voice.getUtteranceByFileID VOICE FILEIDSTRING)</code><dd>Returns copy of the Utterance in the voice module database, with
+all the Unit relation filled in, ready for synthesis. 
+<br><dt><code>(voice.init VOICE IGNORE_BAD)</code><dd>Perform any necessary initialisation for the UnitSelection Voice object VOICE. 
+If optional IGNORE_BAD is not nil, then phones marked with a "bad" feature
+in the segment relation will not be added to the diphone inventory
+<br><dt><code>(voice.list)</code><dd>List of all (potential) voices in the system.  This checks the voice-location
+list of potential voices found be scanning the voice-path at start up time. 
+These names can be used as arguments to voice.description and
+voice.describe. 
+<br><dt><code>(voice.numAvailableCandidates VOICE UNIT)</code><dd>Returns the number of instances of speech fragment UNIT (string)
+present in the VOICE
+<br><dt><code>(voice.numUnits VOICE)</code><dd>Total units available in Voice object VOICE. 
+<br><dt><code>(voice.numUnitTypes VOICE)</code><dd>Number of different unit types available in Voice object VOICE. 
+<br><dt><code>(voice.select NAME)</code><dd>Call function to set up voice NAME.  This is normally done by
+prepending voice_ to NAME and call it as a function. 
+<br><dt><code>(voice.setName VOICE NAME)</code><dd>Sets the name of a voice. 
+<br><dt><code>(voice.unitAvailable VOICE UNIT)</code><dd>Returns true or false whether speech fragment UNIT (string) is
+present in the VOICE
+<br><dt><code>(voice_reset)</code><dd>This resets all variables back to acceptable values that may affect
+voice generation.  This function should always be called at the
+start of any function defining a voice.  In addition to reseting
+standard variables the function current_voice_reset will be called. 
+This should always be set by the voice definition function (even
+if it does nothing).  This allows voice specific changes to be reset
+when a new voice is selection.  Unfortunately I can't force this
+to be used. 
+<br><dt><code>(voicemodule.getUtterance VOICEMODULE UTTNUMBER)</code><dd>Returns copy of UTTNUMBER Utterance in the voice module database. 
+<br><dt><code>(wagon ITEM TREE)</code><dd>Apply the CART tree TREE to ITEM.  This returns the full
+predicted form, you need to extract the value from the returned form
+itself. [see <a href="CART-trees.html#CART-trees">CART trees</a>]
+<br><dt><code>(wagon_predict ITEM TREE)</code><dd>Predict with given ITEM and CART tree and return the prediction
+(the last item) rather than whole probability distribution. 
+<br><dt><code>(wave.copy WAVE1 WAVE2)</code><dd>Destuctively append WAVE2 to WAVE1 and return WAVE1. 
+<br><dt><code>(wave.copy WAVE)</code><dd>Return a copy of WAVE. 
+<br><dt><code>(wave.get WAVE X Y)</code><dd>Get value of X Y in WAVE. 
+<br><dt><code>(wave.info WAVE)</code><dd>Returns assoc list of info about this wave. 
+<br><dt><code>(wave.load FILENAME FILETYPE SAMPLETYPE SAMPLERATE)</code><dd>Load and return a wave from FILENAME.  Respect FILETYPE is specified
+if not specified respect whatever header is on the file.  SAMPLETYPE
+and SAMPLERATE are only used if FILETYPE is raw. 
+<br><dt><code>(wave.play WAVE)</code><dd>Play wave of selected audio
+<br><dt><code>(wave.resample WAVE NEWRATE)</code><dd>Resamples WAVE to NEWRATE. 
+<br><dt><code>(wave.rescale WAVE GAIN NORMALIZE)</code><dd>If NORMALIZE is specified and non-nil, maximizes the waveform first
+before applying the gain. 
+<br><dt><code>(wave.resize WAVE NEWSAMPLES NEWCHANNELS)</code><dd>Resize WAVE to have NEWSAMPLES number of frames and NEWCHANNELS
+number of channels.  If WAVE is nil a new wave is made of the
+requested size. 
+<br><dt><code>(wave.save WAVE FILENAME FILETYPE SAMPLETYPE)</code><dd>Save WAVE in FILENAME, respecting FILETYPE and SAMPLETYPE if specified
+if these last two arguments are unspecified the global parameters
+Wavefiletype and Wavesampletype are used.  Returns t is successful
+and throws an error if not. 
+<br><dt><code>(wave.save.data.fp WAVE FILEPOINTER FILETYPE SAMPLETYPE)</code><dd>Write WAVE to FILEPOINTER, respecting FILETYPE and SAMPLETYPE if specified
+ignoring any file header. 
+if these last two arguments are unspecified the global parameters
+Wavefiletype and Wavesampletype are used.  Returns t is successful
+and throws an error if not. It can be used with wave.save.header
+in order to concatenate several waves. 
+<br><dt><code>(wave.save.fp WAVE FILEPOINTER FILETYPE SAMPLETYPE)</code><dd>Write WAVE to FILEPOINTER, respecting FILETYPE and SAMPLETYPE if specified
+if these last two arguments are unspecified the global parameters
+Wavefiletype and Wavesampletype are used.  Returns t is successful
+and throws an error if not. 
+<br><dt><code>(wave.save.header FILEPOINTER WAVE FILETYPE SAMPLETYPE OVERRIDEPARAMS)</code><dd>Write a wave header of format FILETYPE to FILEPOINTER. 
+Header parameters are read first from WAVE and SAMPLETYPE,
+and can be overridden with OVERRIDEPARAMS
+OVERRIDEPARAMS = ( ("numsamples" 84000)
+("numchannels" 1)
+("samplerate" 16000)
+("bo" 10)
+("numsamples" 16000)
+)
+<br><dt><code>(wave.set WAVE X Y V)</code><dd>Set position X Y to V in WAVE. 
+<br><dt><code>(wave.set_sample_rate WAVE SR)</code><dd>set sample rate to SR. 
+<br><dt><code>(Wave_Synth UTT)</code><dd>Generate waveform from information in UTT, at least a Segment stream
+must exist.  The actual form of synthesis used depends on the Parameter
+Synth_Method.   If it is a function that is applied.  If it is atom it
+should be a SynthType as defined by defSynthType
+[see <a href="Utterance-types.html#Utterance-types">Utterance types</a>]
+<br><dt><code>(wavevector.getwave WAVEVECTOR FRAMENUM)</code><dd>retrieves an EST_Wave frame (int FRAMENUM) from a wavevector. 
+<br><dt><code>(wfst.load NAME FILENAME)</code><dd>Load a WFST from FILENAME and store it named NAME for later access. 
+<br><dt><code>(wfst.trasduce WFSTNAME INPUT)</code><dd>Transduce list INPUT (or exploded INPUT if its an atom) to a list of
+outputs.  The atom FAILED is return if the transduction fails. 
+<br><dt><code>(while COND . BODY)</code><dd>While COND evaluates to non-nil evaluate BODY. 
+<br><dt><code>(Word utt)</code><dd>Construct (synthesis specific) syllable/segments from Word relation
+using current lexicon and specific module. 
+<br><dt><code>(xml_register_id PATTERN RESULT)</code><dd>Add a rule for where to find XML entities such as DTDs. 
+The pattern is a regular expression, the result is a string
+with substitutions. If the PATTERN matches the a PUBLIC
+or SYSTEM identifier of an XML entity, the RESULT is expanded
+and then used as a filename. 
+<br><dt><code>(xml_registered_ids)</code><dd>Return the current list of places to look for XML entities. 
+<br><dt><code>(xxml_attval ATTNAME ATTLIST)</code><dd>Returns attribute value of ATTNAME in ATTLIST or nil if it doesn't
+exists. 
+<br><dt><code>(xxml_synth UTT)</code><dd>This applies the xxml_hooks (mode specific) and tts_hooks to the
+given utterance.  This function should be called from xxml element
+definitions that signal an utterance boundary. 
+</dl>
+
+   </body></html>
+

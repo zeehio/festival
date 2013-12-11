@@ -1,0 +1,48 @@
+<html lang="en">
+<head>
+<title>LPC diphone synthesizer - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Other-synthesis-methods.html#Other-synthesis-methods" title="Other synthesis methods">
+<link rel="next" href="MBROLA.html#MBROLA" title="MBROLA">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="LPC-diphone-synthesizer"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="MBROLA.html#MBROLA">MBROLA</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Other-synthesis-methods.html#Other-synthesis-methods">Other synthesis methods</a>
+<hr>
+</div>
+
+<h3 class="section">22.1 LPC diphone synthesizer</h3>
+
+<p>A very simple, and very efficient LPC diphone synthesizer using
+the "donovan" diphones is also supported.  This synthesis method
+is primarily the work of Steve Isard and later Alistair Conkie. 
+The synthesis quality is not as good as the residual excited LPC
+diphone synthesizer but has the advantage of being much smaller. 
+The donovan diphone database is under 800k.
+
+   <p>The diphones are loaded through the <code>Donovan_Init</code> function
+which takes the name of the dictionary file and the diphone file
+as arguments, see the following for details
+<pre class="example">     lib/voices/english/don_diphone/festvox/don_diphone.scm
+</pre>
+   </body></html>
+

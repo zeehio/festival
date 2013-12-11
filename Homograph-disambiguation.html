@@ -1,0 +1,175 @@
+<html lang="en">
+<head>
+<title>Homograph disambiguation - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Text-analysis.html#Text-analysis" title="Text analysis">
+<link rel="prev" href="Token-to-word-rules.html#Token-to-word-rules" title="Token to word rules">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Homograph-disambiguation"></a>
+<p>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Token-to-word-rules.html#Token-to-word-rules">Token to word rules</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Text-analysis.html#Text-analysis">Text analysis</a>
+<hr>
+</div>
+
+<h3 class="section">15.3 Homograph disambiguation</h3>
+
+<p><a name="index-homographs-239"></a>Not all tokens can be rendered as words easily.  Their context may affect
+the way they are to be pronounced.  For example in the
+utterance
+<pre class="example">     On May 5 1985, 1985 people moved to Livingston.
+</pre>
+   <p><br>the tokens "1985" should be pronounced differently, the first as<br>
+   a year, "nineteen eighty five" while the second as a quantity "one
+thousand nine hundred and eighty five".  Numbers may also be pronounced
+as ordinals as in the "5" above, it should be "fifth" rather than
+"five".
+
+   <p>Also, the pronunciation of certain words cannot simply be found from
+their orthographic form alone.  Linguistic part of speech tags help to
+disambiguate a large class of homographs, e.g. "lives".  A part of
+speech tagger is included in Festival and discussed in <a href="POS-tagging.html#POS-tagging">POS tagging</a>.  But even part of speech isn't sufficient in a number of
+cases.  Words such as "bass", "wind", "bow" etc cannot by distinguished
+by part of speech alone, some semantic information is also required.  As
+full semantic analysis of text is outwith the realms of Festival's
+capabilities some other method for disambiguation is required.
+
+   <p>Following the work of <cite>yarowsky96</cite> we have included a method
+for identified tokens to be further labelled with extra tags to
+help identify their type.  Yarowsky uses <em>decision lists</em> to
+identify different types for homographs.  Decision lists are
+a restricted form of decision trees which have some advantages
+over full trees, they are easier to build and Yarowsky has shown
+them to be adequate for typical homograph resolution.
+
+<h4 class="subsection">15.3.1 Using disambiguators</h4>
+
+<p>Festival offers a method for assigning a <code>token_pos</code> feature to
+each token.  It does so using Yarowsky-type disambiguation techniques. 
+A list of disambiguators can be provided in the variable
+<code>token_pos_cart_trees</code>.  Each disambiguator consists of a regular
+expression and a CART tree (which may be a decision list as they have the
+same format).  If a token matches the regular expression the CART tree
+is applied to the token and the resulting class is assigned
+to the token via the feature <code>token_pos</code>.  This is done
+by the <code>Token_POS</code> module.
+
+   <p>For example, the follow disambiguator distinguishes "St" (street and saint)
+and "Dr" (doctor and drive).
+<pre class="lisp">        ("\\([dD][Rr]\\|[Ss][tT]\\)"
+         ((n.name is 0)
+          ((p.cap is 1)
+           ((street))
+           ((p.name matches "[0-9]*\\(1[sS][tT]\\|2[nN][dD]\\|3[rR][dD]\\|[0-9][tT][hH]\\)")
+            ((street))
+            ((title))))
+          ((punc matches ".*,.*")
+           ((street))
+           ((p.punc matches ".*,.*")
+            ((title))
+            ((n.cap is 0)
+             ((street))
+             ((p.cap is 0)
+              ((p.name matches "[0-9]*\\(1[sS][tT]\\|2[nN][dD]\\|3[rR][dD]\\|[0-9][tT][hH]\\)")
+               ((street))
+               ((title)))
+              ((pp.name matches "[1-9][0-9]+")
+               ((street))
+               ((title)))))))))
+</pre>
+   <p>Note that these only assign values for the feature <code>token_pos</code> and
+do nothing more.  You must have a related token to word rule that
+interprets this feature value and does the required translation.  For
+example the corresponding token to word rule for the above disambiguator
+is
+<pre class="lisp">       ((string-matches name "\\([dD][Rr]\\|[Ss][tT]\\)")
+        (if (string-equal (item.feat token "token_pos") "street")
+            (if (string-matches name "[dD][rR]")
+                (list "drive")
+                (list "street"))
+            (if (string-matches name "[dD][rR]")
+                (list "doctor")
+                (list "saint"))))
+</pre>
+   <h4 class="subsection">15.3.2 Building disambiguators</h4>
+
+<p>Festival offers some support for building disambiguation trees.  The
+basic method is to find all occurrences of a homographic token in a large
+text database, label each occurrence into classes, extract appropriate
+context features for these tokens and finally build an classification tree
+or decision list based on the extracted features.
+
+   <p>The extraction and building of trees is not yet a fully automated
+process in Festival but the file <samp><span class="file">festival/examples/toksearch.scm</span></samp>
+shows some basic Scheme code we use for extracting tokens from very
+large collections of text.
+
+   <p>The function <code>extract_tokens</code> does the real work.  It reads the
+given file, token by token into a token stream.  Each token is tested
+against the desired tokens and if there is a match the named features
+are extracted.  The token stream will be extended to provide the
+necessary context.  Note that only some features will make any sense in
+this situation.  There is only a token relation so referring to words,
+syllables etc. is not productive.
+
+   <p>In this example databases are identified by a file that lists all
+the files in the text databases.  Its name is expected to be
+<samp><span class="file">bin/DBNAME.files</span></samp> where <code>DBNAME</code> is the name of
+the database.  The file should contain a list
+of filenames in the database e.g for the Gutenberg texts the
+file <samp><span class="file">bin/Gutenberg.files</span></samp> contains
+<pre class="example">     gutenberg/etext90/bill11.txt
+     gutenberg/etext90/const11.txt
+     gutenberg/etext90/getty11.txt
+     gutenberg/etext90/jfk11.txt
+     ...
+</pre>
+   <p>Extracting the tokens is typically done in two passes.  The first pass
+extracts the context (I've used 5 tokens either side).  It extracts
+the file and position, so the token is identified, and the word
+in context.
+
+   <p>Next those examples should be labelled with a small set of classes
+which identify the type of the token.  For example for a token
+like "Dr" whether it is a person's title or a street identifier. 
+Note that hand-labelling can be laborious, though it is surprising
+how few tokens of particular types actually exist in 62 million
+words.
+
+   <p>The next task is to extract the tokens with the features that will best
+distinguish the particular token.  In our "Dr" case this will involve
+punctuation around the token, capitalisation of surrounding tokens etc. 
+After extracting the distinguishing tokens you must line up the labels
+with these extracted features.  It would be easier to extract both the
+context and the desired features at the same time but experience shows
+that in labelling, more appropriate features come to mind that will
+distinguish classes better and you don't want to have to label twice.
+
+   <p>Once a set of features consisting of the label and features is created
+it is easy to use <samp><span class="file">wagon</span></samp> to create the corresponding decision tree
+or decision list.  <samp><span class="file">wagon</span></samp> supports both decision trees and decision
+lists, it may be worth experimenting to find out which give the best
+results on some held out test data.  It appears that decision trees are
+typically better, but are often much larger, and the size does not
+always justify the the sometimes only slightly better results.
+
+   </body></html>
+

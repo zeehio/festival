@@ -1,0 +1,81 @@
+<html lang="en">
+<head>
+<title>Adding Sable tags - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="XML_002fSGML-mark_002dup.html#XML_002fSGML-mark_002dup" title="XML/SGML mark-up">
+<link rel="prev" href="Supported-Sable-tags.html#Supported-Sable-tags" title="Supported Sable tags">
+<link rel="next" href="XML_002fSGML-requirements.html#XML_002fSGML-requirements" title="XML/SGML requirements">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Adding-Sable-tags"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="XML_002fSGML-requirements.html#XML_002fSGML-requirements">XML/SGML requirements</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Supported-Sable-tags.html#Supported-Sable-tags">Supported Sable tags</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="XML_002fSGML-mark_002dup.html#XML_002fSGML-mark_002dup">XML/SGML mark-up</a>
+<hr>
+</div>
+
+<h3 class="section">10.3 Adding Sable tags</h3>
+
+<p>We do not yet claim that there is a fixed standard for Sable tags but
+we wish to move towards such a standard.  In the mean time we have
+made it easy in Festival to add support for new tags without, in
+general, having to change any of the core functions.
+
+   <p>Two changes are necessary to add a new tags.  First, change the
+definition in <samp><span class="file">lib/Sable.v0_2.dtd</span></samp>, so that Sable files may use it. 
+The second stage is to make Festival sensitive to that new tag.  The
+example in <code>festival/lib/sable-mode.scm</code> shows how a new text mode
+may be implemented for an XML/SGML-based markup language.  The basic
+point is that an identified function will be called on finding a start
+tag or end tags in the document.  It is the tag-function's job to
+synthesize the given utterance if the tag signals an utterance boundary. 
+The return value from the tag-function is the new status of the current
+utterance, which may remain unchanged or if the current utterance has
+been synthesized <code>nil</code> should be returned signalling a new
+utterance.
+
+   <p>Note the hierarchical structure of the document is not available in this
+method of tag-functions.  Any hierarchical state that must be preserved
+has to be done using explicit stacks in Scheme.  This is an artifact
+due to the cross relationship to utterances and tags (utterances may end
+within start and end tags), and the desire to have all specification in
+Scheme rather than C++.
+
+   <p>The tag-functions are defined in an elements list.  They are identified
+with names such as "(SABLE" and ")SABLE" denoting start and end tags
+respectively.  Two arguments are passed to these tag functions,
+an assoc list of attributes and values as specified in the document
+and the current utterances.  If the tag denotes an utterance
+break, call <code>xxml_synth</code> on <code>UTT</code> and return <code>nil</code>. 
+If a tag (start or end) is found in the document and there is no
+corresponding tag-function it is ignored.
+
+   <p>New features may be added to words with a start and end tag by
+adding features to the global <code>xxml_word_features</code>.  Any
+features in that variable will be added to each word.
+
+   <p>Note that this method may be used for both XML based lamnguages and SGML
+based markup languages (though and external normalizing SGML parser is
+required in the SGML case).  The type (XML vs SGML) is identified
+by the <code>analysis_type</code> parameter in the tts text mode specification.
+
+   </body></html>
+

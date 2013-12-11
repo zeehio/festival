@@ -1,0 +1,76 @@
+<html lang="en">
+<head>
+<title>POS tagging - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Text-analysis.html#Text-analysis" title="Text analysis">
+<link rel="next" href="Phrase-breaks.html#Phrase-breaks" title="Phrase breaks">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="POS-tagging"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Phrase-breaks.html#Phrase-breaks">Phrase breaks</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Text-analysis.html#Text-analysis">Text analysis</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">16 POS tagging</h2>
+
+<p><a name="index-part-of-speech-tagging-240"></a><a name="index-tagging-241"></a><a name="index-POS-tagging-242"></a>Part of speech tagging is a fairly well-defined process.  Festival
+includes a part of speech tagger following the HMM-type taggers as found
+in the Xerox tagger and others (e.g. <cite>DeRose88</cite>).  Part of speech
+tags are assigned, based on the probability distribution of tags given a
+word, and from ngrams of tags.  These models are externally specified
+and a Viterbi decoder is used to assign part of speech tags at run time.
+
+   <p>So far this tagger has only been used for English but there
+is nothing language specific about it.  The module <code>POS</code>
+assigns the tags.  It accesses the following variables for
+parameterization.
+     <dl>
+<dt><code>pos_lex_name</code><dd>The name of a "lexicon" holding reverse probabilities of words
+given a tag (indexed by word).  If this is unset or has the
+value <code>NIL</code> no part of speech tagging takes place. 
+<br><dt><code>pos_ngram_name</code><dd>The name of a loaded ngram model of part of speech tags (loaded
+by <code>ngram.load</code>). 
+<br><dt><code>pos_p_start_tag</code><dd>The name of the most likely tag before the start of an utterance. 
+This is typically the tag for sentence final punctuation marks. 
+<br><dt><code>pos_pp_start_tag</code><dd>The name of the most likely tag two before the start of an utterance. 
+For English the is typically a simple noun, but for other languages
+it might be a verb.  If the ngram model is bigger than three
+this tag is effectively repeated for the previous left contexts. 
+<br><dt><code>pos_map</code><dd>We have found that it is often better to use a rich tagset for
+prediction of part of speech tags but that in later use (phrase breaks
+and dictionary lookup) a much more constrained tagset is better.  Thus
+mapping of the predicted tagset to a different tagset is supported. 
+<code>pos_map</code> should be a a list of pairs consisting of a list of tags
+to be mapped and the new tag they are to be mapped to. 
+</dl>
+
+   <p>Note is it important to have the part of speech tagger match
+the tags used in later parts of the system, particularly the
+lexicon.  Only two of our lexicons used so far have
+(mappable) part of speech labels.
+
+   <p>An example of the part of speech tagger for English can be found in
+<samp><span class="file">lib/pos.scm</span></samp>.
+
+   </body></html>
+

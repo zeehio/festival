@@ -1,0 +1,116 @@
+<html lang="en">
+<head>
+<title>Labelling databases - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Building-models-from-databases.html#Building-models-from-databases" title="Building models from databases">
+<link rel="next" href="Extracting-features.html#Extracting-features" title="Extracting features">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Labelling-databases"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Extracting-features.html#Extracting-features">Extracting features</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Building-models-from-databases.html#Building-models-from-databases">Building models from databases</a>
+<hr>
+</div>
+
+<h3 class="section">26.1 Labelling databases</h3>
+
+<p><a name="index-labelling-333"></a><a name="index-database-labelling-334"></a>In order for Festival to use a database it is most useful to build
+utterance structures for each utterance in the database.  As discussed
+earlier, utterance structures contain relations of items.  Given such a
+structure for each utterance in a database we can easily read in the
+utterance representation and access it, dumping information in a
+normalised way allowing for easy building and testing of models.
+
+   <p>Of course the level of labelling that exists, or that you are willing to
+do by hand or using some automatic tool, for a particular database will
+vary.  For many purposes you will at least need phonetic labelling. 
+Hand labelled data is still better than auto-labelled data, but that
+could change.  The size and consistency of the data is important too.
+
+   <p>For this discussion we will assume labels for: segments, syllables, words,
+phrases, intonation events, pitch targets.  Some of these can be
+derived, some need to be labelled.  This would not fail with less
+labelling but of course you wouldn't be able to extract as much
+information from the result.
+
+   <p>In our databases these labels are in Entropic's Xlabel format,
+though it is fairly easy to convert any reasonable format.
+
+     <dl>
+<dt><em>Segment</em><dd><a name="index-Segment-labelling-335"></a>These give phoneme labels for files.  Note the these labels <em>must</em>
+be members of the phoneset that you will be using for this database. 
+Often phone label files may contain extra labels (e.g. beginning
+and end silence) which are not really part of the phoneset.  You
+should remove (or re-label) these phones accordingly. 
+<br><dt><em>Word</em><dd><a name="index-Word-labelling-336"></a>Again these will need to be provided.  The end of the word should
+come at the last phone in the word (or just after).  Pauses/silences
+should not be part of the word. 
+<br><dt><em>Syllable</em><dd><a name="index-Syllable-labelling-337"></a>There is a chance these can be automatically generated from
+Word and Segment files given a lexicon.  Ideally these should
+include lexical stress. 
+<br><dt><em>IntEvent</em><dd><a name="index-IntEvent-labelling-338"></a>These should ideally mark accent/boundary tone type for each syllable,
+but this almost definitely requires hand-labelling.  Also given that
+hand-labelling of accent type is harder and not as accurate, it is
+arguable that anything other than accented vs. non-accented can be used
+reliably. 
+<br><dt><em>Phrase</em><dd><a name="index-IntEvent-labelling-339"></a>This could just mark the last non-silence phone in each utterance, or
+before any silence phones in the whole utterance. 
+<br><dt><em>Target</em><dd><a name="index-Target-labelling-340"></a>This can be automatically derived from an F0 file and the Segment files. 
+A marking of the mean F0 in each voiced phone seem to give adequate
+results. 
+</dl>
+   Once these files are created an utterance file can be automatically
+created from the above data.   Note it is pretty easy to get the
+streams right but getting the relations between the streams is
+much harder.  Firstly labelling is rarely accurate and small windows of
+error must be allowed to ensure things line up properly.  The second
+problem is that some label files identify point type information
+(IntEvent and Target) while others identify segments (e.g. Segment,
+Words etc.).  Relations have to know this in order to get it right. 
+For example is not right for all syllables between two
+IntEvents to be linked to the IntEvent, only to the Syllable
+the IntEvent is within.
+
+   <p><a name="index-creating-utterances-341"></a>The script <samp><span class="file">festival/examples/make_utts</span></samp> is an example Festival script
+which automatically builds the utterance files from the above labelled
+files.
+
+   <p>The script, by default assumes, a hierarchy in an database directory
+of the following form.  Under a directory <samp><span class="file">festival/</span></samp> where
+all festival specific database ifnromation can be kept, a directory
+<samp><span class="file">relations/</span></samp> contains a subdirectory for each basic relation
+(e.g. <samp><span class="file">Segment/</span></samp>, <samp><span class="file">Syllable/</span></samp>, etc.)  Each of which contains
+the basic label files for that relation.
+
+   <p>The following command will build a set of utterance structures (including
+building hte relations that link between these basic relations).
+<pre class="example">     make_utts -phoneset radio festival/relation/Segment/*.Segment
+</pre>
+   <p>This will create utterances in <samp><span class="file">festival/utts/</span></samp>.  There are
+a number of options to <samp><span class="file">make_utts</span></samp> use <samp><span class="file">-h</span></samp> to find
+them.  The <samp><span class="file">-eval</span></samp> option allows extra scheme code to be
+loaded which may be called by the utterance building process. 
+The function <code>make_utts_user_function</code> will be called on all
+utterance created.  Redefining that in database specific loaded
+code will allow database specific fixed to the utterance.
+
+   </body></html>
+

@@ -1,0 +1,64 @@
+<html lang="en">
+<head>
+<title>Linear regression - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Tools.html#Tools" title="Tools">
+<link rel="prev" href="Viterbi-decoder.html#Viterbi-decoder" title="Viterbi decoder">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Linear-regression"></a>
+<p>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Viterbi-decoder.html#Viterbi-decoder">Viterbi decoder</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Tools.html#Tools">Tools</a>
+<hr>
+</div>
+
+<h3 class="section">25.5 Linear regression</h3>
+
+<p><a name="index-linear-regression-331"></a>The linear regression model takes models built from some external
+package and finds coefficients based on the features and weights.  A
+model consists of a list of features.  The first should be the atom
+<code>Intercept</code> plus a value.  The following in the list should consist
+of a feature (see <a href="Features.html#Features">Features</a>) followed by a weight.  An optional third
+element may be a list of atomic values.  If the result of the feature is
+a member of this list the feature's value is treated as 1 else it is 0. 
+This third argument allows an efficient way to map categorical values
+into numeric values.  For example, from the F0 prediction model in
+<samp><span class="file">lib/f2bf0lr.scm</span></samp>.  The first few parameters are
+<pre class="lisp">     (set! f2b_f0_lr_start
+     '(
+        ( Intercept 160.584956 )
+        ( Word.Token.EMPH 36.0 )
+        ( pp.tobi_accent 10.081770 (H*) )
+        ( pp.tobi_accent 3.358613 (!H*) )
+        ( pp.tobi_accent 4.144342 (*? X*? H*!H* * L+H* L+!H*) )
+        ( pp.tobi_accent -1.111794 (L*) )
+        ...
+     )
+</pre>
+   <p>Note the feature <code>pp.tobi_accent</code> returns an atom, and is hence
+tested with the map groups specified as third arguments.
+
+   <p>Models may be built from feature data (in the same format as
+<samp><span class="file">wagon</span></samp> using the <samp><span class="file">ols</span></samp> program distributed with the speech
+tools library.
+
+   </body></html>
+

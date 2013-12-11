@@ -1,0 +1,74 @@
+<html lang="en">
+<head>
+<title>Sable example - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="XML_002fSGML-mark_002dup.html#XML_002fSGML-mark_002dup" title="XML/SGML mark-up">
+<link rel="next" href="Supported-Sable-tags.html#Supported-Sable-tags" title="Supported Sable tags">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Sable-example"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Supported-Sable-tags.html#Supported-Sable-tags">Supported Sable tags</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="XML_002fSGML-mark_002dup.html#XML_002fSGML-mark_002dup">XML/SGML mark-up</a>
+<hr>
+</div>
+
+<h3 class="section">10.1 Sable example</h3>
+
+<p>Here is a simple example of Sable marked up text
+
+<pre class="example">     &lt;?xml version="1.0"?&gt;
+     &lt;!DOCTYPE SABLE PUBLIC "-//SABLE//DTD SABLE speech mark up//EN"
+           "Sable.v0_2.dtd"
+     []&gt;
+     &lt;SABLE&gt;
+     &lt;SPEAKER NAME="male1"&gt;
+     
+     The boy saw the girl in the park &lt;BREAK/&gt; with the telescope.
+     The boy saw the girl &lt;BREAK/&gt; in the park with the telescope.
+     
+     Good morning &lt;BREAK /&gt; My name is Stuart, which is spelled
+     &lt;RATE SPEED="-40%"&gt;
+     &lt;SAYAS MODE="literal"&gt;stuart&lt;/SAYAS&gt; &lt;/RATE&gt;
+     though some people pronounce it
+     &lt;PRON SUB="stoo art"&gt;stuart&lt;/PRON&gt;.  My telephone number
+     is &lt;SAYAS MODE="literal"&gt;2787&lt;/SAYAS&gt;.
+     
+     I used to work in &lt;PRON SUB="Buckloo"&gt;Buccleuch&lt;/PRON&gt; Place,
+     but no one can pronounce that.
+     
+     By the way, my telephone number is actually
+     &lt;AUDIO SRC="http://www.cstr.ed.ac.uk/~awb/sounds/touchtone.2.au"/&gt;
+     &lt;AUDIO SRC="http://www.cstr.ed.ac.uk/~awb/sounds/touchtone.7.au"/&gt;
+     &lt;AUDIO SRC="http://www.cstr.ed.ac.uk/~awb/sounds/touchtone.8.au"/&gt;
+     &lt;AUDIO SRC="http://www.cstr.ed.ac.uk/~awb/sounds/touchtone.7.au"/&gt;.
+     &lt;/SPEAKER&gt;
+     &lt;/SABLE&gt;
+</pre>
+   <p><a name="index-SABLE-DTD-120"></a><a name="index-g_t_0040file_007bSable_002ev0_005f2_002edtd_007d-121"></a>After the initial definition of the SABLE tags, through the file
+<samp><span class="file">Sable.v0_2.dtd</span></samp>, which is distributed as part of Festival, the
+body is given.  There are tags for identifying the language and the
+voice.  Explicit boundary markers may be given in text.  Also duration
+and intonation control can be explicit specified as can new
+pronunciations of words.  The last sentence specifies some external
+filenames to play at that point.
+
+   </body></html>
+

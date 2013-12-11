@@ -1,0 +1,77 @@
+<html lang="en">
+<head>
+<title>Using Sable - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="XML_002fSGML-mark_002dup.html#XML_002fSGML-mark_002dup" title="XML/SGML mark-up">
+<link rel="prev" href="XML_002fSGML-requirements.html#XML_002fSGML-requirements" title="XML/SGML requirements">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Using-Sable"></a>
+<p>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="XML_002fSGML-requirements.html#XML_002fSGML-requirements">XML/SGML requirements</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="XML_002fSGML-mark_002dup.html#XML_002fSGML-mark_002dup">XML/SGML mark-up</a>
+<hr>
+</div>
+
+<h3 class="section">10.5 Using Sable</h3>
+
+<p><a name="index-Sable-using-127"></a><a name="index-using-Sable-128"></a>Support in Festival for Sable is as a text mode.  In the command
+mode use the following to process an Sable file
+<pre class="example">     (tts "file.sable" 'sable)
+</pre>
+   <p>Also the automatic selection of mode based on file type has been set up
+such that files ending <samp><span class="file">.sable</span></samp> will be automatically synthesized in
+this mode.  Thus
+<pre class="example">     festival --tts fred.sable
+</pre>
+   <p>Will render <samp><span class="file">fred.sable</span></samp> as speech in Sable mode.
+
+   <p>Another way of using Sable is through the Emacs interface.  The
+say-buffer command will send the Emacs buffer mode to Festival as
+its tts-mode. If the Emacs mode is stml or sgml the file is treated
+as an sable file.  See <a href="Emacs-interface.html#Emacs-interface">Emacs interface</a>.
+
+   <p><a name="index-saving-Sable-waveforms-129"></a><a name="index-saving-TTS-waveforms-130"></a>Many people experimenting with Sable (and TTS in general) often want all
+the waveform output to be saved to be played at a later date.  The
+simplest way to do this is using the <samp><span class="file">text2wave</span></samp> script, It
+respects the audo mode selection so
+<pre class="example">     text2wave fred.sable -o fred.wav
+</pre>
+   <p>Note this renders the file a single waveform (done by concatenating
+the waveforms for each utterance in the Sable file).
+
+   <p>If you wish the waveform for each utterance in a file saved you can
+cause the tts process to save the waveforms during synthesis.  A
+call to
+<pre class="example">     festival&gt; (save_waves_during_tts)
+</pre>
+   <p>Any future call to <code>tts</code> will cause the waveforms to be saved in a
+file <samp><span class="file">tts_file_xxx.wav</span></samp> where <samp><span class="file">xxx</span></samp> is a number.  A call to
+<code>(save_waves_during_tts_STOP)</code> will stop saving the waves.  A
+message is printed when the waveform is saved otherwise people forget
+about this and wonder why their disk has filled up.
+
+   <p>This is done by inserting a function in <code>tts_hooks</code>
+which saves the wave.  To do other things to each utterances during
+TTS (such as saving the utterance structure), try redefining
+the function <code>save_tts_output</code> (see <code>festival/lib/tts.scm</code>).
+
+   </body></html>
+

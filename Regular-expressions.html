@@ -1,0 +1,105 @@
+<html lang="en">
+<head>
+<title>Regular expressions - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Tools.html#Tools" title="Tools">
+<link rel="next" href="CART-trees.html#CART-trees" title="CART trees">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Regular-expressions"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="CART-trees.html#CART-trees">CART trees</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Tools.html#Tools">Tools</a>
+<hr>
+</div>
+
+<h3 class="section">25.1 Regular expressions</h3>
+
+<p><a name="index-regular-expressions-323"></a><a name="index-regex-324"></a><a name="index-wild-card-matching-325"></a>Regular expressions are a formal method for describing a certain class
+of mathematical languages.  They may be viewed as patterns which match
+some set of strings.  They are very common in many software tools such
+as scripting languages like the UNIX shell, PERL, awk, Emacs etc. 
+Unfortunately the exact form of regualr expressions often differs
+slightly between different applications making their use often a little
+tricky.
+
+   <p>Festival support regular expressions based mainly of the form used in
+the GNU libg++ <code>Regex</code> class, though we have our own implementation
+of it.  Our implementation (<code>EST_Regex</code>) is actually based on Henry
+Spencer's <samp><span class="file">regex.c</span></samp> as distributed with BSD 4.4.
+
+   <p>Regular expressions are represented as character strings which
+are interpreted as regular expressions by certain Scheme
+and C++ functions.  Most characters in a regular expression are
+treated as literals and match only that character but a number
+of others have special meaning.  Some characters may be escaped
+with preceding backslashes to change them from operators to literals
+(or sometime literals to operators).
+
+     <dl>
+<dt><code>.</code><dd>Matches any character. 
+<br><dt><code>$</code><dd>matches end of string
+<br><dt><code>^</code><dd>matches beginning of string
+<br><dt><code>X*</code><dd>matches zero or more occurrences of X, X may be a character, range
+of parenthesized expression. 
+<br><dt><code>X+</code><dd>matches one or more occurrences of X, X may be a character, range
+of parenthesized expression. 
+<br><dt><code>X?</code><dd>matches zero or one occurrence of X, X may be a character, range
+of parenthesized expression. 
+<br><dt><code>[...]</code><dd>a ranges matches an of the values in the brackets.  The range
+operator "-" allows specification of ranges e.g. <code>a-z</code> for all
+lower case characters.  If the first character of the range is
+<code>^</code> then it matches anything character except those specified
+in the range.  If you wish <code>-</code> to be in the range you must
+put that first. 
+<br><dt><code>\\(...\\)</code><dd>Treat contents of parentheses as single object allowing operators
+<code>*</code>, <code>+</code>, <code>?</code> etc to operate on more than single characters. 
+<br><dt><code>X\\|Y</code><dd>matches either X or Y.  X or Y may be single characters, ranges
+or parenthesized expressions. 
+</dl>
+   Note that actuall only one backslash is needed before a character to
+escape it but because these expressions are most often contained with
+Scheme or C++ strings, the escape mechanaism for those strings requires
+that backslash itself be escaped, hence you will most often be
+required to type two backslashes.
+
+   <p>Some example may help in enderstanding the use of regular
+expressions.
+     <dl>
+<dt><code>a.b</code><dd>matches any three letter string starting with an <code>a</code> and
+ending with a <code>b</code>. 
+<br><dt><code>.*a</code><dd>matches any string ending in an <code>a</code>
+<br><dt><code>.*a.*</code><dd>matches any string containing an <code>a</code>
+<br><dt><code>[A-Z].*</code><dd>matches any string starting with a capital letter
+<br><dt><code>[0-9]+</code><dd>matches any string of digits
+<br><dt><code>-?[0-9]+\\(\\.[0-9]+\\)?</code><dd>matches any positive or negative real number.  Note the optional
+preceding minus sign and the optional part contain the point and
+following numbers.  The point itself must be escaped as dot on its
+own matches any character. 
+<br><dt><code>[^aeiouAEIOU]+</code><dd>mathes any non-empty string which doesn't conatin a vowel
+<br><dt><code>\\([Ss]at\\(urday\\)\\)?\\|\\([Ss]un\\(day\\)\\)</code><dd>matches Saturday and Sunday in various ways
+</dl>
+
+   <p>The Scheme function <code>string-matches</code> takes a string and
+a regular expression and returns <code>t</code> if the regular
+expression macthes the string and <code>nil</code> otherwise.
+
+   </body></html>
+

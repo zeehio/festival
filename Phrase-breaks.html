@@ -1,0 +1,92 @@
+<html lang="en">
+<head>
+<title>Phrase breaks - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="POS-tagging.html#POS-tagging" title="POS tagging">
+<link rel="next" href="Intonation.html#Intonation" title="Intonation">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Phrase-breaks"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Intonation.html#Intonation">Intonation</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="POS-tagging.html#POS-tagging">POS tagging</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">17 Phrase breaks</h2>
+
+<p><a name="index-phrase-breaks-243"></a>There are two methods for predicting phrase breaks in Festival, one
+simple and one sophisticated.  These two methods are selected through
+the parameter <code>Phrase_Method</code> and phrasing is achieved by the
+module <code>Phrasify</code>.
+
+   <p>The first method is by CART tree.  If parameter <code>Phrase_Method</code> is
+<code>cart_tree</code>, the CART tree in the variable <code>phrase_cart_tree</code>
+is applied to each word to see if a break should be inserted or not. 
+The tree should predict categories <code>BB</code> (for big break), <code>B</code>
+(for break) or <code>NB</code> (for no break).  A simple example of a tree to
+predict phrase breaks is given in the file <samp><span class="file">lib/phrase.scm</span></samp>.
+<pre class="lisp">     (set! simple_phrase_cart_tree
+     '
+     ((R:Token.parent.punc in ("?" "." ":"))
+       ((BB))
+       ((R:Token.parent.punc in ("'" "\"" "," ";"))
+        ((B))
+        ((n.name is 0)
+         ((BB))
+         ((NB))))))
+</pre>
+   <p>The second and more elaborate method of phrase break prediction is used
+when the parameter <code>Phrase_Method</code> is <code>prob_models</code>.  In this
+case a probabilistic model using probabilities of a break after a word
+based on the part of speech of the neighbouring words and the previous
+word.  This is combined with a ngram model of the distribution of breaks
+and non-breaks using a Viterbi decoder to find the optimal phrasing of
+the utterance.  The results using this technique are good and even show
+good results on unseen data from other researchers' phrase break tests
+(see <cite>black97b</cite>).  However sometimes it does sound wrong,
+suggesting there is still further work required.
+
+   <p>Parameters for this module are set through the feature list held
+in the variable <code>phr_break_params</code>, and example of which
+for English is set in <code>english_phr_break_params</code> in
+the file <samp><span class="file">lib/phrase.scm</span></samp>.  The features names and meaning are
+
+     <dl>
+<dt><code>pos_ngram_name</code><dd>The name of a loaded ngram that gives probability distributions of B/NB
+given previous, current and next part of speech. 
+<br><dt><code>pos_ngram_filename</code><dd>The filename containing <code>pos_ngram_name</code>. 
+<br><dt><code>break_ngram_name</code><dd>The name of a loaded ngram of B/NB distributions.  This is typically
+a 6 or 7-gram. 
+<br><dt><code>break_ngram_filename</code><dd>The filename containing <code>break_ngram_name</code>. 
+<br><dt><code>gram_scale_s</code><dd>A weighting factor for breaks in the break/non-break ngram.  Increasing
+the value insertes more breaks, reducing it causes less breaks to be
+inserted. 
+<br><dt><code>phrase_type_tree</code><dd>A CART tree that is used to predict type of break given the predict
+break position.  This (rather crude) technique is current used to
+distinguish major and minor breaks. 
+<br><dt><code>break_tags</code><dd>A list of the break tags (typically <code>(B NB)</code>). 
+<br><dt><code>pos_map</code><dd>A part of speech map used to map the <code>pos</code> feature of words
+into a smaller tagset used by the phrase predictor. 
+</dl>
+
+   </body></html>
+

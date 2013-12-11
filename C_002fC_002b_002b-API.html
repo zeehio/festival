@@ -1,0 +1,109 @@
+<html lang="en">
+<head>
+<title>C/C++ API - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="API.html#API" title="API">
+<link rel="prev" href="Server_002fclient-API.html#Server_002fclient-API" title="Server/client API">
+<link rel="next" href="C-only-API.html#C-only-API" title="C only API">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="C%2fC++-API"></a>
+<a name="C_002fC_002b_002b-API"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="C-only-API.html#C-only-API">C only API</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Server_002fclient-API.html#Server_002fclient-API">Server/client API</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="API.html#API">API</a>
+<hr>
+</div>
+
+<h3 class="section">28.4 C/C++ API</h3>
+
+<p>As well as offerening an interface through Scheme and the shell some
+users may also wish to embedd Festival within their own C++ programs. 
+A number of simply to use high level functions are available for such
+uses.
+
+   <p>In order to use Festival you must include
+<samp><span class="file">festival/src/include/festival.h</span></samp> which in turn will include the
+necessary other include files in <samp><span class="file">festival/src/include</span></samp> and
+<samp><span class="file">speech_tools/include</span></samp> you should ensure these are included in the
+include path for you your program.  Also you will need to link your
+program with <samp><span class="file">festival/src/lib/libFestival.a</span></samp>,
+<samp><span class="file">speech_tools/lib/libestools.a</span></samp>,
+<samp><span class="file">speech_tools/lib/libestbase.a</span></samp> and
+<samp><span class="file">speech_tools/lib/libeststring.a</span></samp> as well as any other optional
+libraries such as net audio.
+
+   <p>The main external functions available for C++ users of Festival
+are.
+     <dl>
+<dt><code>void festival_initialize(int load_init_files,int heapsize);</code><dd>This must be called before any other festival functions may be called. 
+It sets up the synthesizer system.  The first argument if true,
+causes the system set up files to be loaded (which is normally
+what is necessary), the second argument is the initial size of the
+Scheme heap, this should normally be 210000 unless you envisage
+processing very large Lisp structures. 
+<br><dt><code>int festival_say_file(const EST_String &amp;filename);</code><dd>Say the contents of the given file.  Returns <code>TRUE</code> or <code>FALSE</code>
+depending on where this was successful. 
+<br><dt><code>int festival_say_text(const EST_String &amp;text);</code><dd>Say the contents of the given string.  Returns <code>TRUE</code> or <code>FALSE</code>
+depending on where this was successful. 
+<br><dt><code>int festival_load_file(const EST_String &amp;filename);</code><dd>Load the contents of the given file and evaluate its contents as
+Lisp commands.  Returns <code>TRUE</code> or <code>FALSE</code>
+depending on where this was successful. 
+<br><dt><code>int festival_eval_command(const EST_String &amp;expr);</code><dd>Read the given string as a Lisp command and evaluate it.  Returns
+<code>TRUE</code> or <code>FALSE</code> depending on where this was successful. 
+<br><dt><code>int festival_text_to_wave(const EST_String &amp;text,EST_Wave &amp;wave);</code><dd>Synthesize the given string into the given wave.  Returns <code>TRUE</code> or
+<code>FALSE</code> depending on where this was successful. 
+</dl>
+   Many other commands are also available but often the above will be
+sufficient.
+
+   <p>Below is a simple top level program that uses the Festival
+functions
+<pre class="lisp">     int main(int argc, char **argv)
+     {
+         EST_Wave wave;
+         int heap_size = 210000;  // default scheme heap size
+         int load_init_files = 1; // we want the festival init files loaded
+     
+         festival_initialize(load_init_files,heap_size);
+     
+         // Say simple file
+         festival_say_file("/etc/motd");
+     
+         festival_eval_command("(voice_ked_diphone)");
+         // Say some text;
+         festival_say_text("hello world");
+     
+         // Convert to a waveform
+         festival_text_to_wave("hello world",wave);
+         wave.save("/tmp/wave.wav","riff");
+     
+         // festival_say_file puts the system in async mode so we better
+         // wait for the spooler to reach the last waveform before exiting
+         // This isn't necessary if only festival_say_text is being used (and
+         // your own wave playing stuff)
+         festival_wait_for_spooler();
+     
+         return 0;
+     }
+</pre>
+   </body></html>
+

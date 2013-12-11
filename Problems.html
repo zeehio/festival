@@ -1,0 +1,75 @@
+<html lang="en">
+<head>
+<title>Problems - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Examples.html#Examples" title="Examples">
+<link rel="next" href="References.html#References" title="References">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Problems"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="References.html#References">References</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Examples.html#Examples">Examples</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">30 Problems</h2>
+
+<p>There will be many problems with Festival, both in installation
+and running it.  It is a young system and there is a lot to it. 
+We believe the basic design is sound and problems will be features
+that are missing or incomplete rather than fundamental ones.
+
+   <p>We are always open to suggestions on how to improve it and fix problems,
+we don't guarantee we'll have the time to fix problems but we are
+interested in hearing what problems you have.
+
+   <p>Before you smother us with mail here is an incomplete
+list of general problems we have already identified
+     <ul>
+<li>The more documentation we write the more we realize how much more
+documentation is required.  Most of the Festival documentation was
+written by someone who knows the system very well, and makes many
+English mistakes.  A good re-write by some one else would be a good
+start. 
+<li>The system is far too slow.  Although machines are getting faster, it
+still takes too long to start the system and get it to speak some
+given text.  Even so, on reasonable machines, Festival can generate
+the speech several times faster than it takes to say it.  But even if
+it is five time faster, it will take 2 seconds to generate a 10 second
+utterance.  A 2 second wait is too long.  Faster machines would improve
+this but a change in design is a better solution. 
+<li>The system is too big.  It takes a long time to compile even on quite
+large machines, and its foot print is still in the 10s of megabytes as
+is the run-time requirement.  Although we have spent some time trying
+to fix this (optional modules have made the possibility of building
+a much smaller binary) we haven't done enough yet. 
+<li>The signal quality of the voices isn't very good by today's standard of
+synthesizers, even given the improvement quality since the last release. 
+This is partly our fault in not spending the time (or perhaps also not
+having enough expertise) on the low-level waveform synthesis parts of
+the system.  This will improve in the future with better signal
+processing (under development) and better synthesis techniques (also
+under development). 
+</ul>
+
+   </body></html>
+

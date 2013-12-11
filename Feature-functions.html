@@ -1,0 +1,259 @@
+<html lang="en">
+<head>
+<title>Feature functions - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="References.html#References" title="References">
+<link rel="next" href="Variable-list.html#Variable-list" title="Variable list">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Feature-functions"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Variable-list.html#Variable-list">Variable list</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="References.html#References">References</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">32 Feature functions</h2>
+
+<p><a name="index-features-375"></a>This chapter contains a list of a basic feature functions available for
+stream items in utterances.  See <a href="Features.html#Features">Features</a>.  These are the basic
+features, which can be combined with relative features (such as
+<code>n.</code> for next, and relations to follow links).  Some of these
+features are implemented as short C++ functions (e.g. <code>asyl_in</code>)
+while others are simple features on an item (e.g. <code>pos</code>).  Note
+that functional feature take precidence over simple features, so
+accessing and feature called "X" will always use the function called "X"
+even if a the simple feature call "X" exists on the item.
+
+   <p>Unlike previous versions there are no features that are builtin on all
+items except <code>addr</code> (reintroduced in 1.3.1) which returns a unique
+string for that item (its the hex address on teh item within the
+machine).  Features may be defined through Scheme too, these all have
+the prefix <code>lisp_</code>.
+
+   <p>The feature functions are listed in the form <var>Relation.name</var> where
+<var>Relation</var> is the name of the stream that the function is
+appropriate to and <var>name</var> is its name.  Note that you will not
+require the <var>Relation</var> part of the name if the stream item you are
+applying the function to is of that type.
+
+     <dl>
+<dt><code>ANY.addr</code><dd>Returned by popular demand, returns the address of given item that
+is guaranteed unique for this session. 
+<br><dt><code>ANY.lisp_*</code><dd>Apply Lisp function named after lisp_.  The function is called with
+an stream item.  It must return an atomic value. 
+This method may be inefficient and is primarily desgined to allow
+quick prototyping of new feature functions. 
+<br><dt><code>Intonation.lisp_last_tilt_accent</code><dd>Returns the most recent tilt accent. 
+<br><dt><code>Intonation.lisp_last_tilt_boundary</code><dd>Returns the most recent tilt boundary. 
+<br><dt><code>Intonation.lisp_next_tilt_accent</code><dd>Returns the next tilt accent. 
+<br><dt><code>Intonation.lisp_next_tilt_boundary</code><dd>Returns the next tilt boundary. 
+<br><dt><code>Intonation.peak_anchor_segment_type ie</code><dd>Determines whether the segment anchor for a peak
+is the first consonant of a syl - C0 -, the
+vowel of a syl - V0 -, or segments after that
+- C1-&gt;X,V1-&gt;X. If the segment is in a following syl,
+the return value will be preceded by a 1 - e.g. 1V1
+<br><dt><code>Segment.diphone_phone_name</code><dd>This is produced by the diphone module to contain the desired phone
+name for the desired diphone.  This adds things like _ if part of
+a consonant or $ to denote syllable boundaries.  These are generated
+on a per voice basis by function(s) specified by diphone_module_hooks. 
+Identification of dark ll's etc. may also be included.  Note this is not
+necessarily the name of the diphone selected as if it is not found
+some of these characters will be removed and fall back values will be
+used. 
+<br><dt><code>Segment.lisp_pos_in_syl seg</code><dd>Finds the position in a syllable of a segment - returns a number. 
+<br><dt><code>Segment.ph_*</code><dd>Access phoneset features for a segment.  This definition covers multiple
+feature functions where ph_ may be extended with any features that
+are defined in the phoneset (e.g. vc, vlng, cplace etc.). 
+<br><dt><code>Segment.pos_in_syl</code><dd>The position of this segment in the syllable it is related to.  The index
+counts from 0.  If this segment is not related to a syllable this
+returns 0. 
+<br><dt><code>Segment.seg_coda_fric</code><dd>Returns 1 if coda of the syllable this segment is in contains a fricative. 
+0 otherwise. 
+<br><dt><code>Segment.seg_onset_stop</code><dd>Returns 1 if onset of the syllable this segment is in contains a stop. 
+0 otherwise. 
+<br><dt><code>Segment.seg_onsetcoda</code><dd>Returns onset if this segment is before the vowel in the syllable it
+is contained within.  Returns coda if it is the vowel or after.  If
+the segment is not in a syllable it returns onset. 
+<br><dt><code>Segment.seg_pitch</code><dd>Pitch at the middle of this segment. 
+<br><dt><code>Segment.segment_duration</code><dd>The duration of the given stream item calculated as the end of this
+item minus the end of the previous item in the Segment relation. 
+<br><dt><code>Segment.segment_end</code><dd>The end time of the given segment. 
+<br><dt><code>Segement.segment_mid</code><dd>The middle time of the given segment. 
+<br><dt><code>Segement.segment_start</code><dd>The start time of the given segment. 
+<br><dt><code>Segment.syl_final</code><dd>Returns 1 if this segment is the last segment in the syllable it
+is related to, or if it is not related to any syllable. 
+<br><dt><code>Segment.syl_initial</code><dd>Returns 1 if this segment is the first segment in the syllable it
+is related to, or if it is not related to any syllable. 
+<br><dt><code>Syllable.accented</code><dd>Returns 1 if syllable is accented, 0 otherwise.  A syllable is
+accented if there is at least one IntEvent related to it. 
+<br><dt><code>Syllable.asyl_in</code><dd>Returns number of accented syllables since last phrase break, not
+including this one.  Accentedness is as defined by the syl_accented
+feature. 
+<br><dt><code>Syllable.asyl_out</code><dd>Returns number of accented syllables to the next phrase break, not
+including this one.  Accentedness is as defined by the syl_accented
+feature. 
+<br><dt><code>Syllable.last_accent</code><dd>Returns the number of syllables since last accented syllable. 
+<br><dt><code>Syllable.lisp_last_stress</code><dd>Number of syllables from previous stressed syllable.  0 if this syllable
+is stressed.  It is effectively assumed that the syllable before the
+first syllable is stressed. 
+<br><dt><code>Syllable.lisp_next_stress</code><dd>Number of syllables to next stressed syllable. 0 if this syllable is
+stressed.  It is effectively assumed the syllable after the last syllable
+is stressed. 
+<br><dt><code>Syllable.lisp_tilt_accent</code><dd>Returns "a" if there is a tilt accent related to this syllable, 0
+otherwise. 
+<br><dt><code>Syllable.lisp_tilt_accented</code><dd>Returns 1 if there is a tilt accent related to this syllable, 0
+otherwise. 
+<br><dt><code>Syllable.lisp_tilt_boundaried</code><dd>Returns 1 if there is a tilt boundary related to this syllable, 0
+otherwise. 
+<br><dt><code>Syllable.lisp_tilt_boundary</code><dd>Returns boundary label if there is a tilt boundary related to this
+syllable, 0 otherwise. 
+<br><dt><code>Syllable.lisp_time_to_next_vowel syl</code><dd>The time from vowel_start to next vowel_start
+<br><dt><code>Syllable.next_accent</code><dd>Returns the number of syllables to the next accented syllable. 
+<br><dt><code>Syllable.old_syl_break</code><dd>Like syl_break but 2 and 3 are promoted to 4 (to be compatible with
+some older models. 
+<br><dt><code>Syllable.pos_in_word</code><dd>The position of this syllable in the word it is related to.  The index
+counts from 0.  If this syllable is not related to a word then 0 is
+returned. 
+<br><dt><code>Syllable.position_type</code><dd>The type of syllable with respect to the word it it related to.  This
+may be any of: single for single syllable words, initial for word
+initial syllables in a poly-syllabic word, final for word final
+syllables in poly-syllabic words, and mid for syllables within
+poly-syllabic words. 
+<br><dt><code>Syllable.ssyl_in</code><dd>Returns number of stressed syllables since last phrase break, not
+including this one. 
+<br><dt><code>Syllable.ssyl_out</code><dd>Returns number of stressed syllables to next phrase break, not including
+this one. 
+<br><dt><code>Syllable.stress</code><dd>The lexical stress of the syllable as specified from the lexicon entry
+corresponding to the word related to this syllable. 
+<br><dt><code>Syllable.sub_phrases</code><dd>Returns the number of non-major phrase breaks since last major
+phrase break.  Major phrase breaks are 4, as returned by syl_break,
+minor phrase breaks are 2 and 3. 
+<br><dt><code>Syllable.syl_accent</code><dd>Returns the name of the accent related to the syllable.  NONE is returned
+if there are no accents, and multi is returned if there is more than one. 
+<br><dt><code>Syllable.syl_break</code><dd>The break level after this syllable.  Word internal is syllables
+return 0, non phrase final words return 1.  Final syllables in
+phrase final words return the name of the phrase they are related to. 
+Note the occasional "-" that may appear of phrase names is removed
+so that this feature function returns a number in the range 0,1,2,3,4. 
+<br><dt><code>Syllable.syl_coda_type</code><dd>Return the van Santen and Hirschberg classification. -V for unvoiced,
++V-S for voiced but no sonorants, and +S for sonorants. 
+<br><dt><code>Syllable.syl_codasize</code><dd>Returns the number of segments after the vowel in this syllable.  If
+there is no vowel in the syllable this will return the total number
+of segments in the syllable. 
+<br><dt><code>Syllable.syl_endpitch</code><dd>Pitch at the end of this syllable. 
+<br><dt><code>Syllable.syl_in</code><dd>Returns number of syllables since last phrase break.  This is 0 if
+this syllable is phrase initial. 
+<br><dt><code>Syllable.syl_midpitch</code><dd>Pitch at the mid vowel of this syllable. 
+<br><dt><code>Syllable.syl_numphones</code><dd>Returns number of phones in syllable. 
+<br><dt><code>Syllable.syl_onset_type</code><dd>Return the van Santen and Hirschberg classification. -V for unvoiced,
++V-S for voiced but no sonorants, and +S for sonorants. 
+<br><dt><code>Syllable.syl_onsetsize</code><dd>Returns the number of segments before the vowel in this syllable.  If
+there is no vowel in the syllable this will return the total number
+of segments in the syllable. 
+<br><dt><code>Syllable.syl_out</code><dd>Returns number of syllables to next phrase break.  This is 0 if
+this syllable is phrase final. 
+<br><dt><code>Syllable.syl_pc_unvox</code><dd>Percentage of total duration of unvoiced segments from
+start of syllable. (i.e. percentage to start of first voiced segment)
+<br><dt><code>Syllable.syl_startpitch</code><dd>Pitch at the start of this syllable. 
+<br><dt><code>Syllable.syl_vowel</code><dd>Returns the name of the vowel within this syllable.  Note this is not
+the general form you probably want.  You can't refer to ph_* features
+of this.  Returns "novowel" is no vowel can be found. 
+<br><dt><code>Syllable.syl_vowel_start</code><dd>Start position of vowel in syllable.  If there is no vowel the start
+position of the syllable is returned. 
+<br><dt><code>Syllable.syllable_duration</code><dd>The duration of the given stream item calculated as the end of last
+daughter minus the end of previous item in the Segment relation of the
+first duaghter. 
+<br><dt><code>Syllable.syllable_end</code><dd>The end time of the given syllable. 
+<br><dt><code>Syllable.syllable_start</code><dd>The start time of the given syllable. 
+<br><dt><code>Syllable.tobi_accent</code><dd>Returns the ToBI accent related to syllable.  ToBI accents are
+those which contain a *.  NONE is returned if there are none.  If
+there is more than one ToBI accent related to this syllable the
+first one is returned. 
+<br><dt><code>Syllable.tobi_endtone</code><dd>Returns the ToBI endtone related to syllable.  ToBI end tones are
+those IntEvent labels which contain a % or a - (i.e. end tones or
+phrase accents).  NONE is returned if there are none.  If
+there is more than one ToBI end tone related to this syllable the
+first one is returned. 
+<br><dt><code>Syllable.lisp_get_onset_length</code><dd>Length from start of syllable to start of vowel. 
+<br><dt><code>Syllable.lisp_get_rhyme_length</code><dd>Length from start of the vowel to end of syllable. 
+<br><dt><code>SylStructure.lisp_length_to_last_seg</code><dd>Length from start of the vowel to start of last segment of syllable. 
+<br><dt><code>SylStructure.lisp_num_postvocalic_c</code><dd>Finds the number of postvocalic consonants in a syllable. 
+<br><dt><code>SylStructure.sonority_scale_coda syl</code><dd>Returns value on sonority scale (1 -6, where 6 is most sonorous)
+for the coda of a syllable, based on least sonorant portion. 
+<br><dt><code>SylStructure.sonority_scale_onset syl</code><dd>Returns value on sonority scale (1 -6, where 6 is most sonorous)
+for the onset of a syllable, based on least sonorant portion. 
+<br><dt><code>SylStructure.lisp_syl_numphones syl</code><dd>Finds the number segments in a syllable. 
+<br><dt><code>SylStructure.vowel_frontness syl</code><dd>Classifies vowels as front, back or mid
+<br><dt><code>SylStructure.lisp_vowel_height syl</code><dd>Classifies vowels as high, low or mid
+<br><dt><code>SylStructure.vowel_length syl</code><dd>Returns the df.length feature of a syllable's vowel
+<br><dt><code>Token.prepunctuation</code><dd>Preceeding puctuation symbol found before token in original string/file. 
+<br><dt><code>Token.punc</code><dd>Succeeding punctuation symbol found after token in original
+string/file. 
+<br><dt><code>Token.whitespace</code><dd>Whitespace found before token in original string/file. 
+<br><dt><code>Word.blevel</code><dd>A crude translation of phrase break into ToBI like phrase level. 
+Values may be 0,1,2,3,4. 
+<br><dt><code>Word.cap</code><dd>Returns 1 if this word starts with a capital letter, 0 otherwise. 
+<br><dt><code>Word.content_words_in</code><dd>Number of content words from start this phrase. 
+<br><dt><code>Word.content_words_out</code><dd>Number of content words to end of this phrase. 
+<br><dt><code>Word.contentp</code><dd>Returns 1 if this word is a content word as defined by gpos, 0 otherwise. 
+<br><dt><code>Word.gpos</code><dd>Returns a guess at the part of speech of this word.  The lisp a-list
+guess_pos is used to load up this word.  If no part of speech is
+found in there "content" is returned.  This allows a quick efficient
+method for part of speech tagging into closed class and content words. 
+<br><dt><code>Word.n_content</code><dd>Next content word.  Note this doesn't use the standard n. notation as
+it may have to search a number of words forward before finding a
+non-function word.  Uses gpos to define content/function word distinction. 
+This also works for Tokens. 
+<br><dt><code>Word.nn_content</code><dd>Next next content word.  Note this doesn't use the standard n.n. notation
+as it may have to search a number of words forward before finding the
+second non-function word.  Uses gpos to define content/function word
+distinction.  This also works for Tokens. 
+<br><dt><code>Word.num_break</code><dd>1 if this is the last word in a numeric token and it is followed by
+a numeric token. 
+<br><dt><code>Word.p_content</code><dd>Previous content word.  Note this doesn't use the standard p. notation
+as it may have to search a number of words backward before finding the
+first non-function word.  Uses gpos to define content/function word
+distinction.  This also works for Tokens. 
+<br><dt><code>Word.pbreak</code><dd>Result from statistical phrasing module, may be B or NB denoting
+phrase break or non-phrase break after the word. 
+<br><dt><code>Word.pbreak_score</code><dd>Log likelihood score from statistical phrasing module, for pbreak
+value. 
+<br><dt><code>Word.pos</code><dd>Part of speech tag value returned by the POS tagger module. 
+<br><dt><code>Word.pos_in_phrase</code><dd>The position of this word in the phrase this word is in. 
+<br><dt><code>Word.pos_score</code><dd>Part of speech tag log likelihood from Viterbi search. 
+<br><dt><code>Word.pp_content</code><dd>Previous previous content word.  Note this doesn't use the standard p.p. 
+notation as it may have to search a number of words backward before
+finding the first non-function word.  Uses gpos to define
+content/function word distinction.  This also works for Tokens. 
+<br><dt><code>Word.word_break</code><dd>The break level after this word.  Non-phrase final words return 1
+Phrase final words return the name of the phrase they are in. 
+<br><dt><code>Word.word_duration</code><dd>The duration of the given stream item.  This is defined as the end of
+last segment in the last syllable (via the SylStructure relation) minus
+the segment immediate preceding the first segment in the first syllable. 
+<br><dt><code>Word.word_end</code><dd>The end time of the given word. 
+<br><dt><code>Word.word_numsyls</code><dd>Returns number of syllables in a word. 
+<br><dt><code>Word.word_start</code><dd>The start time of the given word. 
+<br><dt><code>Word.words_out</code><dd>Number of words to end of this phrase. 
+</dl>
+
+   </body></html>
+

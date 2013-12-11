@@ -1,0 +1,185 @@
+<html lang="en">
+<head>
+<title>Audio output - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Other-synthesis-methods.html#Other-synthesis-methods" title="Other synthesis methods">
+<link rel="next" href="Voices.html#Voices" title="Voices">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Audio-output"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Voices.html#Voices">Voices</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Other-synthesis-methods.html#Other-synthesis-methods">Other synthesis methods</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">23 Audio output</h2>
+
+<p><a name="index-audio-output-288"></a>If you have never heard any audio ever on your machine then you must
+first work out if you have the appropriate hardware.  If you do, you
+also need the appropriate software to drive it.  Festival can directly
+interface with a number of audio systems or use external
+methods for playing audio.
+
+   <p>The currently supported audio methods are
+     
+<a name="index-NAS-289"></a>
+<a name="index-netaudio-290"></a>
+<dl><dt>&lsquo;<samp><span class="samp">NAS</span></samp>&rsquo;<dd>NCD's NAS, is a network transparent audio system (formerly called
+netaudio).  If you already run servers on your machines you
+simply need to ensure your <code>AUDIOSERVER</code> environment variable
+is set (or your <code>DISPLAY</code> variable if your audio output device is the
+same as your X Windows display). 
+You may set NAS as your audio output method by the command
+     <pre class="lisp">          (Parameter.set 'Audio_Method 'netaudio)
+</pre>
+     <p><a name="index-g_t_0040file_007b_002fdev_002faudio_007d-291"></a><a name="index-sunaudio-292"></a><br><dt>&lsquo;<samp><span class="samp">/dev/audio</span></samp>&rsquo;<dd>On many systems <samp><span class="file">/dev/audio</span></samp> offers a simple low level method for
+audio output.  It is limited to mu-law encoding at 8KHz.  Some
+implementations of <samp><span class="file">/dev/audio</span></samp> allow other sample rates and sample
+types but as that is non-standard this method only uses the common
+format.  Typical systems that offer these are Suns, Linux and FreeBSD
+machines.  You may set direct <samp><span class="file">/dev/audio</span></samp> access as your audio
+method by the command
+     <pre class="lisp">          (Parameter.set 'Audio_Method 'sunaudio)
+</pre>
+     <p><a name="index-g_t_0040file_007b_002fdev_002faudio_007d-293"></a><a name="index-sun16-294"></a><br><dt>&lsquo;<samp><span class="samp">/dev/audio (16bit)</span></samp>&rsquo;<dd>Later Sun Microsystems workstations support 16 bit
+linear audio at various sample rates.  Support for this form
+of audio output is supported.  It is a compile time option (as
+it requires include files that only exist on Sun machines.  If
+your installation supports it (check the members of the list
+<code>*modules*</code>) you can select 16 bit audio output on
+Suns by the command
+     <pre class="lisp">          (Parameter.set 'Audio_Method 'sun16audio)
+</pre>
+     <p>Note this will send it to the local machine where the festival binary
+is running, this might not be the one you are sitting next to&mdash;that's
+why we recommend netaudio.  A hacky solution to playing audio on a local
+machine from a remote machine without using netaudio is described
+in <a href="Installation.html#Installation">Installation</a>
+<br><dt>&lsquo;<samp><span class="samp">/dev/dsp (voxware)</span></samp>&rsquo;<dd><a name="index-g_t_0040file_007b_002fdev_002fdsp_007d-295"></a><a name="index-Linux-296"></a><a name="index-FreeBSD-297"></a><a name="index-voxware-298"></a>Both FreeBSD and Linux have a very similar audio interface through
+<samp><span class="file">/dev/dsp</span></samp>.  There is compile time support for these in the speech
+tools and when compiled with that option Festival may utilise it. 
+Check the value of the variable <code>*modules*</code> to see which audio
+devices are directly supported.  On FreeBSD, if supported, you
+may select local 16 bit linear audio by the command
+     <pre class="lisp">          (Parameter.set 'Audio_Method 'freebsd16audio)
+</pre>
+     <p>While under Linux, if supported, you may use the command
+     <pre class="lisp">          (Parameter.set 'Audio_Method 'linux16audio)
+</pre>
+     <p>Some earlier (and smaller machines) only have 8bit audio even though
+they include a <samp><span class="file">/dev/dsp</span></samp> (Soundblaster PRO for example).  This was
+not dealt with properly in earlier versions of the system but now the
+support automatically checks to see the sample width supported and uses
+it accordingly.  8 bit at higher frequencies than 8K sounds better than
+straight 8k ulaw so this feature is useful.
+
+     <p><a name="index-Windows-NT-audio-299"></a><a name="index-Windows-95-audio-300"></a><br><dt>&lsquo;<samp><span class="samp">mplayer</span></samp>&rsquo;<dd>Under Windows NT or 95 you can use the <samp><span class="file">mplayer</span></samp> command which
+we have found requires special treatement to get its parameters right. 
+Rather than using <code>Audio_Command</code> you can select this on
+Windows machine with the following command
+     <pre class="lisp">          (Parameter.set 'Audio_Method 'mplayeraudio)
+</pre>
+     <p>Alternatively built-in audio output is available with
+     <pre class="lisp">          (Parameter.set 'Audio_Method 'win32audio)
+</pre>
+     <p><a name="index-IRIX-301"></a><a name="index-SGI-302"></a><br><dt>&lsquo;<samp><span class="samp">SGI IRIX</span></samp>&rsquo;<dd>Builtin audio output is now available for SGI's IRIX 6.2 using
+the command
+     <pre class="lisp">          (Parameter.set 'Audio_Method 'irixaudio)
+</pre>
+     <p><a name="index-audio-command-303"></a><br><dt>&lsquo;<samp><span class="samp">Audio Command</span></samp>&rsquo;<dd>Alternatively the user can provide a command that can play an audio
+file.  Festival will execute that command in an environment where the
+shell variables <code>SR</code> is set to the sample rate (in Hz) and
+<code>FILE</code> which, by default, is the name of an unheadered raw, 16bit
+file containing the synthesized waveform in the byte order of the
+machine Festival is running on.  You can specify your audio play command
+and that you wish Festival to execute that command through the following
+command
+     <pre class="lisp">          (Parameter.set 'Audio_Command "sun16play -f $SR $FILE")
+          (Parameter.set 'Audio_Method 'Audio_Command)
+</pre>
+     <p>On SGI machines under IRIX the equivalent would be
+     <pre class="lisp">          (Parameter.set 'Audio_Command
+                     "sfplay -i integer 16 2scomp rate $SR end $FILE")
+          (Parameter.set 'Audio_Method 'Audio_Command)
+</pre>
+     </dl>
+   The <code>Audio_Command</code> method of playing waveforms Festival supports
+two additional audio parameters. <code>Audio_Required_Rate</code> allows you
+to use Festival's internal sample rate conversion function to any desired
+rate.  Note this may not be as good as playing the waveform at the
+sample rate it is originally created in, but as some hardware devices
+are restrictive in what sample rates they support, or have naive
+resample functions this could be optimal.  The second additional
+audio parameter is <code>Audio_Required_Format</code> which can be
+used to specify the desired output forms of the file.  The default
+is unheadered raw, but this may be any of the values supported by
+the speech tools (including nist, esps, snd, riff, aiff, audlab, raw
+and, if you really want it, ascii).  For example suppose you
+have a program that only plays sun headered files at 16000 KHz you can
+set up audio output as
+<pre class="lisp">     (Parameter.set 'Audio_Method 'Audio_Command)
+     (Parameter.set 'Audio_Required_Rate 16000)
+     (Parameter.set 'Audio_Required_Format 'snd)
+     (Parameter.set 'Audio_Command "sunplay $FILE")
+</pre>
+   <p><a name="index-audio-devices-304"></a>Where the audio method supports it, you can specify an alternative audio
+device for machines that have more than one audio device.
+<pre class="lisp">     (Parameter.set 'Audio_Device "/dev/dsp2")
+</pre>
+   <p><a name="index-remote-audio-305"></a><a name="index-snack-306"></a>If Netaudio is not available and you need to play audio on a
+machine different from teh one Festival is running on we have
+had reports that <samp><span class="file">snack</span></samp> (<a href="http://www.speech.kth.se/snack/">http://www.speech.kth.se/snack/</a>)
+is a possible solution.  It allows remote play but importnatly
+also supports Windows 95/NT based clients.
+
+   <p><a name="index-audio-spooler-307"></a><a name="index-asynchronous-synthesis-308"></a>Because you do not want to wait for a whole file to be synthesized
+before you can play it, Festival also offers an <em>audio spooler</em>
+that allows the playing of audio files while continuing to synthesize
+the following utterances.  On reasonable workstations this allows the
+breaks between utterances to be as short as your hardware allows them
+to be.
+
+   <p>The audio spooler may be started by selecting asynchronous
+mode
+<pre class="lisp">     (audio_mode 'async)
+</pre>
+   <p>This is switched on by default be the function <code>tts</code>. 
+You may put Festival back into synchronous mode (i.e. the <code>utt.play</code>
+command will wait until the audio has finished playing before returning). 
+by the command
+<pre class="lisp">     (audio_mode 'sync)
+</pre>
+   <p>Additional related commands are
+     <dl>
+<dt><code>(audio_mode 'close)</code><dd>Close the audio server down but wait until it is cleared.  This is
+useful in scripts etc. when you wish to only exit when all audio is
+complete. 
+<br><dt><code>(audio_mode 'shutup)</code><dd>Close the audio down now, stopping the current file being played and
+any in the queue.  Note that this may take some time to take effect
+depending on which audio method you use.  Sometimes there can be
+100s of milliseconds of audio in the device itself which cannot
+be stopped. 
+<br><dt><code>(audio_mode 'query)</code><dd>Lists the size of each waveform currently in the queue. 
+</dl>
+
+   </body></html>
+

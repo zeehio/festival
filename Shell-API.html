@@ -1,0 +1,65 @@
+<html lang="en">
+<head>
+<title>Shell API - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="API.html#API" title="API">
+<link rel="prev" href="Scheme-API.html#Scheme-API" title="Scheme API">
+<link rel="next" href="Server_002fclient-API.html#Server_002fclient-API" title="Server/client API">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Shell-API"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Server_002fclient-API.html#Server_002fclient-API">Server/client API</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Scheme-API.html#Scheme-API">Scheme API</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="API.html#API">API</a>
+<hr>
+</div>
+
+<h3 class="section">28.2 Shell API</h3>
+
+<p><a name="index-shell-programming-356"></a>The simplest use of Festival (though not the most powerful) is
+simply using it to directly render text files as speech.  Suppose
+we have a file <samp><span class="file">hello.txt</span></samp> containing
+<pre class="lisp">     Hello world.  Isn't it excellent weather
+     this morning.
+</pre>
+   <p>We can simply call Festival as
+<pre class="lisp">     unix$ festival --tts hello.txt
+</pre>
+   <p>Or for even simpler one-off phrases
+<pre class="lisp">     unix$ echo "hello " | festival --tts
+</pre>
+   <p>This is easy to use but you will need to wait for Festival to start up
+and initialise its databases before it starts to render the text as
+speech.  This may take several seconds on some machines.  A socket based
+server mechanism is provided in Festival which will allow a single
+server process to start up once and be used efficiently by multiple
+client programs.
+
+   <p>Note also the use of Sable for marked up text, see <a href="XML_002fSGML-mark_002dup.html#XML_002fSGML-mark_002dup">XML/SGML mark-up</a>. 
+Sable allows various forms of additional information in text, such as
+phrasing, emphasis, pronunciation, as well as changing voices, and
+inclusion of external waveform files (i.e. random noises).  For many
+application this will be the preferred interface method.  Other text
+modes too are available through the command line by using
+<code>auto-text-mode-alist</code>.
+
+   </body></html>
+

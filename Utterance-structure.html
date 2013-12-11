@@ -1,0 +1,134 @@
+<html lang="en">
+<head>
+<title>Utterance structure - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Utterances.html#Utterances" title="Utterances">
+<link rel="next" href="Utterance-types.html#Utterance-types" title="Utterance types">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Utterance-structure"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Utterance-types.html#Utterance-types">Utterance types</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Utterances.html#Utterances">Utterances</a>
+<hr>
+</div>
+
+<h3 class="section">14.1 Utterance structure</h3>
+
+<p><a name="index-utterance-187"></a><a name="index-TTS-processes-188"></a>Festival's basic object for synthesis is the <em>utterance</em>.  An
+represents some chunk of text that is to be rendered as speech.  In
+general you may think of it as a sentence but in many cases it wont
+actually conform to the standard linguistic syntactic form of a
+sentence.  In general the process of text to speech is to take an
+utterance which contains a simple string of characters and convert it
+step by step, filling out the utterance structure with more information
+until a waveform is built that says what the text contains.
+
+   <p>The processes involved in conversion are, in general, as follows
+     <dl>
+<dt><em>Tokenization</em><dd>Converting the string of characters into a list of tokens.  Typically
+this means whitespace separated tokesn of the original text string. 
+<br><dt><em>Token identification</em><dd>identification of general types for the tokens, usually this is trivial
+but requires some work to identify tokens of digits as years, dates,
+numbers etc. 
+<br><dt><em>Token to word</em><dd>Convert each tokens to zero or more words, expanding numbers,
+abbreviations etc. 
+<br><dt><em>Part of speech</em><dd>Identify the syntactic part of speech for the words. 
+<br><dt><em>Prosodic phrasing</em><dd>Chunk utterance into prosodic phrases. 
+<br><dt><em>Lexical lookup</em><dd>Find the pronucnation of each word from a lexicon/letter to sound
+rule system including phonetic and syllable structure. 
+<br><dt><em>Intonational accents</em><dd>Assign intonation accents to approrpiate syllables. 
+<br><dt><em>Assign duration</em><dd>Assign duration to each phone in the utterance. 
+<br><dt><em>Generate F0 contour (tune)</em><dd>Generate tune based on accents etc. 
+<br><dt><em>Render waveform</em><dd>Render waveform from phones, duration and F) target values, this
+itself may take several steps including unit selection (be they
+diphones or other sized units), imposition of dsesired prosody
+(duration and F0) and waveform reconstruction. 
+</dl>
+   The number of steps and what actually happens may vary and is dependent
+on the particular voice selected and the utterance's <em>type</em>,
+see below.
+
+   <p>Each of these steps in Festival is achived by a <em>module</em> which
+will typically add new information to the utterance structure.
+
+   <p><a name="index-Utterance-structure-189"></a><a name="index-Items-190"></a><a name="index-Relations-191"></a>An utterance structure consists of a set of <em>items</em> which may be
+part of one or more <em>relations</em>.  Items represent things like words
+and phones, though may also be used to represent less concrete objects
+like noun phrases, and nodes in metrical trees.  An item contains a set
+of features, (name and value).  Relations are typically simple lists of
+items or trees of items.  For example the the <code>Word</code> relation is a
+simple list of items each of which represent a word in the utterance. 
+Those words will also be in other relations, such as the
+<em>SylStructure</em> relation where the word will be the top of a tree
+structure containing its syllables and segments.
+
+   <p>Unlike previous versions of the system items (then called stream items)
+are not in any particular relations (or stream).  And are merely part of
+the relations they are within.  Importantly this allows much more general
+relations to be made over items that was allowed in the previous
+system.  This new architecture is the continuation of our goal
+of providing a general efficient structure for representing complex
+interrelated utterance objects.
+
+   <p><a name="index-Festival-relations-192"></a>The architecture is fully general and new items and relations may
+be defined at run time, such that new modules may use any relations
+they wish. However within our standard English (and other voices)
+we have used a specific set of relations ass follows.
+     <dl>
+<dt><em>Token</em><dd>a list of trees.  This is first formed as a list of tokens found
+in a character text string.  Each root's daughters are the <em>Word</em>'s
+that the token is related to. 
+<br><dt><em>Word</em><dd>a list of words.  These items will also appear as daughters (leaf nodes)
+of the <code>Token</code> relation.  They may also appear in the <code>Syntax</code>
+relation (as leafs) if the parser is used.  They will also be leafs
+of the <code>Phrase</code> relation. 
+<br><dt><em>Phrase</em><dd>a list of trees.  This is a list of phrase roots whose daughters are
+the <code>Word's</code> within those phrases. 
+<br><dt><em>Syntax</em><dd>a single tree.  This, if the probabilistic parser is called, is a syntactic
+binary branching tree over the members of the <code>Word</code> relation. 
+<br><dt><em>SylStructure</em><dd>a list of trees.  This links the <code>Word</code>, <code>Syllable</code> and
+<code>Segment</code> relations.  Each <code>Word</code> is the root of a tree
+whose immediate daughters are its syllables and their daughters in
+turn as its segments. 
+<br><dt><em>Syllable</em><dd>a list of syllables.  Each member will also be in a the
+<code>SylStructure</code> relation.  In that relation its parent will be the
+word it is in and its daughters will be the segments that are in it. 
+Syllables are also in the <code>Intonation</code> relation giving links to
+their related intonation events. 
+<br><dt><em>Segment</em><dd>a list of segments (phones).  Each member (except silences) will be leaf
+nodes in the <code>SylStructure</code> relation.  These may also be in the
+<code>Target</code> relation linking them to F0 target points. 
+<br><dt><em>IntEvent</em><dd>a list of intonation events (accents and boundaries).  These are related
+to syllables through the <code>Intonation</code> relation as leafs on that
+relation.  Thus their parent in the <code>Intonation</code> relation is the
+syllable these events are attached to. 
+<br><dt><em>Intonation</em><dd>a list of trees relating syllables to intonation events.  Roots of
+the trees in <code>Intonation</code> are <code>Syllables</code> and their daughters
+are <code>IntEvents</code>. 
+<br><dt><em>Wave</em><dd>a single item with a feature called <code>wave</code> whose value
+is the generated waveform. 
+</dl>
+   This is a non-exhaustive list some modules may add other relations
+and not all utterance may have all these relations, but the above
+is the general case.
+
+   </body></html>
+

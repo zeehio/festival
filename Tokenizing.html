@@ -1,0 +1,51 @@
+<html lang="en">
+<head>
+<title>Tokenizing - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Text-analysis.html#Text-analysis" title="Text analysis">
+<link rel="next" href="Token-to-word-rules.html#Token-to-word-rules" title="Token to word rules">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Tokenizing"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Token-to-word-rules.html#Token-to-word-rules">Token to word rules</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Text-analysis.html#Text-analysis">Text analysis</a>
+<hr>
+</div>
+
+<h3 class="section">15.1 Tokenizing</h3>
+
+<p><a name="index-tokenizing-235"></a><a name="index-whitespace-236"></a><a name="index-punctuation-237"></a>A crucial stage in text processing is the initial tokenization of text. 
+A <em>token</em> in Festival is an atom separated with whitespace from a
+text file (or string).  If punctuation for the current language is
+defined, characters matching that punctuation are removed from the
+beginning and end of a token and held as features of the token.  The
+default list of characters to be treated as white space is defined as
+<pre class="lisp">     (defvar token.whitespace " \t\n\r")
+</pre>
+   <p>While the default set of punctuation characters is
+<pre class="lisp">     (defvar token.punctuation "\"'`.,:;!?(){}[]")
+     (defvar token.prepunctuation "\"'`({[")
+</pre>
+   <p>These are declared in <samp><span class="file">lib/token.scm</span></samp> but may be changed
+for different languages, text modes etc.
+
+   </body></html>
+

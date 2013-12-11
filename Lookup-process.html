@@ -1,0 +1,183 @@
+<html lang="en">
+<head>
+<title>Lookup process - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Lexicons.html#Lexicons" title="Lexicons">
+<link rel="prev" href="Defining-lexicons.html#Defining-lexicons" title="Defining lexicons">
+<link rel="next" href="Letter-to-sound-rules.html#Letter-to-sound-rules" title="Letter to sound rules">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Lookup-process"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Letter-to-sound-rules.html#Letter-to-sound-rules">Letter to sound rules</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Defining-lexicons.html#Defining-lexicons">Defining lexicons</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Lexicons.html#Lexicons">Lexicons</a>
+<hr>
+</div>
+
+<h3 class="section">13.3 Lookup process</h3>
+
+<p>When looking up a word, either through the C++ interface, or
+Lisp interface, a word is identified by its headword and part of
+speech.  If no part of speech is specified, <code>nil</code> is assumed
+which matches any part of speech tag.
+
+   <p>The lexicon look up process first checks the addenda, if there is
+a full match (head word plus part of speech) it is returned.  If
+there is an addenda entry whose head word matches and whose part
+of speech is <code>nil</code> that entry is returned.
+
+   <p>If no match is found in the addenda, the compiled lexicon, if present,
+is checked.  Again a match is when both head word and part of speech tag
+match, or either the word being searched for has a part of speech
+<code>nil</code> or an entry has its tag as <code>nil</code>.  Unlike the addenda,
+if no full head word and part of speech tag match is found, the first
+word in the lexicon whose head word matches is returned.  The rationale
+is that the letter to sound rules (the next defence) are unlikely to be
+better than an given alternate pronunciation for a the word but
+different part of speech.  Even more so given that as there is an entry
+with the head word but a different part of speech this word may have an
+unusual pronunciation that the letter to sound rules will have no chance
+in producing.
+
+   <p>Finally if the word is not found in the compiled lexicon it is
+passed to whatever method is defined for unknown words.  This
+is most likely a letter to sound module.  See <a href="Letter-to-sound-rules.html#Letter-to-sound-rules">Letter to sound rules</a>.
+
+   <p><a name="index-lexicon-hooks-154"></a><a name="index-lookup-hooks-155"></a>Optional pre- and post-lookup hooks can be specified for a lexicon. 
+As a single (or list of) Lisp functions.  The pre-hooks will
+be called with two arguments (word and features) and should return
+a pair (word and features).  The post-hooks will be given a
+lexical entry and should return a lexical entry.  The pre- and
+post-hooks do nothing by default.
+
+   <p><a name="index-compiled-lexicons-156"></a>Compiled lexicons may be created from lists of lexical entries. 
+A compiled lexicon is <em>much</em> more efficient for look up than the
+addenda.  Compiled lexicons use a binary search method while the
+addenda is searched linearly.  Also it would take a prohibitively
+long time to load in a typical full lexicon as an addenda.  If you
+have more than a few hundred entries in your addenda you should
+seriously consider adding them to your compiled lexicon.
+
+   <p><a name="index-BEEP-lexicon-157"></a><a name="index-CMU-lexicon-158"></a>Because many publicly available lexicons do not have syllable markings
+for entries the compilation method supports automatic syllabification. 
+Thus for lexicon entries for compilation, two forms for the
+pronunciation field are supported: the standard full syllabified and
+stressed form and a simpler linear form found in at least the BEEP and
+CMU lexicons.  If the pronunciation field is a flat atomic list it is
+assumed syllabification is required.
+
+   <p><a name="index-syllabification-159"></a>Syllabification is done by finding the minimum sonorant position between
+vowels.  It is not guaranteed to be accurate but does give a solution
+that is sufficient for many purposes.  A little work would probably
+improve this significantly.  Of course syllabification requires the
+entry's phones to be in the current phone set.  The sonorant values are
+calculated from the <em>vc</em>, <em>ctype</em>, and <em>cvox</em> features
+for the current phoneset.  See
+<samp><span class="file">src/arch/festival/Phone.cc:ph_sonority()</span></samp> for actual definition.
+
+   <p>Additionally in this flat structure vowels (atoms starting with a, e, i,
+o or u) may have 1 2 or 0 appended marking stress.  This is again
+following the form found in the BEEP and CMU lexicons.
+
+   <p>Some example entries in the flat form (taken from BEEP) are
+<pre class="lisp">     ("table" nil (t ei1 b l))
+     ("suspicious" nil (s @ s p i1 sh @ s))
+</pre>
+   <p>Also if syllabification is required there is an opportunity to run a set
+of "letter-to-sound"-rules on the input (actually an arbitrary re-write
+rule system).  If the variable <code>lex_lts_set</code> is set, the lts
+ruleset of that name is applied to the flat input before
+syllabification.  This allows simple predictable changes such as
+conversion of final r into longer vowel for English RP from
+American labelled lexicons.
+
+   <p><a name="index-multiple-lexical-entries-160"></a>A list of all matching entries in the addenda and the compiled lexicon
+may be found by the function <code>lex.lookup_all</code>.  This function takes
+a word and returns all matching entries irrespective of part of speech.
+
+   <p><a name="index-pre_005fhooks-161"></a><a name="index-post_005fhooks-162"></a>You can optionally intercept the words as they are looked up, and after
+they have been found through <code>pre_hooks</code> and <code>post_hooks</code> for
+each lexicon.  This allows a function or list of functions to be applied
+to a word and feature before lookup or to the resulting entry after
+lookup.  The following example shows how to add voice specific entries
+to a general lexicon without affecting other voices that use that
+lexicon.
+
+   <p>For example suppose we were trying to use a Scottish English voice with
+the US English (cmu) lexicon.  A number of entries will be
+inappropriate but we can redefine some entries thus
+<pre class="lisp">     (set! cmu_us_awb::lexicon_addenda
+           '(
+     	("edinburgh" n (((eh d) 1) ((ax n) 0) ((b r ax) 0)))
+     	("poem" n (((p ow) 1) ((y ax m) 0)))
+     	("usual" n (((y uw) 1) ((zh ax l) 0)))
+     	("air" n (((ey r) 1)))
+     	("hair" n (((hh ey r) 1)))
+     	("fair" n (((f ey r) 1)))
+     	("chair" n (((ch ey r) 1)))))
+</pre>
+   <p>We can then define a function that checks to see if the word looked
+up is in the speaker specific exception list and use that entry
+instead.
+<pre class="lisp">     (define (cmu_us_awb::cmu_lookup_post entry)
+       "(cmu_us_awb::cmu_lookup_post entry)
+     Speaker specific lexicon addeda."
+       (let ((ne
+     	 (assoc_string (car entry) cmu_us_awb::lexicon_addenda)))
+         (if ne
+     	ne
+     	entry)))
+</pre>
+   <p>And then for the particular voice set up we need to
+add both a selection part <em>and</em> a reset part.  Thus following
+the FestVox conventions for voice set up.
+<pre class="lisp">     (define (cmu_us_awb::select_lexicon)
+     
+         ...
+         (lex.select "cmu")
+         ;; Get old var for reset and to append our function to is
+         (set! cmu_us_awb::old_cmu_post_hooks
+            (lex.set.post_hooks nil))
+         (lex.set.post_hooks
+            (append cmu_us_awb::old_cmu_post_hooks
+                    (list cmu_us_awb::cmu_lookup_post)))
+         ...
+     )
+     
+     ...
+     
+     (define (cmu_us_awb::reset_lexicon)
+     
+       ...
+       ;; reset CMU's post_hooks back to original
+       (lex.set.post_hooks cmu_us_awb::old_cmu_post_hooks)
+       ...
+     
+     )
+</pre>
+   <p>The above isn't the most efficient way as the word is looked up first
+then it is checked with the speaker specific list.
+
+   <p>The <code>pre_hooks</code> functions are called with two arguments, the
+word and features, they should return a pair of word and features.
+
+   </body></html>
+

@@ -1,0 +1,102 @@
+<html lang="en">
+<head>
+<title>Post-lexical rules - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Lexicons.html#Lexicons" title="Lexicons">
+<link rel="prev" href="Available-lexicons.html#Available-lexicons" title="Available lexicons">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Post-lexical-rules"></a>
+<a name="Post_002dlexical-rules"></a>
+<p>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Available-lexicons.html#Available-lexicons">Available lexicons</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Lexicons.html#Lexicons">Lexicons</a>
+<hr>
+</div>
+
+<h3 class="section">13.8 Post-lexical rules</h3>
+
+<p><a name="index-post_002dlexical-rules-183"></a>It is the lexicon's job to produce a pronunciation of a given word. 
+However in most languages the most natural pronunciation of a word
+cannot be found in isolation from the context in which it is to be
+spoken.  This includes such phenomena as reduction, phrase final
+devoicing and r-insertion.  In Festival this is done by post-lexical
+rules.
+
+   <p><code>PostLex</code> is a module which is run after accent assignment
+but before duration and F0 generation.  This is because knowledge
+of accent position is necessary for vowel reduction and other
+post lexical phenomena and changing the segmental items will
+affect durations.
+
+   <p>The <code>PostLex</code> first applies a set of built in rules (which could be
+done in Scheme but for historical reasons are still in C++).  It then
+applies the functions set in the hook <code>postlex_rules_hook</code>.  These
+should be a set of functions that take an utterance and apply
+appropriate rules.  This should be set up on a per voice basis.
+
+   <p>Although a rule system could be devised for post-lexical sound rules it
+is unclear what the scope of them should be, so we have left it
+completely open.  Our vowel reduction model uses a CART decision tree to
+predict which syllables should be reduced, while the "'s" rule is very
+simple (shown in <samp><span class="file">festival/lib/postlex.scm</span></samp>).
+
+   <p><a name="index-apostrophe-s-184"></a><a name="index-possessives-185"></a>The <code>'s</code> in English may be pronounced in a number of different
+ways depending on the preceding context.  If the preceding consonant
+is a fricative or affricative and not a palatal labio-dental or
+dental a schwa is required (e.g. <code>bench's</code>) otherwise
+no schwa is required (e.g. <code>John's</code>).  Also if the previous
+phoneme is unvoiced the "s" is rendered as an "s" while in all
+other cases it is rendered as a "z".
+
+   <p>For our English voices we have a lexical entry for "'s" as a
+schwa followed by a "z".  We use a post lexical rule function called
+<code>postlex_apos_s_check</code> to modify the basic given form when
+required.  After lexical lookup the segment relation contains the
+concatenation of segments directly from lookup in the lexicon. 
+Post lexical rules are applied after that.
+
+   <p>In the following rule we check each segment to see if it is part of a
+word labelled "'s", if so we check to see if are we currently looking at the
+schwa or the z part, and test if modification is required
+<pre class="example">     (define (postlex_apos_s_check utt)
+       "(postlex_apos_s_check UTT)
+     Deal with possesive s for English (American and British).  Delete
+     schwa of 's if previous is not a fricative or affricative, and
+     change voiced to unvoiced s if previous is not voiced."
+       (mapcar
+        (lambda (seg)
+          (if (string-equal "'s" (item.feat
+                                  seg "R:SylStructure.parent.parent.name"))
+              (if (string-equal "a" (item.feat seg 'ph_vlng))
+                  (if (and (member_string (item.feat seg 'p.ph_ctype)
+                                          '(f a))
+                           (not (member_string
+                                 (item.feat seg "p.ph_cplace")
+                                 '(d b g))))
+                      t;; don't delete schwa
+                      (item.delete seg))
+                  (if (string-equal "-" (item.feat seg "p.ph_cvox"))
+                      (item.set_name seg "s")))));; from "z"
+        (utt.relation.items utt 'Segment))
+       utt)
+</pre>
+   </body></html>
+

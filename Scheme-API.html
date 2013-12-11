@@ -1,0 +1,87 @@
+<html lang="en">
+<head>
+<title>Scheme API - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="API.html#API" title="API">
+<link rel="next" href="Shell-API.html#Shell-API" title="Shell API">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Scheme-API"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Shell-API.html#Shell-API">Shell API</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="API.html#API">API</a>
+<hr>
+</div>
+
+<h3 class="section">28.1 Scheme API</h3>
+
+<p><a name="index-Scheme-programming-354"></a>Festival includes a full programming language, Scheme (a variant of
+Lisp) as a powerful interface to its speech synthesis functions. 
+Often this will be the easiest method of controlling Festival's
+functionality.  Even when using other API's they will ultimately
+depend on the Scheme interpreter.
+
+   <p>Scheme commands (as s-expressions) may be simply written in files and
+interpreted by Festival, either by specification as arguments on
+the command line, in the interactive interpreter, or through standard
+input as a pipe.  Suppose we have a file <samp><span class="file">hello.scm</span></samp> containing
+
+<pre class="lisp">     ;; A short example file with Festival Scheme commands
+     (voice_rab_diphone) ;; select Gordon
+     (SayText "Hello there")
+     (voice_don_diphone) ;; select Donovan
+     (SayText "and hello from me")
+</pre>
+   <p>From the command interpreter we can execute the commands in this file
+by loading them
+<pre class="lisp">     festival&gt; (load "hello.scm")
+     nil
+</pre>
+   <p>Or we can execute the commands in the file directly from the
+shell command line
+<pre class="lisp">     unix$ festival -b hello.scm
+</pre>
+   <p>The &lsquo;<samp><span class="samp">-b</span></samp>&rsquo; option denotes batch operation meaning the file is loaded
+and then Festival will exit, without starting the command interpreter. 
+Without this option &lsquo;<samp><span class="samp">-b</span></samp>&rsquo; Festival will load
+<samp><span class="file">hello.scm</span></samp> and then accept commands on standard input.  This can
+be convenient when some initial set up is required for a session.
+
+   <p>Note one disadvantage of the batch method is that time is required for
+Festival's initialisation every time it starts up.  Although this will
+typically only be a few seconds, for saying short individual expressions
+that lead in time may be unacceptable.  Thus simply executing the
+commands within an already running system is more desirable, or using
+the server/client mode.
+
+   <p>Of course its not just about strings of commands, because Scheme is a
+fully functional language, functions, loops, variables, file access,
+arithmetic operations may all be carried out in your Scheme programs. 
+Also, access to Unix is available through the <code>system</code>
+function.  For many applications directly programming them in Scheme is
+both the easiest and the most efficient method.
+
+   <p><a name="index-scripts-355"></a>A number of example Festival scripts are included in <samp><span class="file">examples/</span></samp>. 
+Including a program for saying the time, and for telling you the latest
+news (by accessing a page from the web).  Also see the
+detailed discussion of a script example in See <a href="POS-Example.html#POS-Example">POS Example</a>.
+
+   </body></html>
+

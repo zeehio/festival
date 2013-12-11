@@ -1,0 +1,109 @@
+<html lang="en">
+<head>
+<title>Scheme Festival specifics - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Scheme.html#Scheme" title="Scheme">
+<link rel="prev" href="Scheme-fundamentals.html#Scheme-fundamentals" title="Scheme fundamentals">
+<link rel="next" href="Scheme-I_002fO.html#Scheme-I_002fO" title="Scheme I/O">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Scheme-Festival-specifics"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Scheme-I_002fO.html#Scheme-I_002fO">Scheme I/O</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Scheme-fundamentals.html#Scheme-fundamentals">Scheme fundamentals</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Scheme.html#Scheme">Scheme</a>
+<hr>
+</div>
+
+<h3 class="section">8.3 Scheme Festival specifics</h3>
+
+<p>There a number of additions to SIOD that are Festival specific though
+still part of the Lisp system rather than the synthesis functions per se.
+
+   <p>By convention if the first statement of a function is a string,
+it is treated as a documentation string.  The string will be
+printed when help is requested for that function symbol.
+
+   <p><a name="index-debugging-Scheme-errors-80"></a><a name="index-debugging-scripts-81"></a><a name="index-backtrace-82"></a>In interactive mode if the function <code>:backtrace</code> is called (within
+parenthesis) the previous stack trace is displayed.  Calling
+<code>:backtrace</code> with a numeric argument will display that particular
+stack frame in full.  Note that any command other than <code>:backtrace</code>
+will reset the trace.  You may optionally call
+<pre class="lisp">     (set_backtrace t)
+</pre>
+   <p>Which will cause a backtrace to be displayed whenever a Scheme error
+occurs. This can be put in your <samp><span class="file">.festivalrc</span></samp> if you wish.  This
+is especially useful when running Festival in non-interactive mode
+(batch or script mode) so that more information is printed when an error
+occurs.
+
+   <p><a name="index-hooks-83"></a>A <em>hook</em> in Lisp terms is a position within some piece of code
+where a user may specify their own customization.  The notion is used
+heavily in Emacs.  In Festival there a number of places where hooks are
+used.  A hook variable contains either a function or list of functions
+that are to be applied at some point in the processing.  For example the
+<code>after_synth_hooks</code> are applied after synthesis has been applied to
+allow specific customization such as resampling or modification of the
+gain of the synthesized waveform.  The Scheme function
+<code>apply_hooks</code> takes a hook variable as argument and an object and
+applies the function/list of functions in turn to the object.
+
+   <p><a name="index-catching-errors-in-Scheme-84"></a><a name="index-g_t_0040code_007bunwind_002dprotect_007d-85"></a><a name="index-errors-in-Scheme-86"></a>When an error occurs in either Scheme or within the C++ part of Festival
+by default the system jumps to the top level, resets itself and
+continues.  Note that errors are usually serious things, pointing to
+bugs in parameters or code.  Every effort has been made to ensure
+that the processing of text never causes errors in Festival. 
+However when using Festival as a development system it is often
+that errors occur in code.
+
+   <p>Sometimes in writing Scheme code you know there is a potential for
+an error but you wish to ignore that and continue on to the next
+thing without exiting or stopping and returning to the top level.  For
+example you are processing a number of utterances from a database and
+some files containing the descriptions have errors in them but you
+want your processing to continue through every utterance that can
+be processed rather than stopping 5 minutes after you gone home after
+setting a big batch job for overnight.
+
+   <p><a name="index-g_t_0040code_007bunwind_002dprotect_007d-87"></a><a name="index-catching-errors-88"></a>Festival's Scheme provides the function <code>unwind-protect</code> which
+allows the catching of errors and then continuing normally.  For example
+suppose you have the function <code>process_utt</code> which takes a filename
+and does things which you know might cause an error.  You can write the
+following to ensure you continue processing even in an error
+occurs.
+<pre class="lisp">     (unwind-protect
+      (process_utt filename)
+      (begin
+        (format t "Error found in processing %s\n" filename)
+        (format t "continuing\n")))
+</pre>
+   <p>The <code>unwind-protect</code> function takes two arguments.  The first is
+evaluated and if no error occurs the value returned from that expression
+is returned.  If an error does occur while evaluating the first
+expression, the second expression is evaluated.  <code>unwind-protect</code>
+may be used recursively.  Note that all files opened while evaluating
+the first expression are closed if an error occurs.  All global
+variables outside the scope of the <code>unwind-protect</code> will be left as
+they were set up until the error.  Care should be taken in using this
+function but its power is necessary to be able to write robust Scheme
+code.
+
+   </body></html>
+

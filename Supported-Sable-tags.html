@@ -1,0 +1,151 @@
+<html lang="en">
+<head>
+<title>Supported Sable tags - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="XML_002fSGML-mark_002dup.html#XML_002fSGML-mark_002dup" title="XML/SGML mark-up">
+<link rel="prev" href="Sable-example.html#Sable-example" title="Sable example">
+<link rel="next" href="Adding-Sable-tags.html#Adding-Sable-tags" title="Adding Sable tags">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Supported-Sable-tags"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Adding-Sable-tags.html#Adding-Sable-tags">Adding Sable tags</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Sable-example.html#Sable-example">Sable example</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="XML_002fSGML-mark_002dup.html#XML_002fSGML-mark_002dup">XML/SGML mark-up</a>
+<hr>
+</div>
+
+<h3 class="section">10.2 Supported Sable tags</h3>
+
+<p><a name="index-Sable-tags-122"></a>There is not yet a definitive set of tags but hopefully such a list
+will form over the next few months.  As adding support for new tags is
+often trivial the problem lies much more in defining what tags there
+should be than in actually implementing them.    The following
+are based on version 0.2 of Sable as described in
+<a href="http://www.cstr.ed.ac.uk/projects/sable_spec2.html">http://www.cstr.ed.ac.uk/projects/sable_spec2.html</a>, though
+some aspects are not currently supported in this implementation. 
+Further updates will be announces through the Sable mailing list.
+
+     <dl>
+<dt><code>LANGUAGE</code><dd>Allows the specification of the language through the <code>ID</code>
+attribute.  Valid values in Festival are, <code>english</code>,
+<code>en1</code>, <code>spanish</code>, <code>en</code>, and others depending
+on your particular installation. 
+For example
+     <pre class="example">          &lt;LANGUAGE id="english"&gt; ... &lt;/LANGUAGE&gt;
+</pre>
+     <p>If the language isn't supported by the particualr installation of
+Festival "Some text in .." is said instead and the section is
+ommitted. 
+<br><dt><code>SPEAKER</code><dd>Select a voice.  Accepts a parameter <code>NAME</code> which takes values
+<code>male1</code>, <code>male2</code>, <code>female1</code>,  etc.  There
+is currently no definition about what happens when a voice is selected
+which the synthesizer doesn't support.  An example is
+     <pre class="example">          &lt;SPEAKER name="male1"&gt; ... &lt;/SPEAKER&gt;
+</pre>
+     <br><dt><code>AUDIO</code><dd>This allows the specification of an external waveform that is to
+be included.  There are attributes for specifying volume and whether
+the waveform is to be played in the background of the following
+text or not.  Festival as yet only supports insertion.
+     <pre class="example">          My telephone number is
+          &lt;AUDIO SRC="http://www.cstr.ed.ac.uk/~awb/sounds/touchtone.2.au"/&gt;
+          &lt;AUDIO SRC="http://www.cstr.ed.ac.uk/~awb/sounds/touchtone.7.au"/&gt;
+          &lt;AUDIO SRC="http://www.cstr.ed.ac.uk/~awb/sounds/touchtone.8.au"/&gt;
+          &lt;AUDIO SRC="http://www.cstr.ed.ac.uk/~awb/sounds/touchtone.7.au"/&gt;.
+</pre>
+     <br><dt><code>MARKER</code><dd>This allows Festival to mark when a particalur part of the text has
+been reached.  At present the simply the value of the <code>MARK</code>
+attribute is printed.  This is done some when that piece
+of text is analyzed. not when it is played.  To use
+this in any real application would require changes to this tags
+implementation.
+     <pre class="example">          Move the &lt;MARKER MARK="mouse" /&gt; mouse to the top.
+</pre>
+     <br><dt><code>BREAK</code><dd>Specifies a boundary at some <code>LEVEL</code>.  Strength may be values
+<code>Large</code>, <code>Medium</code>, <code>Small</code> or a number.  Note that
+this this tag is an empty tag and must include the closing part
+within itsefl specification.
+     <pre class="example">          &lt;BREAK LEVEL="LARGE"/&gt;
+</pre>
+     <br><dt><code>DIV</code><dd>This signals an division.  In Festival this causes an utterance
+break.  A <code>TYPE</code> attribute may be specified but it is ignored
+by Festival. 
+<br><dt><code>PRON</code><dd>Allows pronunciation of enclosed text to be explcitily given.  It
+supports the attributes <code>IPA</code> for an IPA specification (not
+currently supported by Festival); <code>SUB</code> text to be substituted
+which can be in some form of phonetic spelling, and <code>ORIGIN</code> where
+the linguistic origin of the enclosed text may be identified to assist
+in etymologically sensitive letter to sound rules.
+     <pre class="example">          &lt;PRON SUB="toe maa toe"&gt;tomato&lt;/PRON&gt;
+</pre>
+     <br><dt><code>SAYAS</code><dd>Allows indeitnfication of the enclose tokens/text.  The attribute
+<code>MODE</code> cand take any of the following a values: <code>literal</code>,
+<code>date</code>, <code>time</code>, <code>phone</code>, <code>net</code>, <code>postal</code>,
+<code>currency</code>, <code>math</code>, <code>fraction</code>, <code>measure</code>,
+<code>ordinal</code>, <code>cardinal</code>, or <code>name</code>.  Further specification
+of type for dates (MDY, DMY etc) may be speficied through the
+<code>MODETYPE</code> attribute.
+     <pre class="example">          As a test of marked-up numbers. Here we have
+          a year &lt;SAYAS MODE="date"&gt;1998&lt;/SAYAS&gt;,
+          an ordinal &lt;SAYAS MODE="ordinal"&gt;1998&lt;/SAYAS&gt;,
+          a cardinal &lt;SAYAS MODE="cardinal"&gt;1998&lt;/SAYAS&gt;,
+          a literal &lt;SAYAS MODE="literal"&gt;1998&lt;/SAYAS&gt;,
+          and phone number &lt;SAYAS MODE="phone"&gt;1998&lt;/SAYAS&gt;.
+</pre>
+     <br><dt><code>EMPH</code><dd>To specify enclose text should be emphasized, a <code>LEVEL</code>
+attribute may be specified but its value is currently
+ignored by Festival (besides the emphasis Festival generates
+isn't very good anyway).
+     <pre class="example">          The leaders of &lt;EMPH&gt;Denmark&lt;/EMPH&gt; and &lt;EMPH&gt;India&lt;/EMPH&gt; meet on
+          Friday.
+</pre>
+     <br><dt><code>PITCH</code><dd>Allows the specification of pitch range, mid and base points.
+     <pre class="example">          Without his penguin, &lt;PITCH BASE="-20%"&gt; which he left at home, &lt;/PITCH&gt;
+          he could not enter the restaurant.
+</pre>
+     <br><dt><code>RATE</code><dd>Allows the specification of speaking rate
+     <pre class="example">          The address is &lt;RATE SPEED="-40%"&gt; 10 Main Street &lt;/RATE&gt;.
+</pre>
+     <br><dt><code>VOLUME</code><dd>Allows the specification of volume.  Note in festival this
+causes an utterance break before and after this tag.
+     <pre class="example">          Please speak more &lt;VOLUME LEVEL="loud"&gt;loudly&lt;/VOLUME&gt;, except
+          when I ask you to speak &lt;VOLUME LEVEL="quiet"&gt;in a quiet voice&lt;/VOLUME&gt;.
+</pre>
+     <br><dt><code>ENGINE</code><dd>This allows specification of engine specific commands
+     <pre class="example">          An example is &lt;ENGINE ID="festival" DATA="our own festival speech
+          synthesizer"&gt; the festival speech synthesizer&lt;/ENGINE&gt; or
+          the Bell Labs speech synthesizer.
+</pre>
+     </dl>
+
+   <p>These tags may change in name but they cover the aspects of speech
+mark up that we wish to express.  Later additions and changes to these
+are expected.
+
+   <p>See the files <samp><span class="file">festival/examples/example.sable</span></samp> and
+<samp><span class="file">festival/examples/example2.sable</span></samp> for working examples.
+
+   <p>Note the definition of Sable is on going and there are likely to be
+later more complete implementations of sable for Festival as independent
+releases consult <samp><span class="file">url://www.cstr.ed.ac.uk/projects/sable.html</span></samp> for
+the most recent updates.
+
+   </body></html>
+

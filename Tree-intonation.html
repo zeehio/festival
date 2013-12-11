@@ -1,0 +1,50 @@
+<html lang="en">
+<head>
+<title>Tree intonation - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Intonation.html#Intonation" title="Intonation">
+<link rel="prev" href="Simple-intonation.html#Simple-intonation" title="Simple intonation">
+<link rel="next" href="Tilt-intonation.html#Tilt-intonation" title="Tilt intonation">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Tree-intonation"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Tilt-intonation.html#Tilt-intonation">Tilt intonation</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Simple-intonation.html#Simple-intonation">Simple intonation</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Intonation.html#Intonation">Intonation</a>
+<hr>
+</div>
+
+<h3 class="section">18.3 Tree intonation</h3>
+
+<p>This module is more flexible.  Two different CART trees can be used to
+predict `accents' and `endtones'.  Although at present this module is
+used for an implementation of the ToBI intonation labelling system it
+could be used for many different types of intonation system.
+
+   <p>The target module for this method uses a Linear Regression model to
+predict start mid-vowel and end targets for each syllable using
+arbitrarily specified features.  This follows the work described in
+<cite>black96</cite>.  The LR models are held as as described below
+See <a href="Linear-regression.html#Linear-regression">Linear regression</a>.  Three models are used in the variables
+<code>f0_lr_start</code>, <code>f0_lr_mid</code> and <code>f0_lr_end</code>.
+
+   </body></html>
+

@@ -1,0 +1,77 @@
+<html lang="en">
+<head>
+<title>Singing Synthesis - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Examples.html#Examples" title="Examples">
+<link rel="prev" href="POS-Example.html#POS-Example" title="POS Example">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Singing-Synthesis"></a>
+<p>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="POS-Example.html#POS-Example">POS Example</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Examples.html#Examples">Examples</a>
+<hr>
+</div>
+
+<h3 class="section">29.2 Singing Synthesis</h3>
+
+<p><a name="index-singing-373"></a>As an interesting example a <samp><span class="file">singing-mode</span></samp> is included.  This
+offers an XML based mode for specifying songs, both notes and duration. 
+This work was done as a student project by Dominic Mazzoni.  A
+number of examples are provided in <samp><span class="file">examples/songs</span></samp>.  This
+may be run as
+<pre class="lisp">     festival&gt; (tts "doremi.xml" 'singing)
+</pre>
+   <p>Each note can be given a note and a beat value
+<pre class="example">     &lt;?xml version="1.0"?&gt;
+     &lt;!DOCTYPE SINGING PUBLIC "-//SINGING//DTD SINGING mark up//EN"
+           "Singing.v0_1.dtd"
+     []&gt;
+     &lt;SINGING BPM="30"&gt;
+     &lt;PITCH NOTE="G3"&gt;&lt;DURATION BEATS="0.3"&gt;doe&lt;/DURATION&gt;&lt;/PITCH&gt;
+     &lt;PITCH NOTE="A3"&gt;&lt;DURATION BEATS="0.3"&gt;ray&lt;/DURATION&gt;&lt;/PITCH&gt;
+     &lt;PITCH NOTE="B3"&gt;&lt;DURATION BEATS="0.3"&gt;me&lt;/DURATION&gt;&lt;/PITCH&gt;
+     &lt;PITCH NOTE="C4"&gt;&lt;DURATION BEATS="0.3"&gt;fah&lt;/DURATION&gt;&lt;/PITCH&gt;
+     &lt;PITCH NOTE="D4"&gt;&lt;DURATION BEATS="0.3"&gt;sew&lt;/DURATION&gt;&lt;/PITCH&gt;
+     &lt;PITCH NOTE="E4"&gt;&lt;DURATION BEATS="0.3"&gt;lah&lt;/DURATION&gt;&lt;/PITCH&gt;
+     &lt;PITCH NOTE="F#4"&gt;&lt;DURATION BEATS="0.3"&gt;tee&lt;/DURATION&gt;&lt;/PITCH&gt;
+     &lt;PITCH NOTE="G4"&gt;&lt;DURATION BEATS="0.3"&gt;doe&lt;/DURATION&gt;&lt;/PITCH&gt;
+     &lt;/SINGING&gt;
+</pre>
+   <p>You can construct multi-part songs by synthesizing each part
+and generating waveforms, then combining them.  For example
+<pre class="example">     text2wave -mode singing america1.xml -o america1.wav
+     text2wave -mode singing america2.xml -o america2.wav
+     text2wave -mode singing america3.xml -o america3.wav
+     text2wave -mode singing america4.xml -o america4.wav
+     ch_wave -o america.wav -pc longest america?.wav
+</pre>
+   <p>The voice used to sing is the current voice.  Note that the number of
+syllables in the words must match that at run time, which means this
+doesn't always work cross dialect (UK voices sometimes won't work without
+tweaking).
+
+   <p><a name="index-flinger-374"></a>This technique is basically simple, though is definitely effective. 
+However for a more serious singing synthesizer we recommend you look
+at Flinger <a href="http://cslu.cse.ogi.edu/tts/flinger/">http://cslu.cse.ogi.edu/tts/flinger/</a>, which addresses
+the issues of synthesizing the human singing voice in more detail.
+
+   </body></html>
+

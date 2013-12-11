@@ -1,0 +1,170 @@
+<html lang="en">
+<head>
+<title>Accessing an utterance - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Utterances.html#Utterances" title="Utterances">
+<link rel="prev" href="Utterance-modules.html#Utterance-modules" title="Utterance modules">
+<link rel="next" href="Features.html#Features" title="Features">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Accessing-an-utterance"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Features.html#Features">Features</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Utterance-modules.html#Utterance-modules">Utterance modules</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Utterances.html#Utterances">Utterances</a>
+<hr>
+</div>
+
+<h3 class="section">14.5 Accessing an utterance</h3>
+
+<p>There are a number of standard functions that allow one to access parts
+of an utterance and traverse through it.
+
+   <p><a name="index-g_t_0040code_007butt_002erelation_007d-functions-215"></a><a name="index-g_t_0040code_007bitem_007d-functions-216"></a>Functions exist in Lisp (and of course C++) for accessing an utterance. 
+The Lisp access functions are
+     <dl>
+<dt>&lsquo;<samp><span class="samp">(utt.relationnames UTT)</span></samp>&rsquo;<dd>returns a list of the names of the relations currently created in <code>UTT</code>. 
+<br><dt>&lsquo;<samp><span class="samp">(utt.relation.items UTT RELATIONNAME)</span></samp>&rsquo;<dd>returns a list of all items in <code>RELATIONNAME</code> in <code>UTT</code>.  This
+is nil if no relation of that name exists.  Note for tree relation will
+give the items in pre-order. 
+<br><dt>&lsquo;<samp><span class="samp">(utt.relation_tree UTT RELATIONNAME)</span></samp>&rsquo;<dd>A Lisp tree presentation of the items <code>RELATIONNAME</code> in <code>UTT</code>. 
+The Lisp bracketing reflects the tree structure in the relation. 
+<br><dt>&lsquo;<samp><span class="samp">(utt.relation.leafs UTT RELATIONNAME)</span></samp>&rsquo;<dd>A list of all the leafs of the items in <code>RELATIONNAME</code> in
+<code>UTT</code>.  Leafs are defined as those items with no daughters within
+that relation.  For simple list relations <code>utt.relation.leafs</code> and
+<code>utt.relation.items</code> will return the same thing. 
+<br><dt>&lsquo;<samp><span class="samp">(utt.relation.first UTT RELATIONNAME)</span></samp>&rsquo;<dd>returns the first item in <code>RELATIONNAME</code>.  Returns <code>nil</code>
+if this relation contains no items
+<br><dt>&lsquo;<samp><span class="samp">(utt.relation.last UTT RELATIONNAME)</span></samp>&rsquo;<dd>returns the last (the most next) item in <code>RELATIONNAME</code>.  Returns
+<code>nil</code> if this relation contains no items
+<br><dt>&lsquo;<samp><span class="samp">(item.feat ITEM FEATNAME)</span></samp>&rsquo;<dd>returns the value of feature <code>FEATNAME</code> in <code>ITEM</code>.  <code>FEATNAME</code>
+may be a feature name, feature function name, or pathname (see below). 
+allowing reference to other parts of the utterance this item is in. 
+<br><dt>&lsquo;<samp><span class="samp">(item.features ITEM)</span></samp>&rsquo;<dd>Returns an assoc list of feature-value pairs of all local features on
+this item. 
+<br><dt>&lsquo;<samp><span class="samp">(item.name ITEM)</span></samp>&rsquo;<dd>Returns the name of this <code>ITEM</code>.  This could also be accessed
+as <code>(item.feat ITEM 'name)</code>. 
+<br><dt>&lsquo;<samp><span class="samp">(item.set_name ITEM NEWNAME)</span></samp>&rsquo;<dd>Sets name on <code>ITEM</code> to be <code>NEWNAME</code>.  This is equivalent to
+<code>(item.set_feat ITEM 'name NEWNAME)</code>
+<br><dt>&lsquo;<samp><span class="samp">(item.set_feat ITEM FEATNAME FEATVALUE)</span></samp>&rsquo;<dd>set the value of <code>FEATNAME</code> to <code>FEATVALUE</code> in <code>ITEM</code>. 
+<code>FEATNAME</code> should be a simple name and not refer to next,
+previous or other relations via links. 
+<br><dt>&lsquo;<samp><span class="samp">(item.relation ITEM RELATIONNAME)</span></samp>&rsquo;<dd>Return the item as viewed from <code>RELATIONNAME</code>, or <code>nil</code> if
+<code>ITEM</code> is not in that relation. 
+<br><dt>&lsquo;<samp><span class="samp">(item.relationnames ITEM)</span></samp>&rsquo;<dd>Return a list of relation names that this item is in. 
+<br><dt>&lsquo;<samp><span class="samp">(item.relationname ITEM)</span></samp>&rsquo;<dd>Return the relation name that this item is currently being viewed as. 
+<br><dt>&lsquo;<samp><span class="samp">(item.next ITEM)</span></samp>&rsquo;<dd>Return the next item in <code>ITEM</code>'s current relation, or <code>nil</code>
+if there is no next. 
+<br><dt>&lsquo;<samp><span class="samp">(item.prev ITEM)</span></samp>&rsquo;<dd>Return the previous item in <code>ITEM</code>'s current relation, or <code>nil</code>
+if there is no previous. 
+<br><dt>&lsquo;<samp><span class="samp">(item.parent ITEM)</span></samp>&rsquo;<dd>Return the parent of <code>ITEM</code> in <code>ITEM</code>'s current relation, or
+<code>nil</code> if there is no parent. 
+<br><dt>&lsquo;<samp><span class="samp">(item.daughter1 ITEM)</span></samp>&rsquo;<dd>Return the first daughter of <code>ITEM</code> in <code>ITEM</code>'s current relation, or
+<code>nil</code> if there are no daughters. 
+<br><dt>&lsquo;<samp><span class="samp">(item.daughter2 ITEM)</span></samp>&rsquo;<dd>Return the second daughter of <code>ITEM</code> in <code>ITEM</code>'s current relation, or
+<code>nil</code> if there is no second daughter. 
+<br><dt>&lsquo;<samp><span class="samp">(item.daughtern ITEM)</span></samp>&rsquo;<dd>Return the last daughter of <code>ITEM</code> in <code>ITEM</code>'s current relation, or
+<code>nil</code> if there are no daughters. 
+<br><dt>&lsquo;<samp><span class="samp">(item.leafs ITEM)</span></samp>&rsquo;<dd>Return a list of all lefs items (those with no daughters) dominated
+by this item. 
+<br><dt>&lsquo;<samp><span class="samp">(item.next_leaf ITEM)</span></samp>&rsquo;<dd>Find the next item in this relation that has no daughters.  Note this
+may traverse up the tree from this point to search for such an item.
+
+   </dl>
+
+   <p>As from 1.2 the utterance structure may be fully manipulated from
+Scheme.  Relations and items may be created and deleted, as easily
+as they can in C++;
+     <dl>
+<dt>&lsquo;<samp><span class="samp">(utt.relation.present UTT RELATIONNAME)</span></samp>&rsquo;<dd>returns <code>t</code> if relation named <code>RELATIONNAME</code> is present, <code>nil</code>
+otherwise. 
+<br><dt>&lsquo;<samp><span class="samp">(utt.relation.create UTT RELATIONNAME)</span></samp>&rsquo;<dd>Creates a new relation called <code>RELATIONNAME</code>.  If this relation
+already exists it is deleted first and items in the relation are
+derefenced from it (deleting the items if they are no longer referenced
+by any relation).  Thus create relation guarantees an empty relation. 
+<br><dt>&lsquo;<samp><span class="samp">(utt.relation.delete UTT RELATIONNAME)</span></samp>&rsquo;<dd>Deletes the relation called <code>RELATIONNAME</code> in utt.  All items in
+that relation are derefenced from the relation and if they are no
+longer in any relation the items themselves are deleted. 
+<br><dt>&lsquo;<samp><span class="samp">(utt.relation.append UTT RELATIONNAME ITEM)</span></samp>&rsquo;<dd>Append <code>ITEM</code> to end of relation named <code>RELATIONNAME</code> in
+<code>UTT</code>.  Returns <code>nil</code> if there is not relation named
+<code>RELATIONNAME</code> in <code>UTT</code> otherwise returns the item
+appended.  This new item becomes the last in the top list. 
+<code>ITEM</code> item may be an item itself (in this or another relation)
+or a LISP description of an item, which consist of a list containing
+a name and a set of feature vale pairs.  It <code>ITEM</code> is <code>nil</code>
+or inspecified an new empty item is added.  If <code>ITEM</code> is already
+in this relation it is dereferenced from its current position (and
+an empty item re-inserted). 
+<br><dt>&lsquo;<samp><span class="samp">(item.insert ITEM1 ITEM2 DIRECTION)</span></samp>&rsquo;<dd>Insert <code>ITEM2</code> into <code>ITEM1</code>'s relation in the direction
+specified by <code>DIRECTION</code>.  <code>DIRECTION</code> may take the
+value, <code>before</code>, <code>after</code>, <code>above</code> and <code>below</code>. 
+If unspecified, <code>after</code> is assumed.  Note it is not recommended
+to insert above and below and the functions <code>item.insert_parent</code>
+and <code>item.append_daughter</code> should normally be used for tree building. 
+Inserting using <code>before</code> and <code>after</code> within daughters is
+perfectly safe. 
+<br><dt>&lsquo;<samp><span class="samp">(item.append_daughter PARENT DAUGHTER)</span></samp>&rsquo;<dd>Append <code>DAUGHTER</code>, an item or a description of an item to
+the item <code>PARENT</code> in the <code>PARENT</code>'s relation. 
+<br><dt>&lsquo;<samp><span class="samp">(item.insert_parent DAUGHTER NEWPARENT)</span></samp>&rsquo;<dd>Insert a new parent above <code>DAUGHTER</code>.  <code>NEWPARENT</code> may
+be a item or the description of an item. 
+<br><dt>&lsquo;<samp><span class="samp">(item.delete ITEM)</span></samp>&rsquo;<dd>Delete this item from all relations it is in.  All daughters of this
+item in each relations are also removed from the relation (which may in
+turn cause them to be deleted if they cease to be referenced by any
+other relation. 
+<br><dt>&lsquo;<samp><span class="samp">(item.relation.remove ITEM)</span></samp>&rsquo;<dd>Remove this item from this relation, and any of its daughters.  Other
+relations this item are in remain untouched. 
+<br><dt>&lsquo;<samp><span class="samp">(item.move_tree FROM TO)</span></samp>&rsquo;<dd>Move the item <code>FROM</code> to the position of <code>TO</code> in <code>TO</code>'s
+relation.  <code>FROM</code> will often be in the same relation as <code>TO</code>
+but that isn't necessary.  The contents of <code>TO</code> are dereferenced. 
+its daughters are saved then descendants of <code>FROM</code> are
+recreated under the new <code>TO</code>, then <code>TO</code>'s previous
+daughters are derefenced.   The order of this is important as <code>FROM</code>
+may be part of <code>TO</code>'s descendants.  Note that if <code>TO</code>
+is part of <code>FROM</code>'s descendants no moving occurs and <code>nil</code>
+is returned.  For example to remove all punction terminal nodes in
+the Syntax relation the call would be something like
+     <pre class="lisp">          (define (syntax_relation_punc p)
+            (if (string-equal "punc" (item.feat (item.daughter2 p) "pos"))
+                (item.move_tree (item.daughter1 p) p)
+            (mapcar syntax_remove_punc (item.daughters p))))
+</pre>
+     <br><dt>&lsquo;<samp><span class="samp">(item.exchange_trees ITEM1 ITEM2)</span></samp>&rsquo;<dd>Exchange <code>ITEM1</code> and <code>ITEM2</code> and their descendants in
+<code>ITEM2</code>'s relation.  If <code>ITEM1</code> is within <code>ITEM2</code>'s
+descendants or vice versa <code>nil</code> is returns and no exchange takes
+place.  If <code>ITEM1</code> is not in <code>ITEM2</code>'s relation, no
+exchange takes place. 
+</dl>
+
+   <p>Daughters of a node are actually represented as a list whose first
+daughter is double linked to the parent.  Although being aware of
+this structure may be useful it is recommended that all access go through
+the tree specific functions <code>*.parent</code> and <code>*.daughter*</code>
+which properly deal with the structure, thus is the internal structure
+ever changes in the future only these tree access function need be
+updated.
+
+   <p>With the above functions quite elaborate utterance manipulations can
+be performed.  For example in post-lexical rules where modifications
+to the segments are required based on the words and their context. 
+See <a href="Post_002dlexical-rules.html#Post_002dlexical-rules">Post-lexical rules</a>, for an example of using various
+utterance access functions.
+
+   </body></html>
+

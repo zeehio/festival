@@ -1,0 +1,91 @@
+<html lang="en">
+<head>
+<title>Diphone selection - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Diphone-synthesizer.html#Diphone-synthesizer" title="Diphone synthesizer">
+<link rel="prev" href="Access-strategies.html#Access-strategies" title="Access strategies">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Diphone-selection"></a>
+<p>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Access-strategies.html#Access-strategies">Access strategies</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Diphone-synthesizer.html#Diphone-synthesizer">Diphone synthesizer</a>
+<hr>
+</div>
+
+<h3 class="section">21.6 Diphone selection</h3>
+
+<p><a name="index-dark-l_0027s-280"></a><a name="index-consonant-clusters-281"></a><a name="index-overriding-diphone-names-282"></a><a name="index-diphone-names-283"></a>The appropriate diphone is selected based on the name of the phone
+identified in the segment stream.  However for better diphone synthesis
+it is useful to augment the diphone database with other diphones in
+addition to the ones directly from the phoneme set.  For example dark
+and light l's, distinguishing consonants from their consonant cluster
+form and their isolated form.  There are however two methods to identify
+this modification from the basic name.
+
+   <p><a name="index-g_t_0040code_007bdiphone_005fmodule_005fhooks_007d-284"></a><a name="index-g_t_0040code_007bdiphone_005fphone_005fname_007d-285"></a>When the diphone module is called the hook <code>diphone_module_hooks</code>
+is applied.  That is a function of list of functions which will be
+applied to the utterance.  Its main purpose is to allow the conversion
+of the basic name into an augmented one.  For example converting a basic
+<code>l</code> into a dark l, denoted by <code>ll</code>.  The functions given in
+<code>diphone_module_hooks</code> may set the feature
+<code>diphone_phone_name</code> which if set will be used rather than the
+<code>name</code> of the segment.
+
+   <p>For example suppose we wish to use a dark l (<code>ll</code>) rather than
+a normal l for all l's that appear in the coda of a syllable. 
+First we would define a function to which identifies this condition
+and adds the addition feature <code>diphone_phone_name</code> identify
+the name change.  The following function would
+achieve this
+<pre class="lisp">     (define (fix_dark_ls utt)
+     "(fix_dark_ls UTT)
+     Identify ls in coda position and relabel them as ll."
+       (mapcar
+        (lambda (seg)
+          (if (and (string-equal "l" (item.name seg))
+                   (string-equal "+" (item.feat seg "p.ph_vc"))
+                   (item.relation.prev seg "SylStructure"))
+           (item.set_feat seg "diphone_phone_name" "ll")))
+        (utt.relation.items utt 'Segment))
+       utt)
+</pre>
+   <p>Then when we wish to use this for a particular voice we need to
+add
+<pre class="lisp">     (set! diphone_module_hooks (list fix_dark_ls))
+</pre>
+   <p><br>in the voice selection function.<br>
+
+
+   <p>For a more complex example including consonant cluster identification
+see the American English voice <samp><span class="file">ked</span></samp> in
+<samp><span class="file">festival/lib/voices/english/ked/festvox/kd_diphone.scm</span></samp>.  The
+function <code>ked_diphone_fix_phone_name</code> carries out a number of
+mappings.
+
+   <p>The second method for changing a name is during actual look up of a
+diphone in the database.  The list of alternates is given by the
+<code>Diphone_Init</code> function.  These are used when the specified diphone
+can't be found.  For example we often allow mappings of dark l,
+<code>ll</code> to <code>l</code> as sometimes the dark l diphone doesn't actually
+exist in the database.
+
+   </body></html>
+

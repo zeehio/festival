@@ -1,0 +1,78 @@
+<html lang="en">
+<head>
+<title>General intonation - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Intonation.html#Intonation" title="Intonation">
+<link rel="prev" href="Tilt-intonation.html#Tilt-intonation" title="Tilt intonation">
+<link rel="next" href="Using-ToBI.html#Using-ToBI" title="Using ToBI">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="General-intonation"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Using-ToBI.html#Using-ToBI">Using ToBI</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Tilt-intonation.html#Tilt-intonation">Tilt intonation</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Intonation.html#Intonation">Intonation</a>
+<hr>
+</div>
+
+<h3 class="section">18.5 General intonation</h3>
+
+<p>As there seems to be a number of intonation theories that predict
+F0 contours by rule (possibly using trained parameters) this
+module aids the external specification of such rules for a wide
+class of intonation theories (through primarily those that might
+be referred to as the ToBI group).  This is designed to be multi-lingual
+and offer a quick way to port often pre-existing rules into Festival
+without writing new C++ code.
+
+   <p>The accent prediction part uses the same mechanisms as the Simple
+intonation method described above, a decision tree for
+accent prediction, thus the tree in the variable
+<code>int_accent_cart_tree</code> is used on each syllable to predict
+an <code>IntEvent</code>.
+
+   <p>The target part calls a specified Scheme function which returns
+a list of target points for a syllable.  In this way any arbitrary
+tests may be done to produce the target points.  For example
+here is a function which returns three target points
+for each syllable with an <code>IntEvent</code> related to it (i.e. 
+accented syllables).
+<pre class="lisp">     (define (targ_func1 utt syl)
+       "(targ_func1 UTT STREAMITEM)
+     Returns a list of targets for the given syllable."
+       (let ((start (item.feat syl 'syllable_start))
+             (end (item.feat syl 'syllable_end)))
+         (if (equal? (item.feat syl "R:Intonation.daughter1.name") "Accented")
+             (list
+              (list start 110)
+              (list (/ (+ start end) 2.0) 140)
+              (list end 100)))))
+</pre>
+   <p>This function may be identified as the function to call by
+the following setup parameters.
+<pre class="lisp">     (Parameter.set 'Int_Method 'General)
+     (Parameter.set 'Int_Target_Method Int_Targets_General)
+     
+     (set! int_general_params
+           (list
+            (list 'targ_func targ_func1)))
+</pre>
+   </body></html>
+

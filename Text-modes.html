@@ -1,0 +1,140 @@
+<html lang="en">
+<head>
+<title>Text modes - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="TTS.html#TTS" title="TTS">
+<link rel="prev" href="Utterance-chunking.html#Utterance-chunking" title="Utterance chunking">
+<link rel="next" href="Example-text-mode.html#Example-text-mode" title="Example text mode">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Text-modes"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Example-text-mode.html#Example-text-mode">Example text mode</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Utterance-chunking.html#Utterance-chunking">Utterance chunking</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="TTS.html#TTS">TTS</a>
+<hr>
+</div>
+
+<h3 class="section">9.2 Text modes</h3>
+
+<p><a name="index-text-modes-105"></a>We do not believe that all texts are of the same type.  Often information
+about the general contents of file will aid synthesis greatly.  For
+example in Latex files we do not want to here "left brace, backslash e
+m" before each emphasized word, nor do we want to necessarily hear
+formating commands.  Festival offers a basic method for specifying
+customization rules depending on the <em>mode</em> of the text.  By type
+we are following the notion of modes in Emacs and eventually will allow
+customization at a similar level.
+
+   <p>Modes are specified as the third argument to the function <code>tts</code>. 
+When using the Emacs interface to Festival the buffer mode is
+automatically passed as the text mode.  If the mode is not supported a
+warning message is printed and the raw text mode is used.
+
+   <p>Our initial text mode implementation allows configuration both in C++
+and in Scheme.  Obviously in C++ almost anything can be done but it is
+not as easy to reconfigure without recompilation.  Here
+we will discuss those modes which can be fully configured at
+run time.
+
+   <p>A text mode may contain the following
+     <dl>
+<dt><em>filter</em><dd>A Unix shell program filter that processes the text file in some
+appropriate way.  For example for email it might remove uninteresting
+headers and just output the subject, from line and the message body. 
+If not specified, an identity filter is used. 
+<br><dt><em>init_function</em><dd>This (Scheme) function will be called before any processing
+will be done.  It allows further set up of tokenization rules
+and voices etc. 
+<br><dt><em>exit_function</em><dd>This (Scheme) function will be called at the end of any processing
+allowing reseting of tokenization rules etc. 
+<br><dt><em>analysis_mode</em><dd>If analysis mode is <code>xml</code> the file is read through the built in XML
+parser <code>rxp</code>.  Alternatively if analysis mode is <code>xxml</code> the
+filter should an SGML normalising parser and the output is processed in
+a way suitable for it.  Any other value is ignored. 
+</dl>
+   These mode specific parameters are specified in the a-list
+held in <code>tts_text_modes</code>.
+
+   <p>When using Festival in Emacs the emacs buffer mode is passed to
+Festival as the text mode.
+
+   <p>Note that above mechanism is not really designed to be re-entrant,
+this should be addressed in later versions.
+
+   <p><a name="index-g_t_0040code_007bauto_002dtext_002dmode_002dalist_007d-106"></a><a name="index-automatic-selection-of-text-mode-107"></a>Following the use of auto-selection of mode in Emacs, Festival can
+auto-select the text mode based on the filename given when no explicit
+mode is given.  The Lisp variable <code>auto-text-mode-alist</code> is a list
+of dotted pairs of regular expression and mode name.  For example
+to specify that the <code>email</code> mode is to be used for files ending
+in <samp><span class="file">.email</span></samp> we would add to the current <code>auto-text-mode-alist</code>
+as follows
+<pre class="lisp">     (set! auto-text-mode-alist
+           (cons (cons "\\.email$" 'email)
+                 auto-text-mode-alist))
+</pre>
+   <p>If the function <code>tts</code> is called with a mode other than <code>nil</code>
+that mode overrides any specified by the <code>auto-text-mode-alist</code>. 
+The mode <code>fundamental</code> is the explicit "null" mode, it is used
+when no mode is specified in the function <code>tts</code>, and match
+is found in <code>auto-text-mode-alist</code> or the specified mode
+is not found.
+
+   <p>By convention if a requested text model is not found in
+<code>tts_text_modes</code> the file <samp><span class="file">MODENAME-mode</span></samp> will be
+<code>required</code>.  Therefore if you have the file
+<samp><span class="file">MODENAME-mode.scm</span></samp> in your library then it will be automatically
+loaded on reference.  Modes may be quite large and it is not necessary
+have Festival load them all at start up time.
+
+   <p>Because of the <code>auto-text-mode-alist</code> and the auto loading
+of currently undefined text modes you can use Festival like
+<pre class="example">     festival --tts example.email
+</pre>
+   <p>Festival with automatically synthesize <samp><span class="file">example.email</span></samp> in text
+mode <code>email</code>.
+
+   <p><a name="index-personal-text-modes-108"></a>If you add your own personal text modes you should do the following. 
+Suppose you've written an HTML mode.  You have named it
+<samp><span class="file">html-mode.scm</span></samp> and put it in <samp><span class="file">/home/awb/lib/festival/</span></samp>.  In
+your <samp><span class="file">.festivalrc</span></samp> first identify you're personal Festival library
+directory by adding it to <code>lib-path</code>.
+<pre class="example">     (set! lib-path (cons "/home/awb/lib/festival/" lib-path))
+</pre>
+   <p>Then add the definition to the <code>auto-text-mode-alist</code>
+that file names ending <samp><span class="file">.html</span></samp> or <samp><span class="file">.htm</span></samp> should
+be read in HTML mode.
+<pre class="example">     (set! auto-text-mode-alist
+           (cons (cons "\\.html?$" 'html)
+                 auto-text-mode-alist))
+</pre>
+   <p>Then you may synthesize an HTML file either from Scheme
+<pre class="example">     (tts "example.html" nil)
+</pre>
+   <p><br>Or from the shell command line<br>
+
+<pre class="example">     festival --tts example.html
+</pre>
+   <p>Anyone familiar with modes in Emacs should recognise that the process of
+adding a new text mode to Festival is very similar to adding a new
+buffer mode to Emacs.
+
+   </body></html>
+

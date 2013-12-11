@@ -1,0 +1,474 @@
+<html lang="en">
+<head>
+<title>Building a new voice - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Voices.html#Voices" title="Voices">
+<link rel="prev" href="Current-voices.html#Current-voices" title="Current voices">
+<link rel="next" href="Defining-a-new-voice.html#Defining-a-new-voice" title="Defining a new voice">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Building-a-new-voice"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Defining-a-new-voice.html#Defining-a-new-voice">Defining a new voice</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Current-voices.html#Current-voices">Current voices</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Voices.html#Voices">Voices</a>
+<hr>
+</div>
+
+<h3 class="section">24.2 Building a new voice</h3>
+
+<p><a name="index-spanish-voice-311"></a>This section runs through the definition of a new voice in Festival. 
+Although this voice is simple (it is a simplified version of the
+distributed spanish voice) it shows all the major parts that must be
+defined to get Festival to speak in a new voice.  Thanks go to Alistair
+Conkie for helping me define this but as I don't speak Spanish there are
+probably many mistakes.  Hopefully its pedagogical use is better than
+its ability to be understood in Castille.
+
+   <p>A much more detailed document on building voices in Festival has been
+written and is recommend reading for any one attempting to add a new
+voice to Festival <cite>black99</cite>.  The information here is a little
+sparse though gives the basic requirements.
+
+   <p>The general method for defining a new voice is to define the
+parameters for all the various sub-parts e.g. phoneset, duration
+parameter intonation parameters etc., then defined a function
+of the form <code>voice_NAME</code> which when called will actually
+select the voice.
+
+<h4 class="subsection">24.2.1 Phoneset</h4>
+
+<p><a name="index-phoneset-definitions-312"></a>For most new languages and often for new dialects, a new
+phoneset is required.  It is really the basic building
+block of a voice and most other parts are defined in terms
+of this set, so defining it first is a good start.
+<pre class="example">     (defPhoneSet
+       spanish
+       ;;;  Phone Features
+       (;; vowel or consonant
+        (vc + -)
+        ;; vowel length: short long diphthong schwa
+        (vlng s l d a 0)
+        ;; vowel height: high mid low
+        (vheight 1 2 3 -)
+        ;; vowel frontness: front mid back
+        (vfront 1 2 3 -)
+        ;; lip rounding
+        (vrnd + -)
+        ;; consonant type: stop fricative affricative nasal liquid
+        (ctype s f a n l 0)
+        ;; place of articulation: labial alveolar palatal labio-dental
+        ;;                         dental velar
+        (cplace l a p b d v 0)
+        ;; consonant voicing
+        (cvox + -)
+        )
+       ;; Phone set members (features are not! set properly)
+       (
+        (#  - 0 - - - 0 0 -)
+        (a  + l 3 1 - 0 0 -)
+        (e  + l 2 1 - 0 0 -)
+        (i  + l 1 1 - 0 0 -)
+        (o  + l 3 3 - 0 0 -)
+        (u  + l 1 3 + 0 0 -)
+        (b  - 0 - - + s l +)
+        (ch - 0 - - + a a -)
+        (d  - 0 - - + s a +)
+        (f  - 0 - - + f b -)
+        (g  - 0 - - + s p +)
+        (j  - 0 - - + l a +)
+        (k  - 0 - - + s p -)
+        (l  - 0 - - + l d +)
+        (ll - 0 - - + l d +)
+        (m  - 0 - - + n l +)
+        (n  - 0 - - + n d +)
+        (ny - 0 - - + n v +)
+        (p  - 0 - - + s l -)
+        (r  - 0 - - + l p +)
+        (rr - 0 - - + l p +)
+        (s  - 0 - - + f a +)
+        (t  - 0 - - + s t +)
+        (th - 0 - - + f d +)
+        (x  - 0 - - + a a -)
+       )
+     )
+     (PhoneSet.silences '(#))
+</pre>
+   <p><a name="index-silences-313"></a>Note some phonetic features may be wrong.
+
+<h4 class="subsection">24.2.2 Lexicon and LTS</h4>
+
+<p>Spanish is a language whose pronunciation can almost completely be
+predicted from its orthography so in this case we do not need a
+list of words and their pronunciations and can do most of the work
+with letter to sound rules.
+
+   <p><a name="index-lexicon-creation-314"></a>Let us first make a lexicon structure as follows
+<pre class="example">     (lex.create "spanish")
+     (lex.set.phoneset "spanish")
+</pre>
+   <p>However if we did just want a few entries to test our system without
+building any letter to sound rules we could add entries directly to
+the addenda.  For example
+<pre class="example">     (lex.add.entry
+        '("amigos" nil (((a) 0) ((m i) 1) (g o s))))
+</pre>
+   <p>A letter to sound rule system for Spanish is quite simple
+in the format supported by Festival.  The following is a good
+start to a full set. 
+<a name="index-letter-to-sound-rules-315"></a>
+<pre class="example">     (lts.ruleset
+     ;  Name of rule set
+      spanish
+     ;  Sets used in the rules
+     (
+       (LNS l n s )
+       (AEOU a e o u )
+       (AEO a e o )
+       (EI e i )
+       (BDGLMN b d g l m n )
+     )
+     ;  Rules
+     (
+      ( [ a ] = a )
+      ( [ e ] = e )
+      ( [ i ] = i )
+      ( [ o ] = o )
+      ( [ u ] = u )
+      ( [ "'" a ] = a1 )   ;; stressed vowels
+      ( [ "'" e ] = e1 )
+      ( [ "'" i ] = i1 )
+      ( [ "'" o ] = o1 )
+      ( [ "'" u ] = u1 )
+      ( [ b ] = b )
+      ( [ v ] = b )
+      ( [ c ] "'" EI = th )
+      ( [ c ] EI = th )
+      ( [ c h ] = ch )
+      ( [ c ] = k )
+      ( [ d ] = d )
+      ( [ f ] = f )
+      ( [ g ] "'" EI = x )
+      ( [ g ] EI = x )
+      ( [ g u ] "'" EI = g )
+      ( [ g u ] EI = g )
+      ( [ g ] = g )
+      ( [ h u e ] = u e )
+      ( [ h i e ] = i e )
+      ( [ h ] =  )
+      ( [ j ] = x )
+      ( [ k ] = k )
+      ( [ l l ] # = l )
+      ( [ l l ] = ll )
+      ( [ l ] = l )
+      ( [ m ] = m )
+      ( [ ~ n ] = ny )
+      ( [ n ] = n )
+      ( [ p ] = p )
+      ( [ q u ] = k )
+      ( [ r r ] = rr )
+      ( # [ r ] = rr )
+      ( LNS [ r ] = rr )
+      ( [ r ] = r )
+      ( [ s ] BDGLMN = th )
+      ( [ s ] = s )
+      ( # [ s ] C = e s )
+      ( [ t ] = t )
+      ( [ w ] = u )
+      ( [ x ] = k s )
+      ( AEO [ y ] = i )
+      ( # [ y ] # = i )
+      ( [ y ] = ll )
+      ( [ z ] = th )
+     ))
+</pre>
+   <p>We could simply set our lexicon to use the above letter to sound
+system with the following command
+<pre class="example">     (lex.set.lts.ruleset 'spanish)
+</pre>
+   <p>But this would not deal with upper case letters.  Instead of
+writing new rules for upper case letters we can define that
+a Lisp function be called when looking up a word and intercept
+the lookup with our own function.  First we state that unknown
+words should
+call a function, and then define the function we wish called. 
+The actual link to ensure our function will be called is done
+below at lexicon selection time
+<pre class="example">     (define (spanish_lts word features)
+       "(spanish_lts WORD FEATURES)
+     Using letter to sound rules build a spanish pronunciation of WORD."
+       (list word
+             nil
+             (lex.syllabify.phstress (lts.apply (downcase word) 'spanish))))
+     (lex.set.lts.method spanish_lts)
+</pre>
+   <p>In the function we downcase the word and apply the LTS rule to it. 
+Next we syllabify it and return the created lexical entry.
+
+<h4 class="subsection">24.2.3 Phrasing</h4>
+
+<p>Without detailed labelled databases we cannot build statistical models
+of phrase breaks, but we can simply build a phrase break model based
+on punctuation.  The following is a CART tree to predict simple breaks,
+from punctuation.
+<pre class="example">     (set! spanish_phrase_cart_tree
+     '
+     ((lisp_token_end_punc in ("?" "." ":"))
+       ((BB))
+       ((lisp_token_end_punc in ("'" "\"" "," ";"))
+        ((B))
+        ((n.name is 0)  ;; end of utterance
+         ((BB))
+         ((NB))))))
+</pre>
+   <h4 class="subsection">24.2.4 Intonation</h4>
+
+<p>For intonation there are number of simple options without requiring
+training data.  For this example we will simply use a hat pattern on all
+stressed syllables in content words and on single syllable content
+words. (i.e.  <code>Simple</code>) Thus we need an accent prediction CART
+tree.
+<pre class="example">     (set! spanish_accent_cart_tree
+      '
+       ((R:SylStructure.parent.gpos is content)
+        ((stress is 1)
+         ((Accented))
+         ((position_type is single)
+          ((Accented))
+          ((NONE))))
+        ((NONE))))
+</pre>
+   <p>We also need to specify the pitch range of our speaker.  We will
+be using a male Spanish diphone database of the follow range
+<pre class="example">     (set! spanish_el_int_simple_params
+         '((f0_mean 120) (f0_std 30)))
+</pre>
+   <h4 class="subsection">24.2.5 Duration</h4>
+
+<p>We will use the trick mentioned above for duration prediction. 
+Using the zscore CART tree method, we will actually use it to
+predict factors rather than zscores.
+
+   <p>The tree predicts longer durations in stressed syllables and in
+clause initial and clause final syllables.
+<pre class="example">     (set! spanish_dur_tree
+      '
+        ((R:SylStructure.parent.R:Syllable.p.syl_break &gt; 1 ) ;; clause initial
+         ((R:SylStructure.parent.stress is 1)
+          ((1.5))
+          ((1.2)))
+         ((R:SylStructure.parent.syl_break &gt; 1)   ;; clause final
+          ((R:SylStructure.parent.stress is 1)
+           ((2.0))
+           ((1.5)))
+          ((R:SylStructure.parent.stress is 1)
+           ((1.2))
+           ((1.0))))))
+</pre>
+   <p>In addition to the tree we need durations for each phone in the
+set
+<pre class="example">     (set! spanish_el_phone_data
+     '(
+        (# 0.0 0.250)
+        (a 0.0 0.090)
+        (e 0.0 0.090)
+        (i 0.0 0.080)
+        (o 0.0 0.090)
+        (u 0.0 0.080)
+        (b 0.0 0.065)
+        (ch 0.0 0.135)
+        (d 0.0 0.060)
+        (f 0.0 0.100)
+        (g 0.0 0.080)
+        (j 0.0 0.100)
+        (k 0.0 0.100)
+        (l 0.0 0.080)
+        (ll 0.0 0.105)
+        (m 0.0 0.070)
+        (n 0.0 0.080)
+        (ny 0.0 0.110)
+        (p 0.0 0.100)
+        (r 0.0 0.030)
+        (rr 0.0 0.080)
+        (s 0.0 0.110)
+        (t 0.0 0.085)
+        (th 0.0 0.100)
+        (x 0.0 0.130)
+     ))
+</pre>
+   <h4 class="subsection">24.2.6 Waveform synthesis</h4>
+
+<p>There are a number of choices for waveform synthesis currently
+supported.  MBROLA supports Spanish, so we could use that.  But their
+Spanish diphones in fact use a slightly different phoneset so we would
+need to change the above definitions to use it effectively.  Here we will
+use a diphone database for Spanish recorded by Eduardo Lopez when he was
+a Masters student some years ago.
+
+   <p>Here we simply load our pre-built diphone database
+<pre class="example">     (us_diphone_init
+        (list
+         '(name "el_lpc_group")
+         (list 'index_file
+               (path-append spanish_el_dir "group/ellpc11k.group"))
+         '(grouped "true")
+         '(default_diphone "#-#")))
+</pre>
+   <h4 class="subsection">24.2.7 Voice selection function</h4>
+
+<p>The standard way to define a voice in Festival is to define
+a function of the form <code>voice_NAME</code> which selects
+all the appropriate parameters.  Because the definition
+below follows the above definitions we know that everything
+appropriate has been loaded into Festival and hence we
+just need to select the appropriate a parameters.
+
+<pre class="example">     (define (voice_spanish_el)
+     "(voice_spanish_el)
+     Set up synthesis for Male Spanish speaker: Eduardo Lopez"
+       (voice_reset)
+       (Parameter.set 'Language 'spanish)
+       ;; Phone set
+       (Parameter.set 'PhoneSet 'spanish)
+       (PhoneSet.select 'spanish)
+       (set! pos_lex_name nil)
+       ;; Phrase break prediction by punctuation
+       (set! pos_supported nil)
+       ;; Phrasing
+       (set! phrase_cart_tree spanish_phrase_cart_tree)
+       (Parameter.set 'Phrase_Method 'cart_tree)
+       ;; Lexicon selection
+       (lex.select "spanish")
+       ;; Accent prediction
+       (set! int_accent_cart_tree spanish_accent_cart_tree)
+       (set! int_simple_params spanish_el_int_simple_params)
+       (Parameter.set 'Int_Method 'Simple)
+       ;; Duration prediction
+       (set! duration_cart_tree spanish_dur_tree)
+       (set! duration_ph_info spanish_el_phone_data)
+       (Parameter.set 'Duration_Method 'Tree_ZScores)
+       ;; Waveform synthesizer: diphones
+       (Parameter.set 'Synth_Method 'UniSyn)
+       (Parameter.set 'us_sigpr 'lpc)
+       (us_db_select 'el_lpc_group)
+     
+       (set! current-voice 'spanish_el)
+     )
+     
+     (provide 'spanish_el)
+</pre>
+   <h4 class="subsection">24.2.8 Last remarks</h4>
+
+<p>We save the above definitions in a file <samp><span class="file">spanish_el.scm</span></samp>.  Now we
+can declare the new voice to Festival.  See <a href="Defining-a-new-voice.html#Defining-a-new-voice">Defining a new voice</a>,
+for a description of methods for adding new voices.  For testing
+purposes we can explciitly load the file <samp><span class="file">spanish_el.scm</span></samp>
+
+   <p>The voice is now available for use in festival.
+<pre class="example">     festival&gt; (voice_spanish_el)
+     spanish_el
+     festival&gt; (SayText "hola amigos")
+     &lt;Utterance 0x04666&gt;
+</pre>
+   <p>As you can see adding a new voice is not very difficult.  Of course
+there is quite a lot more than the above to add a high quality robust
+voice to Festival.  But as we can see many of the basic tools that we
+wish to use already exist.  The main difference between the above voice
+and the English voices already in Festival are that their models are
+better trained from databases.  This produces, in general, better
+results, but the concepts behind them are basically the same.  All
+of those trainable methods may be parameterized with data for
+new voices.
+
+   <p>As Festival develops, more modules will be added with better support for
+training new voices so in the end we hope that adding in high quality
+new voices is actually as simple as (or indeed simpler than) the above
+description.
+
+<h4 class="subsection">24.2.9 Resetting globals</h4>
+
+<p><a name="index-reseting-globals-316"></a><a name="index-g_t_0040code_007bvoice_005freset_007d-317"></a>Because the version of Scheme used in Festival only has a single flat
+name space it is unfortunately too easy for voices to set some global
+which accidentally affects all other voices selected after it.  Because
+of this problem we have introduced a convention to try to minimise the
+possibility of this becoming a problem.  Each voice function
+defined should always call <code>voice_reset</code> at the start.  This
+will reset any globals and also call a tidy up function provided by
+the previous voice function.
+
+   <p>Likewise in your new voice function you should provide a tidy up
+function to reset any non-standard global variables you set.  The
+function <code>current_voice_reset</code> will be called by
+<code>voice_reset</code>.  If the value of <code>current_voice_reset</code> is
+<code>nil</code> then it is not called.  <code>voice_reset</code> sets
+<code>current_voice_reset</code> to <code>nil</code>, after calling it.
+
+   <p>For example suppose some new voice requires the audio device to
+be directed to a different machine.  In this example we make
+the giant's voice go through the netaudio machine <code>big_speakers</code>
+while the standard voice go through <code>small_speakers</code>.
+
+   <p>Although we can easily select the machine <code>big_speakers</code> as out
+when our <code>voice_giant</code> is called, we also need to set it back when
+the next voice is selected, and don't want to have to modify every other
+voice defined in the system.  Let us first define two functions to
+selection the audio output.
+<pre class="lisp">     (define (select_big)
+       (set! giant_previous_audio (getenv "AUDIOSERVER"))
+       (setenv "AUDIOSERVER" "big_speakers"))
+     
+     (define (select_normal)
+       (setenv "AUDIOSERVER" giant_previous_audio))
+</pre>
+   <p>Note we save the previous value of <code>AUDIOSERVER</code> rather than simply
+assuming it was <code>small_speakers</code>.
+
+   <p>Our definition of <code>voice_giant</code> definition of <code>voice_giant</code>
+will look something like
+<pre class="lisp">     (define (voice_giant)
+     "comment comment ..."
+        (voice_reset)  ;; get into a known state
+        (select_big)
+        ;;; other giant voice parameters
+        ...
+     
+        (set! current_voice_rest select_normal)
+        (set! current-voice 'giant))
+</pre>
+   <p>The obvious question is which variables should a voice reset. 
+Unfortunately there is not a definitive answer to that.  To a certain
+extent I don't want to define that list as there will be many variables
+that will by various people in Festival which are not in the original
+distribution and we don't want to restrict them.  The longer term answer
+is some for of partitioning of the Scheme name space perhaps having
+voice local variables (cf. Emacs buffer local variables).  But
+ultimately a voice may set global variables which could redefine the
+operation of later selected voices and there seems no real way to stop
+that, and keep the generality of the system.
+
+   <p><a name="index-current-voice-318"></a>Note the convention of setting the global <code>current-voice</code> as
+the end of any voice definition file.  We do not enforce this
+but probabaly should.  The variable <code>current-voice</code> at
+any time should identify the current voice, the voice
+description information (described below) will relate this name
+to properties identifying it.
+
+   </body></html>
+

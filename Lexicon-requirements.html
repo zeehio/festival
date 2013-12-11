@@ -1,0 +1,81 @@
+<html lang="en">
+<head>
+<title>Lexicon requirements - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Lexicons.html#Lexicons" title="Lexicons">
+<link rel="prev" href="Building-letter-to-sound-rules.html#Building-letter-to-sound-rules" title="Building letter to sound rules">
+<link rel="next" href="Available-lexicons.html#Available-lexicons" title="Available lexicons">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Lexicon-requirements"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Available-lexicons.html#Available-lexicons">Available lexicons</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Building-letter-to-sound-rules.html#Building-letter-to-sound-rules">Building letter to sound rules</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Lexicons.html#Lexicons">Lexicons</a>
+<hr>
+</div>
+
+<h3 class="section">13.6 Lexicon requirements</h3>
+
+<p><a name="index-lexicon-requirements-172"></a>For English there are a number of assumptions made about the lexicon
+which are worthy of explicit mention.  If you are basically going to use
+the existing token rules you should try to include at least the
+following in any lexicon that is to work with them.
+
+     <ul>
+<li>The letters of the alphabet, when a token is identified as an acronym it
+is spelled out.  The tokenization assumes that the individual letters of
+the alphabet are in the lexicon with their pronunciations.  They
+should be identified as nouns.  (This is to distinguish <code>a</code> as
+a determiner which can be schwa'd from <code>a</code> as a letter which
+cannot.)  The part of speech should be <code>nn</code> by default, but the
+value of the variable <code>token.letter_pos</code> is used and may be
+changed if this is not what is required. 
+<li>One character symbols such as dollar, at-sign, percent etc.  Its
+difficult to get a complete list and to know what the pronunciation of
+some of these are (e.g hash or pound sign).  But the letter to sound
+rules cannot deal with them so they need to be explicitly listed.  See
+the list in the function <code>mrpa_addend</code> in
+<samp><span class="file">festival/lib/dicts/oald/oaldlex.scm</span></samp>.  This list should
+also contain the control characters and eight bit characters. 
+<li><a name="index-possessives-173"></a>The possessive <code>'s</code> should be in your lexicon as schwa and voiced
+fricative (<code>z</code>).  It should be in twice, once as part speech type
+<code>pos</code> and once as <code>n</code> (used in plurals of numbers acronyms
+etc. e.g 1950's).  <code>'s</code> is treated as a word and is separated from
+the tokens it appears with.  The post-lexical rule (the function
+<code>postlex_apos_s_check</code>) will delete the schwa and devoice the <code>z</code>
+in appropriate contexts.  Note this post-lexical rule brazenly assumes
+that the unvoiced fricative in the phoneset is <code>s</code>.  If it
+is not in your phoneset copy the function (it is in
+<samp><span class="file">festival/lib/postlex.scm</span></samp>) and change it for your phoneset
+and use your version as a post-lexical rule. 
+<li><a name="index-NO-digits-174"></a>Numbers as digits (e.g. "1", "2", "34", etc.) should normally
+<em>not</em> be in the lexicon.  The number conversion routines
+convert numbers to words (i.e. "one", "two", "thirty four", etc.). 
+<li><a name="index-unknown-words-175"></a>The word "unknown" or whatever is in the variable
+<code>token.unknown_word_name</code>.  This is used in a few obscure cases
+when there just isn't anything that can be said (e.g. single characters
+which aren't in the lexicon).  Some people have suggested it should be
+possible to make this a sound rather than a word.  I agree, but Festival
+doesn't support that yet. 
+</ul>
+
+   </body></html>
+

@@ -1,0 +1,382 @@
+<html lang="en">
+<head>
+<title>Writing a new module - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Programming.html#Programming" title="Programming">
+<link rel="prev" href="The-source-code.html#The-source-code" title="The source code">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Writing-a-new-module"></a>
+<p>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="The-source-code.html#The-source-code">The source code</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Programming.html#Programming">Programming</a>
+<hr>
+</div>
+
+<h3 class="section">27.2 Writing a new module</h3>
+
+<p>This section gives a simple example of writing a new module. showing
+the basic steps that must be done to create and add a new module that is
+available for the rest of the system to use.  Note many things can be
+done solely in Scheme now and really only low-level very intensive
+things (like waveform synthesizers) need be coded in C++.
+
+<h4 class="subsection">27.2.1 Example 1: adding new modules</h4>
+
+<p><a name="index-new-modules-348"></a><a name="index-adding-new-modules-349"></a>The example here is a duration module which sets durations of phones for
+a given list of averages.  To make this example more interesting, all
+durations in accented syllables are increased by 1.5.  Note that this is
+just an example for the sake of one, this (and much better techniques)
+could easily done within the system as it is at present using a
+hand-crafted CART tree.
+
+   <p>Our knew module, called <code>Duration_Simple</code> can most easily
+be added to the <samp><span class="file">./src/Duration/</span></samp> directory in a file
+<samp><span class="file">simdur.cc</span></samp>.  You can worry about the copyright notice, but
+after that you'll probably need the following includes
+<pre class="lisp">     #include &lt;festival.h&gt;
+     
+</pre>
+   <p>The module itself must be declared in a fixed form.  That is
+receiving a single LISP form (an utterance) as an argument
+and returning that LISP form at the end.  Thus our definition
+will start
+<pre class="lisp">     LISP FT_Duration_Simple(LISP utt)
+     {
+</pre>
+   <p>Next we need to declare an utterance structure and extract it
+from the LISP form. We also make a few other variable declarations
+<pre class="lisp">         EST_Utterance *u = get_c_utt(utt);
+         EST_Item *s;
+         float end=0.0, dur;
+         LISP ph_avgs,ldur;
+</pre>
+   <p><a name="index-accessing-Lisp-variables-350"></a>We cannot list the average durations for each phone in the source
+code as we cannot tell which phoneset we are using (or what
+modifications we want to make to durations between speakers).  Therefore
+the phone and average duration information is held in a Scheme variable
+for easy setting at run time.  To use the information in our C++
+domain we must get that value from the Scheme domain.  This is
+done with the following statement.
+<pre class="lisp">         ph_avgs = siod_get_lval("phoneme_averages","no phoneme durations");
+</pre>
+   <p>The first argument to <code>siod_get_lval</code> is the Scheme name of
+a variable which has been set to an assoc list of phone and average
+duration before this module is called.  See the
+variable <code>phone_durations</code> in <samp><span class="file">lib/mrpa_durs.scm</span></samp> for
+the format.  The second argument to <code>siod_get_lval</code>. is an
+error message to be printed if the variable <code>phone_averages</code>
+is not set.  If the second argument to <code>siod_get_lval</code> is
+<code>NULL</code> then no error is given and if the variable is unset
+this function simply returns the Scheme value <code>nil</code>.
+
+   <p>Now that we have the duration data we can go through each segment
+in the utterance and add the duration.  The loop looks like
+<pre class="lisp">         for (s=u-&gt;relation("Segment")-&gt;head(); s != 0; s = next(s))
+         {
+</pre>
+   <p>We can lookup the average duration of the current segment name
+using the function <code>siod_assoc_str</code>.  As arguments, it
+takes the segment name <code>s-&gt;name()</code> and the assoc list of
+phones and duration.
+<pre class="lisp">             ldur = siod_assoc_str(s-&gt;name(),ph_avgs);
+</pre>
+   <p>Note the return value is actually a LISP pair (phone name and duration),
+or <code>nil</code> if the phone isn't in the list.  Here we check if
+the segment is in the list.  If it is not we print an error and set
+the duration to 100 ms, if it is in the list the floating point number
+is extracted from the LISP pair.
+<pre class="lisp">             if (ldur == NIL)
+             {
+                 cerr &lt;&lt; "Phoneme: " &lt;&lt; s-&gt;name() &lt;&lt; " no duration "
+                     &lt;&lt; endl;
+                 dur = 0.100;
+             }
+             else
+                 dur = get_c_float(car(cdr(ldur)));
+</pre>
+   <p>If this phone is in an accented syllable we wish to increase its
+duration by a factor of 1.5.  To find out if it is accented
+we use the feature system to find the syllable this phone is
+part of and find out if that syllable is accented.
+<pre class="lisp">             if (ffeature(s,"R:SylStructure.parent.accented") == 1)
+                 dur *= 1.5;
+</pre>
+   <p>Now that we have the desired duration we increment the <code>end</code>
+duration with our predicted duration for this segment and set
+the end of the current segment.
+<pre class="lisp">             end += dur;
+             s-&gt;fset("end",end);
+         }
+</pre>
+   <p>Finally we return the utterance from the function.
+<pre class="lisp">         return utt;
+     }
+</pre>
+   <p>Once a module is defined it must be declared to the system so it may be
+called.  To do this one must call the function
+<code>festival_def_utt_module</code> which takes a LISP name, the C++ function
+name and a documentation string describing what the module does.  This
+will automatically be available at run-time and added to the manual. 
+The call to this function should be added to the initialization function
+in the directory you are adding the module too.  The function is called
+<code>festival_DIRNAME_init()</code>.  If one doesn't exist you'll need to
+create it.
+
+   <p>In <samp><span class="file">./src/Duration/</span></samp> the function <code>festival_Duration_init()</code>
+is at the end of the file <samp><span class="file">dur_aux.cc</span></samp>.  Thus we can add our
+new modules declaration at the end of that function.  But first
+we must declare the C++ function in that file.  Thus above
+that function we would add
+<pre class="lisp">     LISP FT_Duration_Simple(LISP args);
+</pre>
+   <p>While at the end of the function <code>festival_Duration_init()</code>
+we would add
+<pre class="lisp">        festival_def_utt_module("Duration_Simple",FT_Duration_Simple,
+        "(Duration_Simple UTT)\n\
+       Label all segments with average duration ... ");
+</pre>
+   <p>In order for our new file to be compiled we must add it
+to the <samp><span class="file">Makefile</span></samp> in that directory, to the <code>SRCS</code> variable. 
+Then when we type <code>make</code> in <samp><span class="file">./src/</span></samp> our new module
+will be properly linked in and available for use.
+
+   <p>Of course we are not quite finished.  We still have to say when our
+new duration module should be called.  When we set
+<pre class="lisp">        (Parameter.set 'Duration_Method Duration_Simple)
+</pre>
+   <p>for a voice it will use our new module, calls to the function
+<code>utt.synth</code> will use our new duration module.
+
+   <p>Note in earlier versions of Festival it was necessary to modify
+the duration calling function in <samp><span class="file">lib/duration.scm</span></samp> but
+that is no longer necessary.
+
+<h4 class="subsection">27.2.2 Example 2: accessing the utterance</h4>
+
+<p><a name="index-Relations-351"></a>In this example we will make more direct use of the utterance structure,
+showing the gory details of following relations in an utterance.  This
+time we will create a module that will name all syllables with a
+concatenation of the names of the segments they are related to.
+
+   <p>As before we need the same standard includes
+<pre class="lisp">     #include "festival.h"
+     
+</pre>
+   <p>Now the definition the function
+<pre class="lisp">     LISP FT_Name_Syls(LISP utt)
+     {
+</pre>
+   <p>As with the previous example we are called with an utterance LISP object
+and will return the same.  The first task is to extract the
+utterance object from the LISP object.
+<pre class="lisp">         EST_Utterance *u = get_c_utt(utt);
+         EST_Item *syl,*seg;
+</pre>
+   <p>Now for each syllable in the utterance we want to find which segments
+are related to it.
+<pre class="lisp">         for (syl=u-&gt;relation("Syllable")-&gt;head(); syl != 0; syl = next(syl))
+         {
+</pre>
+   <p>Here we declare a variable to cummulate the names of the segments.
+<pre class="lisp">             EST_String sylname = "";
+</pre>
+   <p>Now we iterate through the <code>SylStructure</code> daughters of the
+syllable.  These will be the segments in that syllable.
+<pre class="lisp">             for (seg=daughter1(syl,"SylStructure"); seg; seg=next(seg))
+                 sylname += seg-&gt;name();
+</pre>
+   <p>Finally we set the syllables name to the concatenative name, and
+loop to the next syllable.
+<pre class="lisp">             syl-&gt;set_name(sylname);
+         }
+</pre>
+   <p>Finally we return the LISP form of the utterance.
+<pre class="lisp">         return utt;
+     }
+</pre>
+   <h4 class="subsection">27.2.3 Example 3: adding new directories</h4>
+
+<p><a name="index-adding-new-directories-352"></a>In this example we will add a whole new subsystem.  This will often be a
+common way for people to use Festival.  For example let us assume we
+wish to add a formant waveform synthesizer (e.g like that in the free
+<samp><span class="file">rsynth</span></samp> program).  In this case we will add a whole new
+sub-directory to the modules directory.  Let us call it <samp><span class="file">rsynth/</span></samp>.
+
+   <p>In the directory we need a <samp><span class="file">Makefile</span></samp> of the standard form so we
+should copy one from one of the other directories,
+e.g. <samp><span class="file">Intonation/</span></samp>.  Standard methods are used to identify the
+source code files in a <samp><span class="file">Makefile</span></samp> so that the <samp><span class="file">.o</span></samp> files are
+properly added to the library.  Following the other examples will ensure
+your code is integrated properly.
+
+   <p>We'll just skip over the bit where you extract the information
+from the utterance structure and synthesize the waveform
+(see <samp><span class="file">donovan/donovan.cc</span></samp> or <samp><span class="file">diphone/diphone.cc</span></samp>
+for examples).
+
+   <p>To get Festival to use your new module you must tell it to compile the
+directory's contents.  This is done in <samp><span class="file">festival/config/config</span></samp>. 
+Add the line
+<pre class="lisp">     ALSO_INCLUDE += rsynth
+</pre>
+   <p>to the end of that file (there are simialr ones mentioned).  Simply
+adding the name of the directory here will add that as a new module
+and the directory will be compiled.
+
+   <p>What you must provide in your code is a function
+<code>festival_DIRNAME_init()</code> which will be called at initialization
+time.  In this function you should call any further initialization
+require and define and new Lisp functions you with to made available
+to the rest of the system.  For example in the <samp><span class="file">rsynth</span></samp>
+case we would define in some file in <samp><span class="file">rsynth/</span></samp>
+<pre class="lisp">     #include "festival.h"
+     
+     static LISP utt_rtsynth(LISP utt)
+     {
+         EST_Utterance *u = get_c_utt(utt);
+         // Do format synthesis
+         return utt;
+     }
+     
+     void festival_rsynth_init()
+     {
+        proclaim_module("rsynth");
+     
+        festival_def_utt_module("Rsynth_Synth",utt_rsynth,
+        "(Rsynth_Synth UTT)
+        A simple formant synthesizer");
+     
+        ...
+     }
+     
+</pre>
+   <p>Integration of the code in optional (and standard directories) is done
+by automatically creating <samp><span class="file">src/modules/init_modules.cc</span></samp> for the
+list of standard directories plus those defined as
+<code>ALSO_INCLUDE</code>. A call to a function called
+<code>festival_DIRNAME_init()</code> will be made.
+
+   <p>This mechanism is specifically designed so you can add modules to the
+system without changing anything in the standard distribution.
+
+<h4 class="subsection">27.2.4 Example 4: adding new LISP objects</h4>
+
+<p><a name="index-adding-new-LISP-objects-353"></a>This third example shows you how to add a new Object to Scheme
+and add wraparounds to allow manipulation within the Scheme
+(and C++) domain.
+
+   <p>Like example 2 we are assuming this is done in a new directory. 
+Suppose you have a new object called <code>Widget</code> that can
+transduce a string into some other string (with some optional
+continuous parameter).  Thus, here we create a new file <samp><span class="file">widget.cc</span></samp>
+like this
+
+<pre class="lisp">     #include "festival.h"
+     #include "widget.h"  // definitions for the widget class
+</pre>
+   <p>In order to register the widgets as Lisp objects we actually
+need to register them as <code>EST_Val</code>'s as well.  Thus we now need
+<pre class="lisp">     VAL_REGISTER_CLASS(widget,Widget)
+     SIOD_REGISTER_CLASS(widget,Widget)
+</pre>
+   <p>The first names given to these functions should be a short mnenomic name
+for the object that will be used in the defining of a set
+of access and construction functions.  It of course must be unique
+within the whole system.  The second name is the name of the object
+itself.
+
+   <p>To understand its usage we can add a few simple widget manipulation
+functions
+<pre class="lisp">     LISP widget_load(LISP filename)
+     {
+        EST_String fname = get_c_string(filename);
+        Widget *w = new Widget;   // build a new widget
+     
+        if (w-&gt;load(fname) == 0)  // successful load
+           return siod(w);
+        else
+        {
+           cerr &lt;&lt; "widget load: failed to load \"" &lt;&lt; fname &lt;&lt; "\"" &lt;&lt; endl;
+           festival_error();
+        }
+        return NIL;  // for compilers that get confused
+     }
+</pre>
+   <p>Note that the function <code>siod</code> constructs a LISP object from
+a <code>widget</code>, the class register macro defines that for you. 
+Also note that when giving an object to a <code>LISP</code> object it then
+owns the object and is responsible for deleting it when garbage
+collection occurs on that <code>LISP</code> object.  Care should be
+taken that you don't put the same object within different <code>LISP</code>
+objects.  The macros <code>VAL_RESGISTER_CLASS_NODEL</code> should be
+called if you do not want your given object to be deleted by the LISP
+system (this may cause leaks).
+
+   <p>If you want refer to these functions in other files within your
+models you can use
+<pre class="lisp">     VAL_REGISTER_CLASS_DCLS(widget,Widget)
+     SIOD_REGISTER_CLASS_DCLS(widget,Widget)
+</pre>
+   <p>in a common <samp><span class="file">.h</span></samp> file
+
+   <p>The following defines a function that takes a LISP object containing
+a widget, applies some method and returns a string.
+<pre class="lisp">     LISP widget_apply(LISP lwidget, LISP string, LISP param)
+     {
+         Widget *w = widget(lwidget);
+         EST_String s = get_c_string(string);
+         float p = get_c_float(param);
+         EST_String answer;
+     
+         answer = w-&gt;apply(s,p);
+     
+         return strintern(answer);
+     }
+</pre>
+   <p>The function <code>widget</code>, defined by the registration macros, takes
+a <code>LISP</code> object and returns a pointer to the <code>widget</code> inside
+it.  If the <code>LISP</code> object does not contain a <code>widget</code> an
+error will be thrown.
+
+   <p>Finally you wish to add these functions to the Lisp
+system
+<pre class="lisp">     void festival_widget_init()
+     {
+       init_subr_1("widget.load",widget_load,
+         "(widget.load FILENAME)\n\
+       Load in widget from FILENAME.");
+       init_subr_3("widget.apply",widget_apply,
+         "(widget.apply WIDGET INPUT VAL)\n\
+       Returns widget applied to string iNPUT with float VAL.");
+     }
+</pre>
+   <p>In your <samp><span class="file">Makefile</span></samp> for this directory you'll need to add
+the include directory where <samp><span class="file">widget.h</span></samp> is, if it is not
+contained within the directory itself.  This is done through
+the make variable <code>LOCAL_INCLUDES</code> as
+<pre class="lisp">     LOCAL_INCLUDES = -I/usr/local/widget/include
+</pre>
+   <p>And for the linker you'll need to identify where your widget library
+is.  In your <samp><span class="file">festival/config/config</span></samp> file at the end add
+<pre class="lisp">     COMPILERLIBS += -L/usr/local/widget/lib -lwidget
+</pre>
+   </body></html>
+

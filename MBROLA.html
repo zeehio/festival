@@ -1,0 +1,64 @@
+<html lang="en">
+<head>
+<title>MBROLA - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Other-synthesis-methods.html#Other-synthesis-methods" title="Other synthesis methods">
+<link rel="prev" href="LPC-diphone-synthesizer.html#LPC-diphone-synthesizer" title="LPC diphone synthesizer">
+<link rel="next" href="Synthesizers-in-development.html#Synthesizers-in-development" title="Synthesizers in development">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="MBROLA"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Synthesizers-in-development.html#Synthesizers-in-development">Synthesizers in development</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="LPC-diphone-synthesizer.html#LPC-diphone-synthesizer">LPC diphone synthesizer</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Other-synthesis-methods.html#Other-synthesis-methods">Other synthesis methods</a>
+<hr>
+</div>
+
+<h3 class="section">22.2 MBROLA</h3>
+
+<p><a name="index-MBROLA-286"></a>As an example of how Festival may use a completely external synthesis
+method we support the free system MBROLA.  MBROLA is both a diphone
+synthesis technique and an actual system that constructs waveforms from
+segment, duration and F0 target information.  For details see the MBROLA
+home page at <a href="http://tcts.fpms.ac.be/synthesis/mbrola.html">http://tcts.fpms.ac.be/synthesis/mbrola.html</a>.  MBROLA
+already supports a number of diphone sets including French, Spanish,
+German and Romanian.
+
+   <p>Festival support for MBROLA is in the file <samp><span class="file">lib/mbrola.scm</span></samp>. 
+It is all in Scheme.  The function <code>MBROLA_Synth</code> is called
+when parameter <code>Synth_Method</code> is <code>MBROLA</code>.  The
+function simply saves the segment, duration and target information
+from the utterance, calls the external <samp><span class="file">mbrola</span></samp> program with the
+selected diphone database, and reloads the generated waveform
+back into the utterance.
+
+   <p>An MBROLA-ized version of the Roger diphoneset is available from the
+MBROLA site.  The simple Festival end is distributed as part of
+the system in <samp><span class="file">festvox_en1.tar.gz</span></samp>. 
+The following variables are used by the process
+     <dl>
+<dt><code>mbrola_progname</code><dd>the pathname of the mbrola executable. 
+<br><dt><code>mbrola_database</code><dd>the name of the database to use.  This variable is switched between
+different speakers. 
+</dl>
+
+   </body></html>
+

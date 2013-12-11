@@ -1,0 +1,120 @@
+<html lang="en">
+<head>
+<title>Utterance types - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Utterances.html#Utterances" title="Utterances">
+<link rel="prev" href="Utterance-structure.html#Utterance-structure" title="Utterance structure">
+<link rel="next" href="Example-utterance-types.html#Example-utterance-types" title="Example utterance types">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Utterance-types"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Example-utterance-types.html#Example-utterance-types">Example utterance types</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Utterance-structure.html#Utterance-structure">Utterance structure</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Utterances.html#Utterances">Utterances</a>
+<hr>
+</div>
+
+<h3 class="section">14.2 Utterance types</h3>
+
+<p><a name="index-utterance-types-193"></a><a name="index-g_t_0040code_007bdefUttType_007d-194"></a><a name="index-g_t_0040code_007butt_002esynth_007d-195"></a>The primary purpose of types is to define which modules are to be
+applied to an utterance.  <code>UttTypes</code> are defined in
+<samp><span class="file">lib/synthesis.scm</span></samp>.  The function <code>defUttType</code> defines which
+modules are to be applied to an utterance of that type.  The function
+<code>utt.synth</code> is called applies this list of module to an utterance
+before waveform synthesis is called.
+
+   <p>For example when a <code>Segment</code> type Utterance is synthesized it needs
+only have its values loaded into a <code>Segment</code> relation and a
+<code>Target</code> relation, then the low level waveform synthesis module
+<code>Wave_Synth</code> is called.  This is defined as follows
+<pre class="lisp">     (defUttType Segments
+       (Initialize utt)
+       (Wave_Synth utt))
+</pre>
+   <p>A more complex type is <code>Text</code> type utterance which requires many
+more modules to be called before a waveform can be synthesized
+<pre class="lisp">     (defUttType Text
+       (Initialize utt)
+       (Text utt)
+       (Token utt)
+       (POS utt)
+       (Phrasify utt)
+       (Word utt)
+       (Intonation utt)
+       (Duration utt)
+       (Int_Targets utt)
+       (Wave_Synth utt)
+     )
+</pre>
+   <p><a name="index-g_t_0040code_007bInitialize_007d-196"></a>The <code>Initialize</code> module should normally be called for all
+types.  It loads the necessary relations from the input form
+and deletes all other relations (if any exist) ready for synthesis.
+
+   <p>Modules may be directly defined as C/C++ functions and declared with a
+Lisp name or simple functions in Lisp that check some global parameter
+before calling a specific module (e.g. choosing between different
+intonation modules).
+
+   <p>These types are used when calling the function
+<code>utt.synth</code> and individual modules may be called explicitly by
+hand if required.
+
+   <p><a name="index-g_t_0040code_007bdefSynthType_007d-197"></a><a name="index-SynthTypes-198"></a>Because we expect waveform synthesis methods to themselves become
+complex with a defined set of functions to select, join, and modify
+units we now support an addition notion of <code>SynthTypes</code> like
+<code>UttTypes</code> these define a set of functions to apply
+to an utterance.  These may be defined using the <code>defSynthType</code>
+function.  For example
+<pre class="lisp">     (defSynthType Festival
+       (print "synth method Festival")
+     
+       (print "select")
+       (simple_diphone_select utt)
+     
+       (print "join")
+       (cut_unit_join utt)
+     
+       (print "impose")
+       (simple_impose utt)
+       (simple_power utt)
+     
+       (print "synthesis")
+       (frames_lpc_synthesis utt)
+       )
+</pre>
+   <p>A <code>SynthType</code> is selected by naming as the value of the
+parameter <code>Synth_Method</code>.
+
+   <p><a name="index-synthesis-hooks-199"></a><a name="index-g_t_0040code_007bafter_005fanalysis_005fhooks_007d-200"></a><a name="index-g_t_0040code_007bafter_005fsynth_005fhooks_007d-201"></a><a name="index-g_t_0040code_007bbefore_005fsynth_005fhooks_007d-202"></a><a name="index-talking-head-203"></a>Duration the application of the function <code>utt.synth</code> there are
+three hooks applied.  This allows addition control of the synthesis
+process.  <code>before_synth_hooks</code> is applied before any modules are
+applied.  <code>after_analysis_hooks</code> is applied at the start of
+<code>Wave_Synth</code> when all text, linguistic and prosodic processing have
+been done.  <code>after_synth_hooks</code> is applied after all modules have
+been applied.  These are useful for things such as, altering the volume
+of a voice that happens to be quieter than others, or for example
+outputing information for a talking head before waveform synthesis
+occurs so preparation of the facial frames and synthesizing the waveform
+may be done in parallel.  (see <samp><span class="file">festival/examples/th-mode.scm</span></samp> for
+an example use of these hooks for a talking head text mode.)
+
+   </body></html>
+

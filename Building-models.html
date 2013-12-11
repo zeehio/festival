@@ -1,0 +1,113 @@
+<html lang="en">
+<head>
+<title>Building models - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Building-models-from-databases.html#Building-models-from-databases" title="Building models from databases">
+<link rel="prev" href="Extracting-features.html#Extracting-features" title="Extracting features">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Building-models"></a>
+<p>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Extracting-features.html#Extracting-features">Extracting features</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Building-models-from-databases.html#Building-models-from-databases">Building models from databases</a>
+<hr>
+</div>
+
+<h3 class="section">26.3 Building models</h3>
+
+<p><a name="index-wagon-344"></a>This section describes how to build models from data extracted from
+databases as described in the previous section.  It uses the CART
+building program, <samp><span class="file">wagon</span></samp> which is available in the speech tools
+distribution.  But the data is suitable for many other types of model
+building techniques, such as linear regression or neural networks.
+
+   <p>Wagon is described in the speech tools manual, though we will
+cover simple use here.  To use Wagon you need a datafile and a
+data description file.
+
+   <p>A datafile consists of a number of vectors one per line each containing
+the same number of fields.  This, not coincidentally, is exactly the
+format produced by <samp><span class="file">dumpfeats</span></samp> described in the previous
+section.  The data description file describes the fields in the datafile
+and their range.  Fields may be of any of the following types: class (a
+list of symbols), floats, or ignored.  Wagon will build a classification
+tree if the first field (the predictee) is of type class, or a
+regression tree if the first field is a float.  An example
+data description file would be
+<pre class="lisp">     (
+     ( duration float )
+     ( name # @ @@ a aa ai au b ch d dh e e@ ei f g h i i@ ii jh k l m n
+         ng o oi oo ou p r s sh t th u u@ uh uu v w y z zh )
+     ( n.name # @ @@ a aa ai au b ch d dh e e@ ei f g h i i@ ii jh k l m n
+         ng o oi oo ou p r s sh t th u u@ uh uu v w y z zh )
+     ( p.name # @ @@ a aa ai au b ch d dh e e@ ei f g h i i@ ii jh k l m n
+         ng o oi oo ou p r s sh t th u u@ uh uu v w y z zh )
+     ( R:SylStructure.parent.position_type 0 final initial mid single )
+     ( pos_in_syl float )
+     ( syl_initial 0 1 )
+     ( syl_final 0 1)
+     ( R:SylStructure.parent.R:Syllable.p.syl_break 0 1 3 )
+     ( R:SylStructure.parent.syl_break 0 1 3 4 )
+     ( R:SylStructure.parent.R:Syllable.n.syl_break 0 1 3 4 )
+     ( R:SylStructure.parent.R:Syllable.p.stress 0 1 )
+     ( R:SylStructure.parent.stress 0 1 )
+     ( R:SylStructure.parent.R:Syllable.n.stress 0 1 )
+     )
+</pre>
+   <p>The script <samp><span class="file">speech_tools/bin/make_wagon_desc</span></samp> goes some way
+to helping.  Given a datafile and a file containing the field names, it
+will construct an approximation of the description file.  This file
+should still be edited as all fields are treated as of type class by
+<samp><span class="file">make_wagon_desc</span></samp> and you may want to change them some of them to
+float.
+
+   <p>The data file must be a single file, although we created a number of
+feature files by the process described in the previous section.  From a
+list of file ids select, say, 80% of them, as training data and cat them
+into a single datafile.  The remaining 20% may be catted together as
+test data.
+
+   <p>To build a tree use a command like
+<pre class="example">     wagon -desc DESCFILE -data TRAINFILE -test TESTFILE
+</pre>
+   <p>The minimum cluster size (default 50) may be reduced using the
+command line option <code>-stop</code> plus a number.
+
+   <p>Varying the features and stop size may improve the results.
+
+   <p>Building the models and getting good figures is only one part
+of the process.  You must integrate this model into Festival
+if its going to be of any use.  In the case of CART trees generated
+by Wagon, Festival supports these directly.  In the case of
+CART trees predicting zscores, or factors to modify duration averages,
+ees can be used as is.
+
+   <p>Note there are other options to Wagon which may help build
+better CART models.  Consult the chapter in the speech tools manual
+on Wagon for more information.
+
+   <p>Other parts of the distributed system use CART trees, and linear
+regression models that were training using the processes described in
+this chapter.  Some other parts of the distributed system use CART trees
+which were written by hand and may be improved by properly applying
+these processes.
+
+   </body></html>
+

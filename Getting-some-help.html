@@ -1,0 +1,80 @@
+<html lang="en">
+<head>
+<title>Getting some help - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Quick-start.html#Quick-start" title="Quick start">
+<link rel="prev" href="Simple-command-driven-session.html#Simple-command-driven-session" title="Simple command driven session">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Getting-some-help"></a>
+<p>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Simple-command-driven-session.html#Simple-command-driven-session">Simple command driven session</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Quick-start.html#Quick-start">Quick start</a>
+<hr>
+</div>
+
+<h3 class="section">7.3 Getting some help</h3>
+
+<p><a name="index-help-75"></a>If no audio is generated then you must check to see if audio is
+properly initialized on your machine. See <a href="Audio-output.html#Audio-output">Audio output</a>.
+
+   <p>In the command interpreter &lt;m-h&gt; (meta-h) will give you help
+on the current symbol before the cursor.  This will be a short
+description of the function or variable, how to use it and what
+its arguments are.  A listing of all such help strings appears
+at the end of this document.  &lt;m-s&gt; will synthesize and say
+the same information, but this extra function is really just for show.
+
+   <p><a name="index-g_t_0040code_007bmanual_007d-76"></a>The lisp function <code>manual</code> will send the appropriate command to an
+already running Netscape browser process.  If <code>nil</code> is given as an
+argument the browser will be directed to the tables of contents of the
+manual.  If a non-nil value is given it is assumed to be a section title
+and that section is searched and if found displayed.  For example
+<pre class="example">     festival&gt; (manual "Accessing an utterance")
+</pre>
+   <p>Another related function is <code>manual-sym</code> which given a symbol will
+check its documentation string for a cross reference to a manual
+section and request Netscape to display it.  This function is
+bound to &lt;m-m&gt; and will display the appropriate section for
+the given symbol.
+
+   <p>Note also that the &lt;TAB&gt; key can be used to find out the name
+of commands available as can the function <code>Help</code> (remember the
+parentheses).
+
+   <p>For more up to date information on Festival regularly check
+the Festival Home Page at
+<pre class="example">     <a href="http://www.cstr.ed.ac.uk/projects/festival.html">http://www.cstr.ed.ac.uk/projects/festival.html</a>
+</pre>
+   <p>Further help is available by mailing questions to
+<pre class="example">     festival-help@cstr.ed.ac.uk
+</pre>
+   <p>Although we cannot guarantee the time required to answer you, we
+will do our best to offer help.
+
+   <p><a name="index-bug-reports-77"></a>Bug reports should be submitted to
+<pre class="example">     festival-bug@cstr.ed.ac.uk
+</pre>
+   <p>If there is enough user traffic a general mailing list will be
+created so all users may share comments and receive announcements. 
+In the mean time watch the Festival Home Page for news.
+
+   </body></html>
+

@@ -1,0 +1,64 @@
+<html lang="en">
+<head>
+<title>Emacs interface - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="XML_002fSGML-mark_002dup.html#XML_002fSGML-mark_002dup" title="XML/SGML mark-up">
+<link rel="next" href="Phonesets.html#Phonesets" title="Phonesets">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Emacs-interface"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Phonesets.html#Phonesets">Phonesets</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="XML_002fSGML-mark_002dup.html#XML_002fSGML-mark_002dup">XML/SGML mark-up</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">11 Emacs interface</h2>
+
+<p><a name="index-Emacs-interface-131"></a>One easy method of using Festival is via an Emacs interface
+that allows selection of text regions to be sent to Festival for
+rendering as speech.
+
+   <p><a name="index-g_t_0040file_007bfestival_002eel_007d-132"></a><a name="index-g_t_0040code_007bsay_002dminor_002dmode_007d-133"></a><samp><span class="file">festival.el</span></samp> offers a new minor mode which offers
+an extra menu (in emacs-19 and 20) with options for saying a selected
+region, or a whole buffer, as well as various general control
+functions.  To use this you must install <samp><span class="file">festival.el</span></samp> in
+a directory where Emacs can find it, then add to your
+<samp><span class="file">.emacs</span></samp> in your home directory the following lines.
+<pre class="lisp">     (autoload 'say-minor-mode "festival" "Menu for using Festival." t)
+     (say-minor-mode t)
+</pre>
+   <p>Successive calls to <code>say-minor-mode</code> will toggle the minor
+mode, switching the &lsquo;<samp><span class="samp">say</span></samp>&rsquo; menu on and off.
+
+   <p>Note that the optional voice selection offered by the language sub-menu
+is not sensitive to actual voices supported by the your Festival
+installation.  Hand customization is require in the <samp><span class="file">festival.el</span></samp>
+file.  Thus some voices may appear in your menu that your Festival
+doesn't support and some voices may be supported by your Festival
+that do not appear in the menu.
+
+   <p>When the Emacs Lisp function <code>festival-say-buffer</code> or the
+menu equivalent is used the Emacs major mode is passed to Festival
+as the text mode.
+
+   </body></html>
+

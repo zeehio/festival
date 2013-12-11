@@ -1,0 +1,117 @@
+<html lang="en">
+<head>
+<title>POS Example - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Examples.html#Examples" title="Examples">
+<link rel="next" href="Singing-Synthesis.html#Singing-Synthesis" title="Singing Synthesis">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="POS-Example"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Singing-Synthesis.html#Singing-Synthesis">Singing Synthesis</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Examples.html#Examples">Examples</a>
+<hr>
+</div>
+
+<h3 class="section">29.1 POS Example</h3>
+
+<p><a name="index-POS-example-369"></a><a name="index-script-programming-370"></a>This example shows how we can use part of the standard synthesis process
+to tokenize and tag a file of text.  This section does not cover
+training and setting up a part of speech tag set See <a href="POS-tagging.html#POS-tagging">POS tagging</a>,
+only how to go about using the standard POS tagger on text.
+
+   <p>This example also shows how to use Festival as a simple scripting
+language, and how to modify various methods used during text to speech.
+
+   <p>The file <samp><span class="file">examples/text2pos</span></samp> contains an executable shell script
+which will read arbitrary ascii text from standard input and produce
+words and their part of speech (one per line) on standard output.
+
+   <p>A Festival script, like any other UNIX script, it must start with the
+the characters <code>#!</code> followed by the name of the <samp><span class="file">festival</span></samp>
+executable.  For scripts the option <code>-script</code> is also
+required.  Thus our first line looks like
+<pre class="lisp">     #!/usr/local/bin/festival -script
+</pre>
+   <p>Note that the pathname may need to be different on your system
+
+   <p>Following this we have copious comments, to keep our lawyers happy,
+before we get into the real script.
+
+   <p>The basic idea we use is that the tts process segments text into
+utterances, those utterances are then passed to a list of functions, as
+defined by the Scheme variable <code>tts_hooks</code>.  Normally this variable
+contains a list of two function, <code>utt.synth</code> and <code>utt.play</code> which
+will synthesize and play the resulting waveform.  In this case, instead,
+we wish to predict the part of speech value, and then print it out.
+
+   <p>The first function we define basically replaces the normal synthesis
+function <code>utt.synth</code>.  It runs the standard festival utterance
+modules used in the synthesis process, up to the point where POS is
+predicted. This function looks like
+<pre class="lisp">     (define (find-pos utt)
+     "Main function for processing TTS utterances.  Predicts POS and
+     prints words with their POS"
+       (Token utt)
+       (POS utt)
+     )
+</pre>
+   <p>The normal text-to-speech process first tokenizes the text splitting it
+in to &ldquo;sentences&rdquo;.  The utterance type of these is <code>Token</code>.  Then
+we call the <code>Token</code> utterance module, which converts the tokens to
+a stream of words.  Then we call the <code>POS</code> module to predict part
+of speech tags for each word.  Normally we would call other modules
+ultimately generating a waveform but in this case we need no further
+processing.
+
+   <p>The second function we define is one that will print out the words and
+parts of speech
+<pre class="lisp">     (define (output-pos utt)
+     "Output the word/pos for each word in utt"
+      (mapcar
+       (lambda (pair)
+         (format t "%l/%l\n" (car pair) (car (cdr pair))))
+       (utt.features utt 'Word '(name pos))))
+</pre>
+   <p>This uses the <code>utt.features</code> function to extract features from the
+items in a named stream of an utterance.  In this case we want the
+<code>name</code> and <code>pos</code> features for each item in the <code>Word</code>
+stream.  Then for each pair we print out the word's name, a slash and its
+part of speech followed by a newline.
+
+   <p>Our next job is to redefine the functions to be called
+during text to speech.  The variable <code>tts_hooks</code> is defined
+in <samp><span class="file">lib/tts.scm</span></samp>.  Here we set it to our two newly-defined
+functions
+<pre class="lisp">     (set! tts_hooks (list find-pos output-pos))
+</pre>
+   <p><a name="index-garbage-collection-371"></a><a name="index-GC-372"></a>So that garbage collection messages do not appear on the screen
+we stop the message from being outputted by the following
+command
+<pre class="lisp">     (gc-status nil)
+</pre>
+   <p>The final stage is to start the tts process running on standard
+input.  Because we have redefined what functions are to be run on
+the utterances, it will no longer generate speech but just predict
+part of speech and print it to standard output.
+<pre class="lisp">     (tts_file "-")
+</pre>
+   </body></html>
+

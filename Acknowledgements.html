@@ -1,0 +1,216 @@
+<html lang="en">
+<head>
+<title>Acknowledgements - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Copying.html#Copying" title="Copying">
+<link rel="next" href="What-is-new.html#What-is-new" title="What is new">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Acknowledgements"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="What-is-new.html#What-is-new">What is new</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Copying.html#Copying">Copying</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">3 Acknowledgements</h2>
+
+<p><a name="index-acknowledgements-3"></a><a name="index-thanks-4"></a>
+The code in this system was primarily written by Alan W Black, Paul
+Taylor and Richard Caley.  Festival sits on top of the Edinburgh Speech
+Tools Library, and uses much of its functionality.
+
+   <p>Amy Isard wrote a synthesizer for her MSc project in 1995, which first
+used the Edinburgh Speech Tools Library.  Although Festival doesn't
+contain any code from that system, her system was used as a basic model.
+
+   <p>Much of the design and philosophy of Festival has been built on the
+experience both Paul and Alan gained from the development of various
+previous synthesizers and software systems, especially CSTR's Osprey and
+Polyglot systems <cite>taylor91</cite> and ATR's CHATR system <cite>black94</cite>.
+
+   <p>However, it should be stated that Festival is fully developed at CSTR
+and contains neither proprietary code or ideas.
+
+   <p>Festival contains a number of subsystems integrated from other sources
+and we acknowledge those systems here.
+
+<h3 class="section">3.1 SIOD</h3>
+
+<p><a name="index-SIOD-5"></a><a name="index-Scheme-6"></a><a name="index-Paradigm-Associates-7"></a>
+The Scheme interpreter (SIOD &ndash; Scheme In One Defun 3.0) was
+written by George Carrett  (gjc@mitech.com, gjc@paradigm.com)
+and offers a basic small Scheme (Lisp) interpreter suitable
+for embedding in applications such as Festival as a scripting
+language.  A number of changes and improvements have been added
+in our development but it still remains that basic system. 
+We are grateful to George and Paradigm Associates Incorporated
+for providing such a useful and well-written sub-system.
+<pre class="example">                            Scheme In One Defun (SIOD)
+                            COPYRIGHT (c) 1988-1994 BY
+             PARADIGM ASSOCIATES INCORPORATED, CAMBRIDGE, MASSACHUSETTS.
+                                ALL RIGHTS RESERVED
+     
+     Permission to use, copy, modify, distribute and sell this software
+     and its documentation for any purpose and without fee is hereby
+     granted, provided that the above copyright notice appear in all copies
+     and that both that copyright notice and this permission notice appear
+     in supporting documentation, and that the name of Paradigm Associates
+     Inc not be used in advertising or publicity pertaining to distribution
+     of the software without specific, written prior permission.
+     
+     PARADIGM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
+     ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
+     PARADIGM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
+     ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+     WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+     ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+     SOFTWARE.
+</pre>
+   <h3 class="section">3.2 editline</h3>
+
+<p>Because of conflicts between the copyright for GNU readline, for which
+an optional interface was included in earlier versions, we have replace
+the interface with a complete command line editing system based on
+<samp><span class="file">editline</span></samp>.  <samp><span class="file">Editline</span></samp> was posted to the USENET newsgroup
+<samp><span class="file">comp.sources.misc</span></samp> in 1992.  A number of modifications have been
+made to make it more useful to us but the original code (contained
+within the standard speech tools distribution) and our modifications
+fall under the following licence.
+<pre class="example">     Copyright 1992 Simmule Turner and Rich Salz.  All rights reserved.
+     
+     This software is not subject to any license of the American Telephone
+     and Telegraph Company or of the Regents of the University of California.
+     
+     Permission is granted to anyone to use this software for any purpose on
+     any computer system, and to alter it and redistribute it freely, subject
+     to the following restrictions:
+     1. The authors are not responsible for the consequences of use of this
+        software, no matter how awful, even if they arise from flaws in it.
+     2. The origin of this software must not be misrepresented, either by
+        explicit claim or by omission.  Since few users ever read sources,
+        credits must appear in the documentation.
+     3. Altered versions must be plainly marked as such, and must not be
+        misrepresented as being the original software.  Since few users
+        ever read sources, credits must appear in the documentation.
+     4. This notice may not be removed or altered.
+</pre>
+   <h3 class="section">3.3 Edinburgh Speech Tools Library</h3>
+
+<p><a name="index-Edinburgh-Speech-Tools-Library-8"></a>The Edinburgh Speech Tools lies at the core of Festival. Although
+developed separately, much of the development of certain parts of the
+Edinburgh Speech Tools has been directed by Festival's needs.  In turn
+those who have contributed to the Speech Tools make Festival
+a more usable system.
+
+   <p>See <a href="../speechtools/Acknowledgements.html#Acknowledgements">Acknowledgements</a>.
+
+   <p>Online information about the Edinburgh Speech Tools library
+is available through
+<pre class="example">     <a href="http://www.cstr.ed.ac.uk/projects/speech_tools.html">http://www.cstr.ed.ac.uk/projects/speech_tools.html</a>
+</pre>
+   <h3 class="section">3.4 Others</h3>
+
+<p>Many others have provided actual code and support for Festival,
+for which we are grateful.  Specifically,
+
+     <ul>
+<li>Alistair Conkie:
+various low level code points and some design work,
+Spanish synthesis, the old diphone synthesis code. 
+<li>Steve Isard:
+directorship and LPC diphone code, design of diphone schema. 
+<li>EPSRC:
+who fund Alan Black and Paul Taylor. 
+<li>Sun Microsystems Laboratories:
+for supporting the project and funding Richard. 
+<li>AT&amp;T Labs - Research:
+for supporting the project. 
+<li>Paradigm Associates and George Carrett:
+for Scheme in one defun. 
+<li>Mike Macon:
+Improving the quality of the diphone synthesizer and LPC analysis. 
+<li>Kurt Dusterhoff:
+Tilt intonation training and modelling. 
+<li>Amy Isard:
+for her SSML project and related synthesizer. 
+<li>Richard Tobin:
+for answering all those difficult questions, the socket code,
+and the XML parser. 
+<li>Simmule Turner and Rich Salz:
+command line editor (editline)
+<li>Borja Etxebarria:
+Help with the Spanish synthesis
+<li>Briony Williams:
+Welsh synthesis
+<li>Jacques H. de Villiers: <samp><span class="file">jacques@cse.ogi.edu</span></samp> from CSLU
+at OGI, for the TCL interface, and other usability issues
+<li>Kevin Lenzo: <samp><span class="file">lenzo@cs.cmu.edu</span></samp> from CMU for the PERL
+interface. 
+<li>Rob Clarke:
+for support under Linux. 
+<li>Samuel Audet <samp><span class="file">guardia@cam.org</span></samp>:
+OS/2 support
+<li>Mari Ostendorf:
+For providing access to the BU FM Radio corpus from which some
+modules were trained. 
+<li>Melvin Hunt:
+from whose work we based our residual LPC synthesis model on
+<li>Oxford Text Archive:
+For the computer users version of Oxford Advanced
+Learners' Dictionary (redistributed with permission). 
+<li>Reading University:
+for access to MARSEC from which the phrase break
+model was trained. 
+<li>LDC &amp; Penn Tree Bank:
+from which the POS tagger was trained, redistribution
+of the models is with permission from the LDC. 
+<li>Roger Burroughes and Kurt Dusterhoff:
+For letting us capture their voices. 
+<li>ATR and Nick Campbell:
+for first getting Paul and Alan to work together and for the
+experience we gained. 
+<li>FSF:
+for G++, make, .... 
+<li>Center for Spoken Language Understanding:
+CSLU at OGI, particularly Ron Cole and Mike Macon, have acted as
+significant users for the system giving significant feedback and
+allowing us to teach courses on Festival offering valuable real-use
+feedback. 
+<li>Our beta testers:
+Thanks to all the people who put up with previous versions of the system
+and reported bugs, both big and small.  These comments are very important
+to the constant improvements in the system.  And thanks for your quick
+responses when I had specific requests. 
+<li>And our users ... 
+Many people have downloaded earlier versions of the system.  Many have
+found problems with installation and use and have reported it to us. 
+Many of you have put up with multiple compilations trying to fix bugs
+remotely.  We thank you for putting up with us and are pleased you've
+taken the time to help us improve our system.  Many of you have come up
+with uses we hadn't thought of, which is always rewarding.
+
+     <p>Even if you haven't actively responded, the fact that you use the system
+at all makes it worthwhile. 
+</ul>
+
+   </body></html>
+

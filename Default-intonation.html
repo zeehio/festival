@@ -1,0 +1,48 @@
+<html lang="en">
+<head>
+<title>Default intonation - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Intonation.html#Intonation" title="Intonation">
+<link rel="next" href="Simple-intonation.html#Simple-intonation" title="Simple intonation">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Default-intonation"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Simple-intonation.html#Simple-intonation">Simple intonation</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Intonation.html#Intonation">Intonation</a>
+<hr>
+</div>
+
+<h3 class="section">18.1 Default intonation</h3>
+
+<p><a name="index-duff-intonation-245"></a><a name="index-monotone-246"></a>This is the simplest form of intonation and offers the modules
+<code>Intonation_Default</code> and <code>Intonation_Targets_Default</code>.  The
+first of which actually does nothing at all. 
+<code>Intonation_Targets_Default</code> simply creates a target at the start
+of the utterance, and one at the end.  The values of which, by default
+are 130 Hz and 110 Hz.  These values may be set through the
+parameter <code>duffint_params</code> for example the following will
+general a monotone at 150Hz.
+<pre class="lisp">     (set! duffint_params '((start 150) (end 150)))
+     (Parameter.set 'Int_Method 'DuffInt)
+     (Parameter.set 'Int_Target_Method Int_Targets_Default)
+</pre>
+   </body></html>
+

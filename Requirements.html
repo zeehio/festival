@@ -1,0 +1,139 @@
+<html lang="en">
+<head>
+<title>Requirements - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Installation.html#Installation" title="Installation">
+<link rel="next" href="Configuration.html#Configuration" title="Configuration">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Requirements"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Configuration.html#Configuration">Configuration</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Installation.html#Installation">Installation</a>
+<hr>
+</div>
+
+<h3 class="section">6.1 Requirements</h3>
+
+<p><a name="index-requirements-9"></a>In order to compile Festival you first need the following
+source packages
+
+     <dl>
+<dt><code>festival-1.4.3-release.tar.gz</code><dd>Festival Speech Synthesis System source
+<br><dt><code>speech_tools-1.2.3-release.tar.gz</code><dd>The Edinburgh Speech Tools Library
+<br><dt><code>festlex_NAME.tar.gz</code><dd><a name="index-lexicon-10"></a>The lexicon distribution, where possible, includes the lexicon input
+file as well as the compiled form, for your convenience.  The lexicons
+have varying distribution policies, but are all free except OALD, which
+is only free for non-commercial use (we are working on a free
+replacement).  In some cases only a pointer to an ftp'able file plus a
+program to convert that file to the Festival format is included. 
+<br><dt><code>festvox_NAME.tar.gz</code><dd>You'll need a speech database.  A number are available (with varying
+distribution policies).  Each voice may have other dependencies such as
+requiring particular lexicons
+<br><dt><code>festdoc_1.4.3.tar.gz</code><dd>Full postscript, info and html documentation for Festival and the
+Speech Tools.  The source of the documentation is available
+in the standard distributions but for your conveniences it has
+been pre-generated. 
+</dl>
+
+   <p>In addition to Festival specific sources you will also need
+
+     <dl>
+<dt><em>A UNIX machine</em><dd>Currently we have compiled and tested the system under Solaris (2.5(.1),
+2.6, 2.7 and 2.8), SunOS (4.1.3), FreeBSD (3.x, 4.x), Linux (Redhat 4.1,
+5.0, 5.1, 5.2, 6.[012], 7.[01], 8.0 and other Linux distributions), and it
+should work under OSF (Dec Alphas), SGI (Irix), HPs (HPUX).  But any
+standard UNIX machine should be acceptable.  We have now successfully
+ported this version to Windows NT and Windows 95 (using the Cygnus GNU
+win32 environment).  This is still a young port but seems to work. 
+<br><dt><em>A C++ compiler</em><dd><a name="index-GNU-g_002b_002b-11"></a><a name="index-g_002b_002b-12"></a><a name="index-C_002b_002b-13"></a>Note that C++ is not very portable even between different versions
+of the compiler from the same vendor.  Although we've tried very
+hard to make the system portable, we know it is very unlikely to
+compile without change except with compilers that have already been tested. 
+The currently tested systems are
+          <ul>
+<li>Sun Sparc Solaris 2.5, 2.5.1, 2.6, 2.7, 2.9:
+GCC 2.95.1, GCC 3.2
+<li>FreeBSD for Intel 3.x and 4.x:
+GCC 2.95.1, GCC 3.0
+<li>Linux for Intel (RedHat 4.1/5.0/5.1/5.2/6.0/7.x/8.0):
+GCC 2.7.2, GCC 2.7.2/egcs-1.0.2, egcs 1.1.1, egcs-1.1.2, GCC 2.95.[123],
+GCC "2.96", GCC 3.0, GCC 3.0.1 GCC 3.2 GCC 3.2.1
+<li>Windows NT 4.0:
+GCC 2.7.2 plus egcs (from Cygnus GNU win32 b19), Visual C++ PRO v5.0,
+Visual C++ v6.0
+</ul>
+     Note if GCC works on one version of Unix it usually works on
+others.
+
+     <p><a name="index-Windows-NT_002f95-14"></a>We have compiled both the speech tools and Festival under Windows NT 4.0
+and Windows 95 using the GNU tools available from Cygnus.
+     <pre class="example">          <a href="ftp://ftp.cygnus.com/pub/gnu-win32/">ftp://ftp.cygnus.com/pub/gnu-win32/</a>.
+</pre>
+     <br><dt><em>GNU make</em><dd>Due to there being too many different <code>make</code> programs out there
+we have tested the system using GNU make on all systems we use. 
+Others may work but we know GNU make does. 
+<br><dt><em>Audio hardware</em><dd><a name="index-audio-hardware-15"></a>You can use Festival without audio output hardware but it doesn't sound
+very good (though admittedly you can hear less problems with it).  A
+number of audio systems are supported (directly inherited from the
+audio support in the Edinburgh Speech Tools Library): NCD's NAS
+(formerly called netaudio) a network transparent audio system (which can
+be found at <a href="ftp://ftp.x.org/contrib/audio/nas/">ftp://ftp.x.org/contrib/audio/nas/</a>);
+<samp><span class="file">/dev/audio</span></samp> (at 8k ulaw and 8/16bit linear), found on Suns, Linux
+machines and FreeBSD; and a method allowing arbitrary UNIX
+commands. See <a href="Audio-output.html#Audio-output">Audio output</a>. 
+</dl>
+
+   <p><a name="index-readline-16"></a><a name="index-editline-17"></a><a name="index-GNU-readline-18"></a>Earlier versions of Festival mistakenly offered a command line editor
+interface to the GNU package readline, but due to conflicts with the GNU
+Public Licence and Festival's licence this interface was removed in
+version 1.3.1.  Even Festival's new free licence would cause problems as
+readline support would restrict Festival linking with non-free code.  A
+new command line interface based on editline was provided that offers
+similar functionality.  Editline remains a compilation option as it is
+probably not yet as portable as we would like it to be.
+
+   <p><a name="index-g_t_0040file_007btexi2html_007d-19"></a>In addition to the above, in order to process the documentation you will
+need <samp><span class="file">TeX</span></samp>, <samp><span class="file">dvips</span></samp> (or similar), GNU's <samp><span class="file">makeinfo</span></samp> (part
+of the texinfo package) and <samp><span class="file">texi2html</span></samp> which is available from
+<a href="http://wwwcn.cern.ch/dci/texi2html/">http://wwwcn.cern.ch/dci/texi2html/</a>.
+
+   <p><a name="index-documentation-20"></a>However the document files are also available pre-processed into,
+postscript, DVI, info and html as part of the distribution in
+<samp><span class="file">festdoc-1.4.X.tar.gz</span></samp>.
+
+   <p>Ensure you have a fully installed and working version of your C++
+compiler.  Most of the problems people have had in installing Festival
+have been due to incomplete or bad compiler installation.   It
+might be worth checking if the following program works if you don't
+know if anyone has used your C++ installation before.
+<pre class="example">     #include &lt;iostream.h&gt;
+     int main (int argc, char **argv)
+     {
+        cout &lt;&lt; "Hello world\n";
+     }
+</pre>
+   <p>Unpack all the source files in a new directory.  The directory
+will then contain two subdirectories
+<pre class="example">     speech_tools/
+     festival/
+</pre>
+   </body></html>
+

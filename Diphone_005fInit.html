@@ -1,0 +1,93 @@
+<html lang="en">
+<head>
+<title>Diphone_Init - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Diphone-synthesizer.html#Diphone-synthesizer" title="Diphone synthesizer">
+<link rel="prev" href="Group-files.html#Group-files" title="Group files">
+<link rel="next" href="Access-strategies.html#Access-strategies" title="Access strategies">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Diphone_Init"></a>
+<a name="Diphone_005fInit"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Access-strategies.html#Access-strategies">Access strategies</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Group-files.html#Group-files">Group files</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Diphone-synthesizer.html#Diphone-synthesizer">Diphone synthesizer</a>
+<hr>
+</div>
+
+<h3 class="section">21.4 Diphone_Init</h3>
+
+<p>The basic method for describing a database is through the <code>Diphone_Init</code>
+command.  This function takes a single argument, a list of
+pairs of parameter name and value.  The parameters are
+     <dl>
+<dt><code>name</code><dd>An atomic name for this database. 
+<br><dt><code>group_file</code><dd>The filename of a group file, which may itself contain parameters
+describing itself
+<br><dt><code>type</code><dd>The default value is <code>pcm</code>, but for distributed voices
+this is always <code>lpc</code>. 
+<br><dt><code>index_file</code><dd>A filename containing the diphone dictionary. 
+<br><dt><code>signal_dir</code><dd>A directory (slash terminated) containing the pcm waveform files. 
+<br><dt><code>signal_ext</code><dd>A dot prefixed extension for the pcm waveform files. 
+<br><dt><code>pitch_dir</code><dd>A directory (slash terminated) containing the pitch mark files. 
+<br><dt><code>pitch_ext</code><dd>A dot prefixed extension for the pitch files
+<br><dt><code>lpc_dir</code><dd>A directory (slash terminated) containing the LPC coefficient files
+and residual files. 
+<br><dt><code>lpc_ext</code><dd>A dot prefixed extension for the LPC coefficient files
+<br><dt><code>lpc_type</code><dd>The type of LPC file (as supported by the speech tools)
+<br><dt><code>lpc_frame_offset</code><dd>The number of frames "missing" from the beginning of the file. 
+Often LPC parameters are offset by one frame. 
+<br><dt><code>lpc_res_ext</code><dd>A dot prefixed extension for the residual files
+<br><dt><code>lpc_res_type</code><dd>The type of the residual files, this is a standard waveform type
+as supported by the speech tools. 
+<br><dt><code>lpc_res_offset</code><dd>Number of seconds "missing" from the beginning of the residual file. 
+Some LPC analysis technique do not generate a residual until after one
+frame. 
+<br><dt><code>samp_freq</code><dd>Sample frequency of signal files
+<br><dt><code>phoneset</code><dd>Phoneset used, must already be declared. 
+<br><dt><code>num_diphones</code><dd>Total number of diphones in database.  If specified this must be
+equal or bigger than the number of entries in the index file. 
+If it is not specified the square of the number of phones in the
+phoneset is used. 
+<br><dt><code>sig_band</code><dd>number of sample points around actual diphone to take from file. 
+This should be larger than any windowing used on the signal,
+and/or up to the pitch marks outside the diphone signal. 
+<br><dt><code>alternates_after</code><dd>List of pairs of phones stating replacements for the second
+part of diphone when the basic diphone is not found in the
+diphone database. 
+<br><dt><code>alternates_before</code><dd>List of pairs of phones stating replacements for the first
+part of diphone when the basic diphone is not found in the
+diphone database. 
+<br><dt><code>default_diphone</code><dd>When unexpected combinations occur and no appropriate diphone can be
+found this diphone should be used.  This should be specified for all
+diphone databases that are to be robust.  We usually us the silence to
+silence diphone.  No mater how carefully you designed your diphone set,
+conditions when an unknown diphone occur seem to <em>always</em> happen. 
+If this is not set and a diphone is requested that is not in the
+database an error occurs and synthesis will stop. 
+</dl>
+
+   <p>Examples of both general set up, making group files and general
+use are in
+<pre class="example">     <samp><span class="file">lib/voices/english/rab_diphone/festvox/rab_diphone.scm</span></samp>
+</pre>
+   </body></html>
+

@@ -1,0 +1,114 @@
+<html lang="en">
+<head>
+<title>Viterbi decoder - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Tools.html#Tools" title="Tools">
+<link rel="prev" href="Ngrams.html#Ngrams" title="Ngrams">
+<link rel="next" href="Linear-regression.html#Linear-regression" title="Linear regression">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Viterbi-decoder"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Linear-regression.html#Linear-regression">Linear regression</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Ngrams.html#Ngrams">Ngrams</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Tools.html#Tools">Tools</a>
+<hr>
+</div>
+
+<h3 class="section">25.4 Viterbi decoder</h3>
+
+<p><a name="index-Viterbi-decoder-330"></a>Another common tool is a Viterbi decoder.  This C++ Class is defined in
+the speech tools library <samp><span class="file">speech_tooks/include/EST_viterbi.h</span></samp> and
+<samp><span class="file">speech_tools/stats/EST_viterbi.cc</span></samp>.  A Viterbi decoder
+requires two functions at declaration time.  The first constructs
+candidates at each stage, while the second combines paths.  A number of
+options are available (which may change).
+
+   <p>The prototypical example of use is in the part of speech tagger which
+using standard Ngram models to predict probabilities of tags. 
+See <samp><span class="file">src/modules/base/pos.cc</span></samp> for an example.
+
+   <p>The Viterbi decoder can also be used through the Scheme function
+<code>Gen_Viterbi</code>.  This function respects the parameters defined
+in the variable <code>get_vit_params</code>.  Like other modules this
+parameter list is an assoc list of feature name and value.  The
+parameters supported are:
+     <dl>
+<dt><code>Relation</code><dd>The name of the relation the decoeder is to be applied to. 
+<br><dt><code>cand_function</code><dd>A function that is to be called for each item that will return
+a list of candidates (with probilities). 
+<br><dt><code>return_feat</code><dd>The name of a feature that the best candidate is to be returned in
+for each item in the named relation. 
+<br><dt><code>p_word</code><dd>The previous word to the first item in the named relation (only used
+when ngrams are the "language model"). 
+<br><dt><code>pp_word</code><dd>The previous previous word to the first item in the named relation
+(only used when ngrams are the "language model"). 
+<br><dt><code>ngramname</code><dd>the name of an ngram (loaded by <code>ngram.load</code>) to be used
+as a "language model". 
+<br><dt><code>wfstmname</code><dd>the name of a WFST (loaded by <code>wfst.load</code>) to be used
+as a "language model", this is ignored if an <code>ngramname</code> is also
+specified. 
+<br><dt><code>debug</code><dd>If specified more debug features are added to the items in the
+relation. 
+<br><dt><code>gscale_p</code><dd>Grammar scaling factor. 
+</dl>
+   Here is a short example to help make the use of this facility clearer.
+
+   <p>There are two parts required for the Viterbi decode a set of
+candidate observations and some "language model".  For the
+math to work properly the candidate observations must be reverse
+probabilities (for each candidiate as given what is the probability
+of the observation, rather than the probability of the candidate
+given the observation).  These can be calculated for the
+probabilties candidate given the observation divided by the
+probability of the candidate in isolation.
+
+   <p>For the sake of simplicity let us assume we have a lexicon of words to
+distribution of part of speech tags with reverse probabilities.  And an
+tri-gram called <code>pos-tri-gram</code> over ngram sequences of part of
+speech tags.  First we must define the candidate function
+<pre class="lisp">     (define (pos_cand_function w)
+      ;; select the appropriate lexicon
+      (lex.select 'pos_lex)
+      ;; return the list of cands with rprobs
+      (cadr
+       (lex.lookup (item.name w) nil)))
+</pre>
+   <p>The returned candidate list would look somthing like
+<pre class="lisp">     ( (jj -9.872) (vbd -6.284) (vbn -5.565) )
+</pre>
+   <p>Our part of speech tagger function would look something
+like this
+<pre class="lisp">     (define (pos_tagger utt)
+       (set! get_vit_params
+             (list
+              (list 'Relation "Word")
+              (list 'return_feat 'pos_tag)
+              (list 'p_word "punc")
+              (list 'pp_word "nn")
+              (list 'ngramname "pos-tri-gram")
+              (list 'cand_function 'pos_cand_function)))
+       (Gen_Viterbi utt)
+       utt)
+</pre>
+   <p>this will assign the optimal part of speech tags to each word in utt.
+
+   </body></html>
+

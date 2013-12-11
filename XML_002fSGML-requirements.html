@@ -1,0 +1,53 @@
+<html lang="en">
+<head>
+<title>XML/SGML requirements - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="XML_002fSGML-mark_002dup.html#XML_002fSGML-mark_002dup" title="XML/SGML mark-up">
+<link rel="prev" href="Adding-Sable-tags.html#Adding-Sable-tags" title="Adding Sable tags">
+<link rel="next" href="Using-Sable.html#Using-Sable" title="Using Sable">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="XML%2fSGML-requirements"></a>
+<a name="XML_002fSGML-requirements"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Using-Sable.html#Using-Sable">Using Sable</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Adding-Sable-tags.html#Adding-Sable-tags">Adding Sable tags</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="XML_002fSGML-mark_002dup.html#XML_002fSGML-mark_002dup">XML/SGML mark-up</a>
+<hr>
+</div>
+
+<h3 class="section">10.4 XML/SGML requirements</h3>
+
+<p><a name="index-XML-123"></a><a name="index-rxp-124"></a>Festival is distributed with <code>rxp</code> an XML parser developed
+by Richard Tobin of the Language Technology Group, University of
+Edinburgh.  Sable is set up as an XML text mode so no
+further requirements or external programs are required to synthesize
+from Sable marked up text (unlike previous releases).  Note that <code>rxp</code>
+is not a full validation parser and hence doesn't check some aspects
+of the file (tags within tags).
+
+   <p><a name="index-g_t_0040file_007bnsgmls_007d-125"></a><a name="index-SGML-parser-126"></a>Festival still supports SGML based markup but in such cases requires an
+external SGML normalizing parser.  We have tested <samp><span class="file">nsgmls-1.0</span></samp>
+which is available as part of the SGML tools set <samp><span class="file">sp-1.1.tar.gz</span></samp>
+which is available from <a href="http://www.jclark.com/sp/index.html">http://www.jclark.com/sp/index.html</a>. 
+This seems portable between many platforms.
+
+   </body></html>
+

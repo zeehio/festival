@@ -1,0 +1,67 @@
+<html lang="en">
+<head>
+<title>TTS - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Scheme.html#Scheme" title="Scheme">
+<link rel="next" href="XML_002fSGML-mark_002dup.html#XML_002fSGML-mark_002dup" title="XML/SGML mark-up">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="TTS"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="XML_002fSGML-mark_002dup.html#XML_002fSGML-mark_002dup">XML/SGML mark-up</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Scheme.html#Scheme">Scheme</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">9 TTS</h2>
+
+<p>Festival supports text to speech for raw text files.  If you
+are not interested in using Festival in any other way except as
+black box for rendering text as speech, the following method
+is probably what you want.
+<pre class="example">     festival --tts myfile
+</pre>
+   <p>This will say the contents of <samp><span class="file">myfile</span></samp>.  Alternatively text
+may be submitted on standard input
+<pre class="example">     echo hello world | festival --tts
+     cat myfile | festival --tts
+</pre>
+   <p><a name="index-text-modes-102"></a>Festival supports the notion of <em>text modes</em> where the text file
+type may be identified, allowing Festival to process the file in an
+appropriate way.  Currently only two types are considered stable:
+<code>STML</code> and <code>raw</code>, but other types such as <code>email</code>,
+<code>HTML</code>, <code>Latex</code>, etc. are being developed and discussed below. 
+This follows the idea of buffer modes in Emacs where a file's type can
+be utilized to best display the text.  Text mode may also be selected
+based on a filename's extension.
+
+   <p>Within the command interpreter the function <code>tts</code> is used
+to render files as text; it takes a filename and the text mode
+as arguments.
+
+<ul class="menu">
+<li><a accesskey="1" href="Utterance-chunking.html#Utterance-chunking">Utterance chunking</a>:    From text to utterances
+<li><a accesskey="2" href="Text-modes.html#Text-modes">Text modes</a>:            Mode specific text analysis
+<li><a accesskey="3" href="Example-text-mode.html#Example-text-mode">Example text mode</a>:     An example mode for reading email
+</ul>
+
+   </body></html>
+

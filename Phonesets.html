@@ -1,0 +1,113 @@
+<html lang="en">
+<head>
+<title>Phonesets - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Emacs-interface.html#Emacs-interface" title="Emacs interface">
+<link rel="next" href="Lexicons.html#Lexicons" title="Lexicons">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Phonesets"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Lexicons.html#Lexicons">Lexicons</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Emacs-interface.html#Emacs-interface">Emacs interface</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">12 Phonesets</h2>
+
+<p><a name="index-phonesets-134"></a><a name="index-phoneme-definitions-135"></a>The notion of phonesets is important to a number of different
+subsystems within Festival.  Festival supports multiple phonesets
+simultaneously and allows mapping between sets when necessary.  The
+lexicons, letter to sound rules, waveform synthesizers, etc. all require
+the definition of a phoneset before they will operate.
+
+   <p>A phoneset is a set of symbols which may be further defined in terms
+of features, such as vowel/consonant, place of articulation
+for consonants, type of vowel etc.  The set of features and
+their values must be defined with the phoneset.  The definition
+is used to ensure compatibility between sub-systems as well as
+allowing groups of phones in various prediction systems (e.g. 
+duration)
+
+   <p>A phoneset definition has the form
+<pre class="lisp">       (defPhoneSet
+          NAME
+          FEATUREDEFS
+          PHONEDEFS )
+</pre>
+   <p>The <var>NAME</var> is any unique symbol used e.g. <code>mrpa</code>, <code>darpa</code>,
+etc.  <var>FEATUREDEFS</var> is a list of definitions each consisting of
+a feature name and its possible values.  For example
+<pre class="lisp">        (
+          (vc + -)             ;; vowel consonant
+          (vlength short long diphthong schwa 0)  ;; vowel length
+          ...
+        )
+</pre>
+   <p>The third section is a list of phone definitions themselves.  Each phone
+definition consists of a phone name and the values for each feature in
+the order the features were defined in the above section.
+
+   <p>A typical example of a phoneset definition can be found in
+<samp><span class="file">lib/mrpa_phones.scm</span></samp>.
+
+   <p><a name="index-silences-136"></a>Note the phoneset should also include a definition for any silence
+phones.  In addition to the definition of the set the silence phone(s)
+themselves must also be identified to the system.  This is done through
+the command <code>PhoneSet.silences</code>.  In the mrpa set this is done by
+the command
+<pre class="lisp">     (PhoneSet.silences '(#))
+</pre>
+   <p>There may be more than one silence phone (e.g. breath, start silence etc.) 
+in any phoneset definition.  However the first phone in this set is
+treated special and should be canonical silence.  Among other things,
+it is this phone that is inserted by the pause prediction module.
+
+   <p><a name="index-selecting-a-phoneset-137"></a>In addition to declaring phonesets, alternate sets may be selected
+by the command <code>PhoneSet.select</code>.
+
+   <p><a name="index-mapping-between-phones-138"></a><a name="index-phone-maps-139"></a>Phones in different sets may be automatically mapped between using
+their features.  This mapping is not yet as general as it could be,
+but is useful when mapping between various phonesets of the same
+language.  When a phone needs to be mapped from one set to another
+the phone with matching features is selected.  This allows, at least
+to some extent, lexicons, waveform synthesizers, duration modules etc. 
+to use different phonesets (though in general this is not advised).
+
+   <p>A list of currently defined phonesets is returned by the
+function
+<pre class="example">     (PhoneSet.list)
+</pre>
+   <p>Note phonesets are often not defined until a voice is actually
+loaded so this list is not the list of of sets that are distributed but
+the list of sets that are used by currently loaded voices.
+
+   <p>The name, phones, features and silences of the current phoneset
+may be accessedwith the function
+<pre class="example">     (PhoneSet.description nil)
+</pre>
+   <p>If the argument to this function is a list, only those parts of
+the phoneset description named are returned.  For example
+<pre class="example">     (PhoneSet.description '(silences))
+     (PhoneSet.description '(silences phones))
+</pre>
+   </body></html>
+

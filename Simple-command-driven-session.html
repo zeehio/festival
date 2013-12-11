@@ -1,0 +1,138 @@
+<html lang="en">
+<head>
+<title>Simple command driven session - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Quick-start.html#Quick-start" title="Quick start">
+<link rel="prev" href="Basic-command-line-options.html#Basic-command-line-options" title="Basic command line options">
+<link rel="next" href="Getting-some-help.html#Getting-some-help" title="Getting some help">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Simple-command-driven-session"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Getting-some-help.html#Getting-some-help">Getting some help</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Basic-command-line-options.html#Basic-command-line-options">Basic command line options</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Quick-start.html#Quick-start">Quick start</a>
+<hr>
+</div>
+
+<h3 class="section">7.2 Sample command driven session</h3>
+
+<p>Here is a short session using Festival's command interpreter.
+
+   <p>Start Festival with no arguments
+<pre class="lisp">     $ festival
+     Festival Speech Synthesis System 1.4.3:release Dec 2002
+     Copyright (C) University of Edinburgh, 1996-2002. All rights reserved.
+     For details type `(festival_warranty)'
+     festival&gt;
+</pre>
+   <p>Festival uses the a command line editor based on editline for terminal
+input so command line editing may be done with Emacs commands.  Festival
+also supports history as well as function, variable name, and file name
+completion via the &lt;TAB&gt; key.
+
+   <p>Typing <code>help</code> will give you more information, that is <code>help</code>
+without any parenthesis.  (It is actually a variable name whose value is a
+string containing help.)
+
+   <p><a name="index-Scheme-61"></a><a name="index-read_002deval_002dprint-loop-62"></a>Festival offers what is called a read-eval-print loop, because
+it reads an s-expression (atom or list), evaluates it and prints
+the result.  As Festival includes the SIOD Scheme interpreter most
+standard Scheme commands work
+<pre class="lisp">     festival&gt; (car '(a d))
+     a
+     festival&gt; (+ 34 52)
+     86
+</pre>
+   <p>In addition to standard Scheme commands a number of commands specific to
+speech synthesis are included.  Although, as we will see, there are
+simpler methods for getting Festival to speak, here are the basic
+underlying explicit functions used in synthesizing an utterance.
+
+   <p><a name="index-utterance-63"></a><a name="index-hello-world-64"></a>Utterances can consist of various types See <a href="Utterance-types.html#Utterance-types">Utterance types</a>,
+but the simplest form is plain text.  We can create an utterance
+and save it in a variable
+<pre class="lisp">     festival&gt; (set! utt1 (Utterance Text "Hello world"))
+     #&lt;Utterance 1d08a0&gt;
+     festival&gt;
+</pre>
+   <p>The (hex) number in the return value may be different for your
+installation.  That is the print form for utterances.  Their internal
+structure can be very large so only a token form is printed.
+
+   <p><a name="index-synthesizing-an-utterance-65"></a>Although this creates an utterance it doesn't do anything else. 
+To get a waveform you must synthesize it.
+<pre class="lisp">     festival&gt; (utt.synth utt1)
+     #&lt;Utterance 1d08a0&gt;
+     festival&gt;
+</pre>
+   <p><a name="index-playing-an-utterance-66"></a>This calls various modules, including tokenizing, duration,. intonation
+etc.  Which modules are called are defined with respect to the type
+of the utterance, in this case <code>Text</code>. It is possible to
+individually call the modules by hand but you just wanted it to talk didn't
+you.  So
+<pre class="lisp">     festival&gt; (utt.play utt1)
+     #&lt;Utterance 1d08a0&gt;
+     festival&gt;
+</pre>
+   <p><br>will send the synthesized waveform to your audio device.  You should<br>
+   hear "Hello world" from your machine.
+
+   <p><a name="index-g_t_0040code_007bSayText_007d-67"></a>To make this all easier a small function doing these three steps exists. 
+<code>SayText</code> simply takes a string of text, synthesizes it and sends it
+to the audio device.
+<pre class="lisp">     festival&gt; (SayText "Good morning, welcome to Festival")
+     #&lt;Utterance 1d8fd0&gt;
+     festival&gt;
+</pre>
+   <p>Of course as history and command line editing are supported &lt;c-p&gt;
+or up-arrow will allow you to edit the above to whatever you wish.
+
+   <p>Festival may also synthesize from files rather than simply text.
+<pre class="lisp">     festival&gt; (tts "myfile" nil)
+     nil
+     festival&gt;
+</pre>
+   <p><a name="index-exiting-Festival-68"></a><a name="index-g_t_0040code_007bquit_007d-69"></a>The end of file character &lt;c-d&gt; will exit from Festival and
+return you to the shell, alternatively the command <code>quit</code> may
+be called (don't forget the parentheses).
+
+   <p><a name="index-TTS-70"></a><a name="index-text-to-speech-71"></a>Rather than starting the command interpreter, Festival may synthesize
+files specified on the command line
+<pre class="lisp">     unix$ festival --tts myfile
+     unix$
+</pre>
+   <p><a name="index-text-to-wave-72"></a><a name="index-offline-TTS-73"></a>Sometimes a simple waveform is required from text that is to be kept and
+played at some later time.  The simplest way to do this with festival is
+by using the <samp><span class="file">text2wave</span></samp> program.  This is a festival script that
+will take a file (or text from standard input) and produce a single
+waveform.
+
+   <p><a name="index-text2wave-74"></a>An example use is
+<pre class="example">     text2wave myfile.txt -o myfile.wav
+</pre>
+   <p>Options exist to specify the waveform file type, for example if
+Sun audio format is required
+<pre class="example">     text2wave myfile.txt -otype snd -o myfile.wav
+</pre>
+   <p>Use <samp><span class="file">-h</span></samp> on <samp><span class="file">text2wave</span></samp> to see all options.
+
+   </body></html>
+

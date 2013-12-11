@@ -1,0 +1,118 @@
+<html lang="en">
+<head>
+<title>Features - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Utterances.html#Utterances" title="Utterances">
+<link rel="prev" href="Accessing-an-utterance.html#Accessing-an-utterance" title="Accessing an utterance">
+<link rel="next" href="Utterance-I_002fO.html#Utterance-I_002fO" title="Utterance I/O">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Features"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Utterance-I_002fO.html#Utterance-I_002fO">Utterance I/O</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Accessing-an-utterance.html#Accessing-an-utterance">Accessing an utterance</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Utterances.html#Utterances">Utterances</a>
+<hr>
+</div>
+
+<h3 class="section">14.6 Features</h3>
+
+<p><a name="index-features-217"></a>In previous versions items had a number of predefined features.  This is
+no longer the case and all features are optional.  Particularly the
+<code>start</code> and <code>end</code> features are no longer fixed, though those
+names are still used in the relations where yjeu are appropriate. 
+Specific functions are provided for the <code>name</code> feature but they are
+just short hand for normal feature access.  Simple features directly access
+the features in the underlying <code>EST_Feature</code> class in an item.
+
+   <p>In addition to simple features there is a mechanism for relating
+functions to names, thus accessing a feature may actually call a
+function.  For example the features <code>num_syls</code> is defined as a
+feature function which will count the number of syllables in the
+given word, rather than simple access a pre-existing feature.  Feature
+functions are usually dependent on the particular realtion the
+item is in, e.g. some feature functions are only appropriate for
+items in the <code>Word</code> relation, or only appropriate for those in the
+<code>IntEvent</code> relation.
+
+   <p>The third aspect of feature names is a path component.  These are
+parts of the name (preceding in <code>.</code>) that indicated some
+trversal of the utterance structure.  For example the features
+<code>name</code> will access the name feature on the given item.  The
+feature <code>n.name</code> will return the name feature on the next item
+(in that item's relation).  A number of basic direction
+operators are defined.
+     <dl>
+<dt><code>n.</code><dd>next
+<br><dt><code>p.</code><dd>previous
+<br><dt><code>nn.</code><dd>next next
+<br><dt><code>pp.</code><dd>previous
+<br><dt><code>parent.</code><br><dt><code>daughter1.</code><dd>first daughter
+<br><dt><code>daughter2.</code><dd>second daughter
+<br><dt><code>daughtern.</code><dd>last daughter
+<br><dt><code>first.</code><dd>most previous item
+<br><dt><code>last.</code><dd>most next item
+</dl>
+   Also you may specific traversal to another relation relation, though
+the <code>R:&lt;relationame&gt;.</code> operator.  For example given an Item
+in the syllable relation <code>R:SylStructure.parent.name</code> would
+give the name of word the syllable is in.
+
+   <p>Some more complex examples are as follows, assuming we are starting
+form an item in the <code>Syllable</code> relation.
+     <dl>
+<dt>&lsquo;<samp><span class="samp">stress</span></samp>&rsquo;<dd>This item's lexical stress
+<br><dt>&lsquo;<samp><span class="samp">n.stress</span></samp>&rsquo;<dd>The next syllable's lexical stress
+<br><dt>&lsquo;<samp><span class="samp">p.stress</span></samp>&rsquo;<dd>The previous syllable's lexical stress
+<br><dt>&lsquo;<samp><span class="samp">R:SylStructure.parent.name</span></samp>&rsquo;<dd>The word this syllable is in
+<br><dt>&lsquo;<samp><span class="samp">R:SylStructure.parent.R:Word.n.name</span></samp>&rsquo;<dd>The word next to the word this syllable is in
+<br><dt>&lsquo;<samp><span class="samp">n.R:SylStructure.parent.name</span></samp>&rsquo;<dd>The word the next syllable is in
+<br><dt>&lsquo;<samp><span class="samp">R:SylStructure.daughtern.ph_vc</span></samp>&rsquo;<dd>The phonetic feature <code>vc</code> of the final segment in this syllable. 
+</dl>
+   A list of all feature functions is given in an appendix of this
+document. See <a href="Feature-functions.html#Feature-functions">Feature functions</a>.  New functions may also be added
+in Lisp.
+
+   <p>In C++ feature values are of class <em>EST_Val</em> which may be a string,
+int, or a float (or any arbitrary object).  In Scheme this distinction
+cannot not always be made and sometimes when you expect an int you
+actually get a string.  Care should be take to ensure the right matching
+functions are use in Scheme.  It is recommended you use
+<code>string-append</code> or <code>string-match</code> as they will always work.
+
+   <p>If a pathname does not identify a valid path for the particular
+item (e.g. there is no next) <code>"0"</code> is returned.
+
+   <p><a name="index-CART-trees-218"></a><a name="index-linear-regression-219"></a>When collecting data from speech databases it is often useful to collect
+a whole set of features from all utterances in a database.  These
+features can then be used for building various models (both CART tree
+models and linear regression modules use these feature names),
+
+   <p>A number of functions exist to help in this task.  For example
+<pre class="lisp">     (utt.features utt1 'Word '(name pos p.pos n.pos))
+</pre>
+   <p>will return a list of word, and part of speech context for each
+word in the utterance.
+
+   <p>See <a href="Extracting-features.html#Extracting-features">Extracting features</a>, for an example of extracting sets
+of features from a database for use in building stochastic models.
+
+   </body></html>
+

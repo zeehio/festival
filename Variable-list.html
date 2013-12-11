@@ -1,0 +1,283 @@
+<html lang="en">
+<head>
+<title>Variable list - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Feature-functions.html#Feature-functions" title="Feature functions">
+<link rel="next" href="Function-list.html#Function-list" title="Function list">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Variable-list"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Function-list.html#Function-list">Function list</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Feature-functions.html#Feature-functions">Feature functions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">33 Variable list</h2>
+
+<p>This chapter contains a list of variables currently defined within
+Festival available for general use.  This list is automatically
+generated from the documentation strings of the variables as they are
+defined within the system, so has some chance in being up-to-date.
+
+   <p>Cross references to sections elsewhere int he manual are given where
+appropriate.
+
+     <dl>
+<dt><code>!</code><dd>In interactive mode, this variable's value is the return value of the
+previously evaluated expression. 
+<br><dt><code>*module-descriptions*</code><dd>An association list recording the description objects for proclaimed
+modules. 
+<br><dt><code>*ostype*</code><dd>Contains the name of the operating system type that Festival is running
+on, e.g. SunOS5, FreeBSD, linux etc.  The value is taken from the Makefile
+variable OSTYPE at compile time. 
+<br><dt><code>*properties*</code><dd>Array for holding symbol property lists. 
+<br><dt><code>after_analysis_hooks</code><dd>List of functions to be applied after analysis and before synthesis. 
+<br><dt><code>after_synth_hooks</code><dd>List of functions to be applied after all synthesis modules have been
+applied.  This is primarily designed to allow waveform manipulation,
+particularly resampling and volume changes. 
+<br><dt><code>auto-text-mode-alist</code><dd>Following Emacs' auto-mode-alist thios provides a mechanism for auto
+selecting a TTS text mode based on the filename being analyzed.  Its
+format is exactly the same as Emacs in that it consists of an alist of
+dotted pairs of regular expression and text mode name. 
+<br><dt><code>before_synth_hooks</code><dd>List of functions to be run on synthesised utterances before synthesis
+starts. 
+<br><dt><code>default-voice-priority-list</code><dd>List of voice names. The first of them available becomes the default voice. 
+<br><dt><code>default_access_strategy</code><dd>How to access units from databases. 
+<br><dt><code>default_after_analysis_hooks</code><dd>The default list of functions to be run on all synthesized utterances
+after analysis but before synthesis. 
+<br><dt><code>default_after_synth_hooks</code><dd>The default list of functions to be run on all synthesized utterances
+after Wave_Synth.  This will normally be nil but if for some reason you
+need to change the gain or rescale *all* waveforms you could set the
+function here, in your siteinit.scm. 
+<br><dt><code>default_before_synth_hooks</code><dd>The default list of functions to be run on all synthesized utterances
+before synthesis starts. 
+<br><dt><code>diphone_module_hooks</code><dd>A function or list of functions that will be applied to the utterance
+at the start of the diphone module.  It can be used to map segment
+names to those that will be used by the diphone database itself. 
+Typical use specifies _ and $ for consonant clusters and syllable
+boundaries, mapping to dark ll's etc.  Reduction and tap type
+phenomena should probabaly be done by post lexical rules though the
+distinction is not a clear one. 
+<br><dt><code>duffint_params</code><dd>Default parameters for Default (duff) intonation target generation. 
+This is an assoc list of parameters.  Two parameters are supported
+start specifies the start F0 in Hertz for an utterance, and end specifies
+the end. 
+<br><dt><code>editline_histsize</code><dd>The number of lines to be saved in the users history file when a
+Festival session ends.  The histfile is ".festival_history" in the
+users home directory.  Note this value is only checked when the
+command interpreter is started, hence this should be set in a user's
+".festivalrc" or system init file.  Reseting it at the command
+interpreter will have no effect. 
+<br><dt><code>editline_no_echo</code><dd>When running under Emacs as an inferior process, we don't want to
+echo the content of the line, only the prompt. 
+<br><dt><code>english_homographs</code><dd>A list of tokens that are dealt with by a homograph disambiguation tree
+in english_token_pos_cart_trees. 
+<br><dt><code>english_phr_break_params</code><dd>Parameters for English phrase break statistical model. 
+<br><dt><code>eou_tree</code><dd>End of utterance tree.  A decision tree used to determine if the given
+token marks the end of an utterance.  It may look one token ahead to
+do this. [see <a href="Utterance-chunking.html#Utterance-chunking">Utterance chunking</a>]
+<br><dt><code>etc-path</code><dd>A list of directories where binaries specific to Festival may be located. 
+This variable is automatically set to LIBDIR/etc/OSTYPE/
+and that path is added to the end of the UNIX PATH environment variable. 
+<br><dt><code>festival_version</code><dd>A string containing the current version number of the system. 
+<br><dt><code>festival_version_number</code><dd>A list of major, minor and subminor version numbers of the current
+system.  e.g. (1 0 12). 
+<br><dt><code>FP_duration</code><dd>In using Fixed_Prosody as used in Phones type utterances and hence
+SayPhones, this is the fix value in ms for phone durations. 
+<br><dt><code>FP_F0</code><dd>In using Fixed_Prosody as used in Phones type utterances and hence
+SayPhones, this is the value in Hertz for the monotone F0. 
+<br><dt><code>guess_pos</code><dd>An assoc-list of simple part of speech tag to list of words in that
+class.  This basically only contains closed class words all other
+words may be assumed to be content words.  This was built from information
+in the f2b database and is used by the ffeature gpos. 
+<br><dt><code>home-directory</code><dd>Place looked at for .festivalrc etc. 
+<br><dt><code>hush_startup</code><dd>If set to non-nil, the copyright banner is not displayed at start up. 
+<br><dt><code>int_tilt_params</code><dd>Parameters for tilt intonation model. 
+<br><dt><code>language-location-trace</code><dd>Set t to print language locations as they are found
+<br><dt><code>language-locations</code><dd>Association list recording where languages were found. 
+<br><dt><code>language-path</code><dd>List of places to look for languages. If not set it is initialised from
+load-path by appending "languages/" to each directory with
+system-language-path appended. 
+<br><dt><code>Internal variable containing an association of language name</code><dd>aliases such as english-&gt; british_english. 
+<br><dt><code>lexdir</code><dd>The directory where the lexicon(s) are, by default. 
+<br><dt><code>libdir</code><dd>The pathname of the run-time libary directory.  Note reseting is
+almost definitely not what you want to do.   This value is automatically
+set at start up from the value specifed at compile-time or the value
+specifed with &ndash;libdir on the command line.  A number of other variables
+depend on this value. 
+<br><dt><code>load-path</code><dd>A list of directories containing .scm files.  Used for various functions
+such as load_library and require.  Follows the same use as EMACS.  By
+default it is set up to the compile-time library directory but may be
+changed by the user at run time, by adding a user's own library directory
+or even replacing all of the standard library. [see <a href="Site-initialization.html#Site-initialization">Site initialization</a>]
+<br><dt><code>manual-browser</code><dd>The Unix program name of your Netscape Navigator browser. 
+[see <a href="Getting-some-help.html#Getting-some-help">Getting some help</a>]
+<br><dt><code>manual-url</code><dd>The default URL for the Festival Manual in html format.  You may
+reset this to a file://.../... type URL on you're local machine. 
+[see <a href="Getting-some-help.html#Getting-some-help">Getting some help</a>]
+<br><dt><code>mbrola_database</code><dd>The name of the MBROLA database to usde during MBROLA Synthesis. 
+<br><dt><code>mbrola_progname</code><dd>The program name for mbrola. 
+<br><dt><code>Param</code><dd>A feature set for arbitrary parameters for modules. 
+<br><dt><code>pbreak_ngram_dir</code><dd>The directory containing the ngram models for predicting phrase
+breaks.  By default this is the standard library directory. 
+<br><dt><code>phr_break_params</code><dd>Parameters for phrase break statistical model.  This is typcal set by
+a voice selection function to the parameters for a particular model. 
+<br><dt><code>pos_map</code><dd>A reverse assoc list of predicted pos tags to some other tag set.  Note
+using this changes the pos tag loosing the actual predicted value.  Rather
+than map here you may find it more appropriate to map tags sets locally
+in the modules that use them (e.g. phrasing and lexicons). 
+<br><dt><code>pos_model_dir</code><dd>The directory contains the various models for the POS module.  By
+default this is the same directory as lexdir.  The directory should
+contain two models: a part of speech lexicon with reverse log probabilities
+and an ngram model for the same part of speech tag set. 
+<br><dt><code>pos_ngram_name</code><dd>The name of a loaded ngram containing the a posteriori ngram model for
+predicting part of speech.  The a priori model is held as a
+lexicon call poslex. 
+<br><dt><code>pos_p_start_tag</code><dd>This variable's value is the tag most likely to appear before
+the start of a sentence.  It is used when looking for pos context
+before an utterance.  Typically it should be some type of punctuation
+tag. 
+<br><dt><code>pos_pp_start_tag</code><dd>This variable's value is the tag most likely to appear before
+pos_p_start_tag and any position preceding that.  It is typically
+some type of noun tag.  This is used to provide pos context for
+early words in an utterance. 
+<br><dt><code>pos_supported</code><dd>If set to non-nil use part of speech prediction, if nil just get
+pos information from the lexicon. 
+<br><dt><code>postlex_mrpa_r_cart_tree</code><dd>For remove final R when not between vowels. 
+<br><dt><code>postlex_rules_hooks</code><dd>A function or list of functions which encode post lexical rules. 
+This will be voice specific, though some rules will be shared across
+languages. 
+<br><dt><code>postlex_vowel_reduce_cart_tree</code><dd>CART tree for vowel reduction. 
+<br><dt><code>postlex_vowel_reduce_cart_tree_hand</code><dd>A CART tree for vowel reduction.  This is hand-written. 
+<br><dt><code>postlex_vowel_reduce_table</code><dd>Mapping of vowels to their reduced form.  This in an assoc list of
+phoneset name to an assoc list of full vowel to reduced form. 
+<br><dt><code>provided</code><dd>List of file names (omitting .scm) that have been provided.  This list
+is checked by the require function to find out if a file needs to be
+loaded.  If that file is already in this list it is not loaded.  Typically
+a file will have (provide 'MYNAME) at its end so that a call to
+(require 'MYNAME) will only load MYNAME.scm once. 
+<br><dt><code>server_access_list</code><dd>If non-nil this is the exhaustive list of machines and domains
+from which clients may access the server.  This is a list of REGEXs
+that client host must match.  Remember to add the backslashes before
+the dots. [see <a href="Server_002fclient-API.html#Server_002fclient-API">Server/client API</a>]
+<br><dt><code>server_deny_list</code><dd>If non-nil this is a list of machines which are to be denied access
+to the server absolutely, irrespective of any other control features. 
+The list is a list of REGEXs that are used to matched the client hostname. 
+This list is checked first, then server_access_list, then passwd. 
+[see <a href="Server_002fclient-API.html#Server_002fclient-API">Server/client API</a>]
+<br><dt><code>server_log_file</code><dd>If set to t server log information is printed to standard output
+of the server process.  If set to nil no output is given.  If set
+to anything else the value is used as the name of file to which
+server log information is appended.  Note this value is checked at
+server start time, there is no way a client may change this. 
+[see <a href="Server_002fclient-API.html#Server_002fclient-API">Server/client API</a>]
+<br><dt><code>server_max_clients</code><dd>In server mode, the maximum number of clients supported at any one
+time.  When more that this number of clients attach simulaneous
+the last ones are denied access.  Default value is 10. 
+[see <a href="Server_002fclient-API.html#Server_002fclient-API">Server/client API</a>]
+<br><dt><code>server_passwd</code><dd>If non-nil clients must send this passwd to the server followed by
+a newline before they can get a connection.  It would be normal
+to set this for the particular server task. 
+[see <a href="Server_002fclient-API.html#Server_002fclient-API">Server/client API</a>]
+<br><dt><code>server_port</code><dd>In server mode the inet port number the server will wait for connects
+on.  The default value is 1314. [see <a href="Server_002fclient-API.html#Server_002fclient-API">Server/client API</a>]
+<br><dt><code>sgml_parse_progname</code><dd>The name of the program to use to parse SGML files.  Typically this is
+nsgml-1.0 from the sp SGML package. [see <a href="XML_002fSGML-requirements.html#XML_002fSGML-requirements">XML/SGML requirements</a>]
+<br><dt><code>sonority_glides</code><dd>List of glides (only good w/ radio_speech)
+<br><dt><code>sonority_liq</code><dd>List of liquids (only good w/ radio_speech)
+<br><dt><code>sonority_nas</code><dd>List of nasals (only good w/ radio_speech)
+<br><dt><code>sonority_v_obst</code><dd>List of voiced obstruents for use in sonority scaling (only good w/ radio_speech)
+<br><dt><code>sonority_vless_obst</code><dd>List of voiceless obstruents for use in sonority scaling (only good w/ radio_speech)
+<br><dt><code>SynthTypes</code><dd>List of synthesis types and functions used by the utt.synth function to
+call appropriate methods for wave synthesis. 
+<br><dt><code>system-language-path</code><dd>Additional directory not near the load path where languages can be
+found, this can be redefined in lib/sitevars.scm if desired. 
+<br><dt><code>system-voice-path</code><dd>Additional directory not near the load path where voices can be
+found, this can be redefined in lib/sitevars.scm if desired. 
+<br><dt><code>system-voice-path-multisyn</code><dd>Additional directory not near the load path where multisyn voices can be
+found, this can be redefined in lib/sitevars.scm if desired. 
+<br><dt><code>tilt_accent_list</code><dd>List of events containing accents in tilt model. 
+<br><dt><code>tilt_boundary_list</code><dd>List of events containing boundaries in tilt model. 
+<br><dt><code>token.letter_pos</code><dd>The part of speech tag (valid for your part of speech tagger) for
+individual letters.  When the tokenizer decide to pronounce a token
+as a list of letters this tag is added to each letter in the list. 
+Note this should be from the part of speech set used in your tagger
+which may not be the same one that appears in the actual lexical
+entry (if you map them afterwards).  This specifically allows "a"
+to come out as ae rather than @. 
+<br><dt><code>token.prepunctuation</code><dd>A string of characters which are to be treated as preceding punctuation
+when tokenizing text.  Prepunctuation symbols will be removed from the text
+of the token and made available through the "prepunctuation" feature. 
+[see <a href="Tokenizing.html#Tokenizing">Tokenizing</a>]
+<br><dt><code>token.punctuation</code><dd>A string of characters which are to be treated as punctuation when
+tokenizing text.  Punctuation symbols will be removed from the text
+of the token and made available through the "punctuation" feature. 
+[see <a href="Tokenizing.html#Tokenizing">Tokenizing</a>]
+<br><dt><code>token.singlecharsymbols</code><dd>Characters which have always to be split as tokens.  This would be
+usual is standard text, but is useful in parsing some types of
+file. [see <a href="Tokenizing.html#Tokenizing">Tokenizing</a>]
+<br><dt><code>token.unknown_word_name</code><dd>When all else fails and a pronunciation for a word or character can't
+be found this word will be said instead.  If you make this "" them
+the unknown word will simple be omitted.  This will only
+really be called when there is a bug in the lexicon and characters
+are missing from the lexicon.  Note this word should be in the lexicon. 
+<br><dt><code>token.whitespace</code><dd>A string of characters which are to be treated as whitespace when
+tokenizing text.  Whitespace is treated as a separator and removed
+from the text of a token and made available through the "whitespace"
+feature.  [see <a href="Tokenizing.html#Tokenizing">Tokenizing</a>]
+<br><dt><code>token_most_common</code><dd>A list of (English) words which were found to be most common in
+an text database and are used as discriminators in token analysis. 
+<br><dt><code>token_pos_cart_trees</code><dd>This is a list of pairs or regex plus CART tree.  Tokens that match
+the regex will have the CART tree aplied, setting the result as
+the token_pos feature on the token.  The list is checked in order
+and only the first match will be applied. 
+<br><dt><code>tts_hooks</code><dd>Function or list of functions to be called during text to speech. 
+The function tts_file, chunks data into Utterances of type Token and
+applies this hook to the utterance.  This typically contains the utt.synth
+function and utt.play. [see <a href="TTS.html#TTS">TTS</a>]
+<br><dt><code>tts_text_modes</code><dd>An a-list of text modes data for file type specific tts functions. 
+See the manual for an example.  [see <a href="Text-modes.html#Text-modes">Text modes</a>]
+<br><dt><code>UttTypes</code><dd>List of types and functions used by the utt.synth function to call
+appropriate methods. 
+<br><dt><code>var-docstrings</code><dd>An assoc-list of variable names and their documentation strings. 
+<br><dt><code>voice-location-trace</code><dd>Set t to print voice locations as they are found
+<br><dt><code>voice-locations</code><dd>Association list recording where voices were found. 
+<br><dt><code>voice-path</code><dd>List of places to look for voices. If not set it is initialised from
+load-path by appending "voices/" to each directory with
+system-voice-path appended. 
+<br><dt><code>voice-path-multisyn</code><dd>List of places to look for multisyn voices. If not set it is initialised from
+load-path by appending "voices-multisyn/" to each directory with
+system-voice-path-multisyn appended. 
+<br><dt><code>voice_default</code><dd>A variable whose value is a function name that is called on start up to
+the default voice. [see <a href="Site-initialization.html#Site-initialization">Site initialization</a>]
+<br><dt><code>Internal variable containing list of voice descriptions as</code><dd>decribed by proclaim_voice. 
+<br><dt><code>xml_dtd_dir</code><dd>The directory holding standard DTD form the xml parser. 
+<br><dt><code>xxml_elements</code><dd>List of Scheme actions to perform on finding xxML tags. 
+<br><dt><code>xxml_hooks</code><dd>Function or list of functions to be applied to an utterance when
+parsed with xxML, before tts_hooks. 
+<br><dt><code>xxml_token_hooks</code><dd>Functions to apply to each token. 
+<br><dt><code>xxml_word_features</code><dd>An assoc list of features to be added to the current word when
+in xxml parse mode. 
+</dl>
+
+   </body></html>
+

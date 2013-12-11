@@ -1,0 +1,197 @@
+<html lang="en">
+<head>
+<title>Configuration - Festival Speech Synthesis System</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Festival Speech Synthesis System">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Installation.html#Installation" title="Installation">
+<link rel="prev" href="Requirements.html#Requirements" title="Requirements">
+<link rel="next" href="Site-initialization.html#Site-initialization" title="Site initialization">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Configuration"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Site-initialization.html#Site-initialization">Site initialization</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Requirements.html#Requirements">Requirements</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Installation.html#Installation">Installation</a>
+<hr>
+</div>
+
+<h3 class="section">6.2 Configuration</h3>
+
+<p>First ensure you have a compiled version of the Edinburgh
+Speech Tools Library.  See <samp><span class="file">speech_tools/INSTALL</span></samp> for
+instructions.
+
+   <p><a name="index-configuration-21"></a>The system now supports the standard GNU <samp><span class="file">configure</span></samp> method
+for set up.  In most cases this will automatically configure festival
+for your particular system.  In most cases you need only
+type
+<pre class="example">     gmake
+</pre>
+   <p>and the system will configure itself and compile, (note you
+need to have compiled the Edinburgh Speech Tools
+<samp><span class="file">speech_tools-1.2.2</span></samp> first.
+
+   <p><a name="index-g_t_0040file_007bconfig_002fconfig_007d-22"></a>In some case hand configuration is required.  All of the configuration
+choices are kept in the file <samp><span class="file">config/config</span></samp>.
+
+   <p><a name="index-OTHER_005fDIRS-23"></a>For the most part Festival configuration inherits the configuration from
+your speech tools config file (<samp><span class="file">../speech_tools/config/config</span></samp>). 
+Additional optional modules may be added by adding them to the end of
+your config file e.g.
+<pre class="example">     ALSO_INCLUDE += clunits
+</pre>
+   <p>Adding and new module here will treat is as a new directory in
+the <samp><span class="file">src/modules/</span></samp> and compile it into the system in the
+same way the <code>OTHER_DIRS</code> feature was used in
+previous versions.
+
+   <p><a name="index-NFS-24"></a><a name="index-automounter-25"></a>If the compilation directory being accessed by NFS or if you use an
+automounter (e.g. amd) it is recommend to explicitly set the variable
+<code>FESTIVAL_HOME</code> in <samp><span class="file">config/config</span></samp>. The command <code>pwd</code> is
+not reliable when a directory may have multiple names.
+
+   <p>There is a simple test suite with Festival but it requires the three
+basic voices and their respective lexicons installed before it will work. 
+Thus you need to install
+<pre class="example">     festlex_CMU.tar.gz
+     festlex_OALD.tar.gz
+     festlex_POSLEX.tar.gz
+     festvox_don.tar.gz
+     festvox_kedlpc16k.tar.gz
+     festvox_rablpc16k.tar.gz
+</pre>
+   <p>If these are installed you can test the installation with
+<pre class="example">     gmake test
+</pre>
+   <p>To simply make it run with a male US English voice it is
+sufficient to install just
+<pre class="example">     festlex_CMU.tar.gz
+     festlex_POSLEX.tar.gz
+     festvox_kallpc16k.tar.gz
+</pre>
+   <p>Note that the single most common reason for problems in compilation and
+linking found amongst the beta testers was a bad installation of GNU
+C++.  If you get many strange errors in G++ library header files or link
+errors it is worth checking that your system has the compiler, header
+files and runtime libraries properly installed.  This may be checked by
+compiling a simple program under C++ and also finding out if anyone at
+your site has ever used the installation.  Most of these installation
+problems are caused by upgrading to a newer version of libg++ without
+removing the older version so a mixed version of the <samp><span class="file">.h</span></samp> files
+exist.
+
+   <p>Although we have tried very hard to ensure that Festival compiles with
+no warnings this is not possible under some systems.
+
+   <p><a name="index-SunOS-26"></a>Under SunOS the system include files do not declare a number of
+system provided functions.  This a bug in Sun's include files.  This
+will causes warnings like "implicit definition of fprintf".  These
+are harmless.
+
+   <p><a name="index-Linux-27"></a>Under Linux a warning at link time about reducing the size of some
+symbols often is produced.  This is harmless.  There is often
+occasional warnings about some socket system function having an
+incorrect argument type, this is also harmless.
+
+   <p><a name="index-Visual-C_002b_002b-28"></a>The speech tools and festival compile under Windows95 or Windows NT
+with Visual C++ v5.0 using the Microsoft <samp><span class="file">nmake</span></samp> make program.  We've
+only done this with the Professonal edition, but have no reason to
+believe that it relies on anything not in the standard edition.
+
+   <p>In accordance to VC++ conventions, object files are created with extension
+.obj, executables with extension .exe and libraries with extension
+.lib. This may mean that both unix and Win32 versions can be built in
+the same directory tree, but I wouldn't rely on it.
+
+   <p>To do this you require nmake Makefiles for the system. These can be
+generated from the gnumake Makefiles, using the command
+<pre class="example">     gnumake VCMakefile
+</pre>
+   <p>in the speech_tools and festival directories. I have only done this
+under unix, it's possible it would work under the cygnus gnuwin32
+system.
+
+   <p>If <samp><span class="file">make.depend</span></samp> files exist (i.e. if you have done <samp><span class="file">gnumake
+depend</span></samp> in unix) equivalent <samp><span class="file">vc_make.depend</span></samp> files will be created, if not
+the VCMakefiles will not contain dependency information for the <samp><span class="file">.cc</span></samp>
+files. The result will be that you can compile the system once, but
+changes will not cause the correct things to be rebuilt.
+
+   <p>In order to compile from the DOS command line using Visual C++ you
+need to have a collection of environment variables set. In Windows NT
+there is an instalation option for Visual C++ which sets these
+globally. Under Windows95 or if you don't ask for them to be set
+globally under NT you need to run
+<pre class="example">     vcvars32.bat
+</pre>
+   <p>See the VC++ documentation for more details.
+
+   <p>Once you have the source trees with VCMakefiles somewhere visible from
+Windows, you need to copy
+<samp><span class="file">peech_tools\config\vc_config-dist</span></samp> to
+<samp><span class="file">speech_tools\config\vc_config</span></samp> and edit it to suit your
+local situation. Then do the same with
+<samp><span class="file">festival\config\vc_config-dist</span></samp>.
+
+   <p>The thing most likely to need changing is the definition of
+<code>FESTIVAL_HOME</code> in <samp><span class="file">festival\config\vc_config_make_rules</span></samp>
+which needs to point to where you have put festival.
+
+   <p>Now you can compile. cd to the speech_tools directory and do
+<pre class="example">     nmake /nologo /fVCMakefile
+</pre>
+   <p><br>and the library, the programs in main and the test programs should be<br>
+   compiled.
+
+   <p>The tests can't be run automatically under Windows. A simple test to
+check that things are probably OK is:
+<pre class="example">     main\na_play testsuite\data\ch_wave.wav
+</pre>
+   <p><br>which reads and plays a waveform.<br>
+
+
+   <p>Next go into the festival directory and do
+<pre class="example">     nmake /nologo /fVCMakefile
+</pre>
+   <p><br>to build festival. When it's finished, and assuming you have the<br>
+   voices and lexicons unpacked in the right place, festival should run
+just as under unix.
+
+   <p>We should remind you that the NT/95 ports are still young and there may
+yet be problems that we've not found yet.  We only recommend the use the
+speech tools and Festival under Windows if you have significant
+experience in C++ under those platforms.
+
+   <p><a name="index-smaller-system-29"></a><a name="index-minimal-system-30"></a>Most of the modules <samp><span class="file">src/modules</span></samp> are actually optional and the
+system could be compiled without them.  The basic set could be reduced
+further if certain facilities are not desired.  Particularly:
+<samp><span class="file">donovan</span></samp> which is only required if the donovan voice is used;
+<samp><span class="file">rxp</span></samp> if no XML parsing is required (e.g. Sable); and <samp><span class="file">parser</span></samp>
+if no stochastic paring is required (this parser isn't used for any of
+our currently released voices).  Actually even <samp><span class="file">UniSyn</span></samp> and
+<samp><span class="file">UniSyn_diphone</span></samp> could be removed if some external waveform
+synthesizer is being used (e.g. MBROLA) or some alternative one like
+<samp><span class="file">OGIresLPC</span></samp>.  Removing unused modules will make the festival binary
+smaller and (potentially) start up faster but don't expect too much. 
+You can delete these by changing the <code>BASE_DIRS</code> variable in
+<samp><span class="file">src/modules/Makefile</span></samp>.
+
+   </body></html>
+
