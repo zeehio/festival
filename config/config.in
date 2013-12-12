@@ -58,7 +58,8 @@ include $(EST)/config/config
 ALSO_INCLUDE += clunits clustergen MultiSyn
 
 ## NITECH and Tokyo Institute of Technologies HTS support
-ALSO_INCLUDE += hts_engine
+## hts21_engine offers backwards compatibility with HTS voices for Festival 1.96
+ALSO_INCLUDE += hts_engine hts21_engine
 
 ## Old diphone code that will be delete, left in only for some
 ## compatibility
