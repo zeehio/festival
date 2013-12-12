@@ -245,7 +245,7 @@ void HTS_SStreamSet_create(HTS_SStreamSet * sss, HTS_ModelSet * ms,
       sst->win_l_width = (int *) HTS_calloc(sst->win_size, sizeof(int));
       sst->win_r_width = (int *) HTS_calloc(sst->win_size, sizeof(int));
       sst->win_coefficient =
-          (double **) HTS_calloc(sst->win_size, sizeof(double));
+          (double **) HTS_calloc(sst->win_size, sizeof(double *));
       for (j = 0; j < sst->win_size; j++) {
          sst->win_l_width[j] = HTS_ModelSet_get_window_left_width(ms, i, j);
          sst->win_r_width[j] = HTS_ModelSet_get_window_right_width(ms, i, j);
