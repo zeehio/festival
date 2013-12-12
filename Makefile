@@ -81,5 +81,8 @@ config/config: config/config.in config.status
 configure: configure.in
 	autoconf
 
+documentation:
+	(cd doc; make doc)
+
 include $(EST)/config/rules/top_level.mak
 include $(EST)/config/rules/install.mak
