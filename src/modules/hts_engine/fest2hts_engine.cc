@@ -48,18 +48,23 @@
 #include <cstring>
 #include <cctype>
 #include "festival.h"
+#include <sstream>
 
 /* header of hts_engine API */
 #ifdef __cplusplus
 extern "C" {
 #endif
 #include "HTS_engine.h"
+#include "HTS_hidden.h"
 #ifdef __cplusplus
 }
 #endif
 /* Getfp: wrapper for fopen */
     static FILE *Getfp(const char *name, const char *opt)
 {
+   if (name == NULL) {
+      return NULL;
+   }
    FILE *fp = fopen(name, opt);
 
    if (fp == NULL) {
@@ -69,6 +74,42 @@ extern "C" {
 
    return (fp);
 }
+
+static HTS_Engine *engine = NULL;
+static const char *cached_voice = NULL;
+
+/* HTS_Engine_save_label_ostream: output label with time */
+void HTS_Engine_save_label_ostream(HTS_Engine * engine, std::ostream &os)
+{
+   int i, j;
+   int frame, state, duration;
+
+   HTS_Label *label = &engine->label;
+   HTS_SStreamSet *sss = &engine->sss;
+   const int nstate = HTS_ModelSet_get_nstate(&engine->ms);
+   const double rate =
+       engine->global.fperiod * 1e+7 / engine->global.sampling_rate;
+
+   for (i = 0, state = 0, frame = 0; i < HTS_Label_get_size(label); i++) {
+      for (j = 0, duration = 0; j < nstate; j++)
+         duration += HTS_SStreamSet_get_duration(sss, state++);
+      /* in HTK & HTS format */
+      os << (int) (frame * rate) << " "
+         << (int) ((frame + duration) * rate) << " "
+         << HTS_Label_get_string(label, i) << endl;
+      frame += duration;
+   }
+}
+
+/* HTS_Engine_steal_speech_pointer: Steal wave from GStream to reduce
+ * memory copying */
+static short int * HTS_Engine_steal_speech_pointer(HTS_Engine * engine)
+{
+   short int * rawwave = (&engine->gss)->gspeech;
+   (&engine->gss)->gspeech = NULL;
+   return rawwave;
+}
+
 
 /* HTS_Synthesize_Utt: generate speech from utt by using hts_engine API */
 static LISP HTS_Synthesize_Utt(LISP utt)
@@ -84,11 +125,10 @@ static LISP HTS_Synthesize_Utt(LISP utt)
    char *fn_ms_gvl = NULL, *fn_ms_gvm = NULL;
    char *fn_ts_gvl = NULL, *fn_ts_gvm = NULL;
    char *fn_gv_switch = NULL;
+   char *label_string = NULL;
 
    FILE *labfp = NULL;
    FILE *lf0fp = NULL, *mcpfp = NULL, *rawfp = NULL, *durfp = NULL;
-
-   HTS_Engine engine;
 
    int sampling_rate;
    int fperiod;
@@ -97,6 +137,12 @@ static LISP HTS_Synthesize_Utt(LISP utt)
    double beta;
    double uv_threshold;
 
+   const char* current_voice = NULL;
+   
+   /* get current voice name */
+   current_voice = get_c_string(siod_get_lval("current-voice", NULL));
+   
+   
    /* get params */
    hts_engine_params =
        siod_get_lval("hts_engine_params",
@@ -140,13 +186,16 @@ static LISP HTS_Synthesize_Utt(LISP utt)
 
    /* open input file pointers */
    labfp =
-       Getfp(get_param_str("-labelfile", hts_output_params, "utt.feats"), "r");
-
+       Getfp(get_param_str("-labelfile", hts_output_params, NULL), "r");
+   /* get input file pointer string */
+   label_string =
+       (char *) get_param_str("-labelstring", hts_output_params, NULL);
+   
    /* open output file pointers */
-   rawfp = Getfp(get_param_str("-or", hts_output_params, "tmp.raw"), "wb");
-   lf0fp = Getfp(get_param_str("-of", hts_output_params, "tmp.lf0"), "wb");
-   mcpfp = Getfp(get_param_str("-om", hts_output_params, "tmp.mgc"), "wb");
-   durfp = Getfp(get_param_str("-od", hts_output_params, "tmp.lab"), "wb");
+   rawfp = Getfp(get_param_str("-or", hts_output_params, NULL), "wb");
+   lf0fp = Getfp(get_param_str("-of", hts_output_params, NULL), "wb");
+   mcpfp = Getfp(get_param_str("-om", hts_output_params, NULL), "wb");
+   durfp = Getfp(get_param_str("-od", hts_output_params, NULL), "wb");
 
    /* get other params */
    sampling_rate = (int) get_param_float("-s", hts_engine_params, 16000.0);
@@ -156,45 +205,66 @@ static LISP HTS_Synthesize_Utt(LISP utt)
    beta = (double) get_param_float("-b", hts_engine_params, 0.0);
    uv_threshold = (double) get_param_float("-u", hts_engine_params, 0.5);
 
+   std::stringstream labelstream(std::stringstream::in|std::stringstream::out);
+   
    /* initialize */
-   HTS_Engine_initialize(&engine, 2);
-   HTS_Engine_set_sampling_rate(&engine, sampling_rate);
-   HTS_Engine_set_fperiod(&engine, fperiod);
-   HTS_Engine_set_alpha(&engine, alpha);
-   HTS_Engine_set_gamma(&engine, stage);
-   HTS_Engine_set_beta(&engine, beta);
-   HTS_Engine_set_msd_threshold(&engine, 1, uv_threshold);
-   HTS_Engine_set_audio_buff_size(&engine, 0);
+   /* If voice name has not changed, keep cached parameters and models */
+   if ( cached_voice != NULL && current_voice != NULL && \
+        strcmp(cached_voice, current_voice)==0 ) {
+      HTS_Engine_refresh(engine);
+   } else {
+      if (cached_voice != NULL)
+           HTS_Engine_clear(engine);
+      HTS_Engine_initialize(engine, 2);
+      HTS_Engine_set_sampling_rate(engine, sampling_rate);
+      HTS_Engine_set_fperiod(engine, fperiod);
+      HTS_Engine_set_alpha(engine, alpha);
+      HTS_Engine_set_gamma(engine, stage);
+      HTS_Engine_set_beta(engine, beta);
+      HTS_Engine_set_msd_threshold(engine, 1, uv_threshold);
+      HTS_Engine_set_audio_buff_size(engine, 0);
 
-   /* load models */
-   HTS_Engine_load_duration_from_fn(&engine, &fn_ms_dur, &fn_ts_dur, 1);
-   HTS_Engine_load_parameter_from_fn(&engine, &fn_ms_mcp, &fn_ts_mcp, fn_ws_mcp,
-                                     0, FALSE, 3, 1);
-   HTS_Engine_load_parameter_from_fn(&engine, &fn_ms_lf0, &fn_ts_lf0, fn_ws_lf0,
-                                     1, TRUE, 3, 1);
-   HTS_Engine_load_gv_from_fn(&engine, &fn_ms_gvm, &fn_ts_gvm, 0, 1);
-   HTS_Engine_load_gv_from_fn(&engine, &fn_ms_gvl, &fn_ts_gvl, 1, 1);
-   HTS_Engine_load_gv_switch_from_fn(&engine, fn_gv_switch);
+      /* load models */
+      HTS_Engine_load_duration_from_fn(engine, &fn_ms_dur, &fn_ts_dur, 1);
+      HTS_Engine_load_parameter_from_fn(engine, &fn_ms_mcp, &fn_ts_mcp, fn_ws_mcp,
+                                        0, FALSE, 3, 1);
+      HTS_Engine_load_parameter_from_fn(engine, &fn_ms_lf0, &fn_ts_lf0, fn_ws_lf0,
+                                        1, TRUE, 3, 1);
+      HTS_Engine_load_gv_from_fn(engine, &fn_ms_gvm, &fn_ts_gvm, 0, 1);
+      HTS_Engine_load_gv_from_fn(engine, &fn_ms_gvl, &fn_ts_gvl, 1, 1);
+      HTS_Engine_load_gv_switch_from_fn(engine, fn_gv_switch);
+      cached_voice = current_voice;
+   }
 
    /* generate speech */
    if (u->relation("Segment")->first()) {       /* only if there segments */
-      HTS_Engine_load_label_from_fp(&engine, labfp);
-      HTS_Engine_create_sstream(&engine);
-      HTS_Engine_create_pstream(&engine);
-      HTS_Engine_create_gstream(&engine);
+      /* Load label from file pointer or from string */
+      if ( labfp != NULL ) {
+         HTS_Engine_load_label_from_fp(engine, labfp);
+      } else if ( label_string != NULL ) {
+         HTS_Engine_load_label_from_string(engine, label_string);
+      } else {
+         cerr << "No input label specified" << endl;
+         HTS_Engine_refresh(engine);
+         return utt;
+      }
+      
+      HTS_Engine_create_sstream(engine);
+      HTS_Engine_create_pstream(engine);
+      HTS_Engine_create_gstream(engine);
       if (rawfp != NULL)
-         HTS_Engine_save_generated_speech(&engine, rawfp);
+         HTS_Engine_save_generated_speech(engine, rawfp);
       if (durfp != NULL)
-         HTS_Engine_save_label(&engine, durfp);
+         HTS_Engine_save_label(engine, durfp);
+      HTS_Engine_save_label_ostream(engine, labelstream);
       if (lf0fp != NULL)
-         HTS_Engine_save_generated_parameter(&engine, lf0fp, 1);
+         HTS_Engine_save_generated_parameter(engine, lf0fp, 1);
       if (mcpfp != NULL)
-         HTS_Engine_save_generated_parameter(&engine, mcpfp, 1);
-      HTS_Engine_refresh(&engine);
+         HTS_Engine_save_generated_parameter(engine, mcpfp, 1);
    }
 
-   /* free */
-   HTS_Engine_clear(&engine);
+   /* free (keep models in cache) */
+   /* HTS_Engine_clear(engine); */
 
    /* close output file pointers */
    if (rawfp != NULL)
@@ -211,37 +281,44 @@ static LISP HTS_Synthesize_Utt(LISP utt)
       fclose(labfp);
 
    /* Load back in the waveform */
-   EST_Wave *w = new EST_Wave;
-   w->resample(sampling_rate);
-
+   const int numsamples = HTS_GStreamSet_get_total_nsample(&engine->gss);
+   short int * rawwave = HTS_Engine_steal_speech_pointer(engine);
+   EST_Wave *w;
    if (u->relation("Segment")->first()) /* only if there segments */
-      w->load_file(get_param_str("-or", hts_output_params, "tmp.raw"), "raw",
-                   sampling_rate, "short", str_to_bo("native"), 1);
+   {
+      w = new EST_Wave(numsamples, 1 /* one channel */,
+                       rawwave, 0, sampling_rate, 1 /* deallocate when destroyed */);
+   } else {
+      w = new EST_Wave;
+      w->resample(sampling_rate);
+   }
 
    item = u->create_relation("Wave")->append();
    item->set_val("wave", est_val(w));
 
    /* Load back in the segment times */
+   EST_TokenStream ts_label;
+   ts_label.open(labelstream);
    EST_Relation *r = new EST_Relation;
    EST_Item *s,*o;
-   
-   r->load(get_param_str("-od", hts_output_params, "tmp.lab"),"htk");
+   ts_label.seek(0);
+   r->load("tmp.lab", ts_label, "htk");
 
    for(o = r->first(), s = u->relation("Segment")->first() ; (o != NULL) && (s != NULL) ; o = o->next(), s = s->next() )
       if (o->S("name").before("+").after("-").matches(s->S("name")))
-         s->set("end",o->F("end")); 
+         s->set("end",o->F("end"));
       else
-         cerr << "HTS_Synthesize_Utt: Output segment mismatch";
-
+         cerr << "HTS_Synthesize_Utt: Output segment mismatch" << endl;
    delete r;
-
+   HTS_Engine_refresh(engine);
+   ts_label.close();
    return utt;
 }
 
 void festival_hts_engine_init(void)
 {
    char buf[1024];
-
+   engine = new HTS_Engine;
    HTS_get_copyright(buf);
    proclaim_module("hts_engine", buf);
 
