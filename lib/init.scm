@@ -147,7 +147,13 @@
     (load (path-append home-directory ".festivalrc")))
 
 ;;; Default voice (have to do something cute so autoloads still work)
-(eval (list voice_default))
+(unwind-protect
+ (eval (list voice_default))
+ 
+ (begin
+   (format t "Error evaluating default voice: %s\n" voice_default)
+   (format t "continuing\n")))
+
 
 (provide 'init)
 
