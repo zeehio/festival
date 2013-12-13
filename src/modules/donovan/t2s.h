@@ -261,10 +261,6 @@ void tags(CONFIG *config, BUFFER *buffer, LING_LIST *ling_list);
 /* transcribe.c  */
 void transcribe(CONFIG *config, LING_LIST *ling_list);
 
-/* ulaw.c  */
-unsigned char linear2ulaw(int sample);
-int ulaw2linear(unsigned char ulawbyte);
-
 /* utils.c  */
 char **split(char *in);
 void tidy_split(char **root);
