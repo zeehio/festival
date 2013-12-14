@@ -31,7 +31,7 @@
 ;;;                                                                       ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
-;;; Preapre to access voices. Searches down a path of places.
+;;; Prepare to access voices. Searches down a path of places.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -76,7 +76,7 @@
 
 
 ;; Declaration of voices. When we declare a voice we record the
-;; directory and set up an autoload for the vocie-selecting function
+;; directory and set up an autoload for the voice-selecting function
 
 (defvar voice-locations ()
   "voice-locations
@@ -139,17 +139,24 @@ This should always be set by the voice definition function (even
 if it does nothing).  This allows voice specific changes to be reset
 when a new voice is selection.  Unfortunately I can't force this
 to be used."
-   (Parameter.set 'Duration_Stretch 1.0)
+   (Param.set 'Duration_Stretch 1.0)
    (set! after_synth_hooks default_after_synth_hooks)
 
    ;; The follow are reset to allow existing voices to continue
    ;; to work, new voices should be setting these explicitly
-   (Parameter.set 'Token_Method 'Token_English)
-   (Parameter.set 'POS_Method Classic_POS)
-   (Parameter.set 'Phrasify_Method Classic_Phrasify)
-   (Parameter.set 'Word_Method Classic_Word)
-   (Parameter.set 'Pause_Method Classic_Pauses)
-   (Parameter.set 'PostLex_Method Classic_PostLex)
+   (Param.set 'Text_Method 'Text_int)
+   (Param.set 'Token_Method 'Token_English)
+   (Param.set 'POS_Method Classic_POS)
+   (Param.set 'Phrasify_Method Classic_Phrasify)
+   (Param.set 'Word_Method Classic_Word)
+   (Param.set 'Pause_Method Classic_Pauses)
+   (Param.set 'PostLex_Method Classic_PostLex)
+   ;; From pos.scm:
+   (set! pos_p_start_tag "punc")
+   (set! pos_pp_start_tag "n")
+   (set! pos_supported nil)
+   (set! pos_ngram_name nil)
+   (set! pos_map nil)
 
    (set! diphone_module_hooks nil)
    (set! UniSyn_module_hooks nil)
