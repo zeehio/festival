@@ -40,7 +40,7 @@
 
 (define (language_american_english)
 "(language_american_english)
-Set up language parameters for Aemerican English."
+Set up language parameters for American English."
 
   (if (symbol-bound? 'voice_kal_diphone)
       (set! female1 (lambda () (voice_kal_diphone))))
