@@ -74,7 +74,7 @@
 Describe a language to the systen. LANGUAGE should be atomic name, that
 conventionally will have language_ prepended to name the basic selection
 function. ALIASES is a list of names for that language."
-  (let (alias nil)
+  (let ( (alias nil) )
 
        (while aliases
         (set! alias (car aliases))
@@ -156,9 +156,11 @@ nil
          (if (string-matches language "language_.*scm$")
                 (begin
                  (load (path-append dir language))
-	         (language-location (path-basename language) (path-append dir (path-basename language)) "language found")
+	         (language-location (path-basename language)
+                                    (path-append dir (path-basename language))
+                                    "language found")
 	        )
-         ) 
+         )
        (set! languages (cdr languages))
       )
      (set! dirs (cdr dirs))
