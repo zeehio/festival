@@ -42,6 +42,9 @@
 #include "us_synthesis.h"
 #include "festival.h"
 
+using namespace std;
+
+
 #if 0
 static int awb_voiced(EST_Track &pm,int i)
 {

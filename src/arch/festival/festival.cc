@@ -46,6 +46,8 @@
 #include "siod.h"
 #include "ModuleDescription.h"
 
+using namespace std;
+
 void festival_lisp_funcs(void);
 void festival_lisp_vars(void);
 void festival_banner(void);

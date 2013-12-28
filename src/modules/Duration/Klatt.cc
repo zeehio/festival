@@ -56,6 +56,8 @@ which I think is neater.
 #include "festival.h"
 #include "durationP.h"
 
+using namespace std;
+
 static void klatt_dur_debug(EST_Item *s);
 
 static float rule2(EST_Item *seg);

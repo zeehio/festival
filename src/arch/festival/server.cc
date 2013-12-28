@@ -54,6 +54,9 @@
 #include "festival.h"
 #include "festivalP.h"
 
+using namespace std;
+
+
 #define DEFAULT_MAX_CLIENTS 10
 
 /* The folloing gives a server that never forks */

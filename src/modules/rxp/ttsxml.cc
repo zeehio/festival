@@ -49,6 +49,8 @@
 // So we can share the known_ids table.
 #include "ling_class/EST_utterance_xml.h"
 
+using namespace std;
+
 
 static InputSource entity_open(Entity ent, void *arg);
 

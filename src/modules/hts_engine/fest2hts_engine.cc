@@ -59,6 +59,9 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+using namespace std;
+
 /* Getfp: wrapper for fopen */
     static FILE *Getfp(const char *name, const char *opt)
 {

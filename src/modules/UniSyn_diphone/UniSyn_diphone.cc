@@ -42,6 +42,8 @@
 #include "us_diphone.h"
 #include "festival.h"
 
+using namespace std;
+
 extern USDiphIndex *diph_index;
 LISP us_dbs = NIL;
 LISP us_make_group_file(LISP lname, LISP params);

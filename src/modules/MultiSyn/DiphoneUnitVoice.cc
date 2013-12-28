@@ -65,6 +65,9 @@
 
 #include "EST_Val.h"
 
+using namespace std;
+
+
 SIOD_REGISTER_TYPE(itemlist,ItemList)
 VAL_REGISTER_TYPE(itemlist,ItemList)
 

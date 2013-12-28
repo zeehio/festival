@@ -43,6 +43,8 @@
 #include "festival.h"
 #include "festivalP.h"
 
+using namespace std;
+
 static void check_phoneset(void);
 static void ps_add_def(const EST_String &name, PhoneSet *ps);
 static LISP lisp_select_phoneset(LISP phoneset);

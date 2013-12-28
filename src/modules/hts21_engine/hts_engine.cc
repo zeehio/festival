@@ -59,6 +59,9 @@
 #include "mlpg.h"
 #include "defaults.h"
 
+using namespace std;
+
+
 void HTS21_Process ( FILE *, FILE *, FILE *, FILE *, PStream *, PStream *, 
 		   globalP *, ModelSet *, TreeSet *, VocoderSetup *);
 

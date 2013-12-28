@@ -48,6 +48,8 @@
 #include "lexicon.h"
 #include "text.h"
 
+using namespace std;
+
 static int rhc = 10;
 static int lhc = 10;
 

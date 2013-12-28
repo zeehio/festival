@@ -37,8 +37,6 @@
 #include <cstdio>
 #include <iostream>
 
-using namespace std;
-
 #include "EST_String.h"
 
 /** Machine readable descriptions of modules. Useful for help messages

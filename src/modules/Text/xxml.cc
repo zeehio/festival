@@ -48,6 +48,8 @@
 #include "text.h"
 #include "lexicon.h"
 
+using namespace std;
+
 static LISP xxml_get_attribute(const EST_String &remainder);
 static char *xxml_process_line(const char *line);
 static void tts_xxml_token(EST_Item *t);

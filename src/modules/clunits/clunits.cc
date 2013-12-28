@@ -78,6 +78,8 @@
 #include "festival.h"
 #include "clunits.h"
 
+using namespace std;
+
 static EST_String static_unit_prev_move = "unit_prev_move";
 static EST_String static_unit_this_move = "unit_this_move";
 static EST_String static_jscore = "local_join_cost";

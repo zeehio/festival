@@ -41,6 +41,8 @@
 #include "festival.h"
 #include "intonation.h"
 
+using namespace std;
+
 static void add_targets(EST_Utterance *u,EST_Item *syl, 
 			float baseline,float peak);
 

@@ -40,6 +40,8 @@
 #include "festival.h"
 #include "festivalP.h"
 
+using namespace std;
+
 static LISP wfst_loaded_list = NIL;
 static EST_WFST *load_wfst(const EST_String &filename);
 static LISP add_wfst(const EST_String &name,EST_WFST *n);

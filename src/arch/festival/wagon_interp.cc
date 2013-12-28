@@ -42,6 +42,8 @@
 #include <cstdlib>
 #include "festival.h"
 
+using namespace std;
+
 #define ques_oper_str(X) (get_c_string(car(cdr(X))))
 #define ques_operand(X) (car(cdr(cdr(X))))
 static int wagon_ask(EST_Item *s, LISP tree,

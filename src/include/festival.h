@@ -42,8 +42,6 @@
 #include <cstdlib>
 #include <fstream>
 
-using namespace std;
-
 #include "EST.h"
 #include "EST_cutils.h"
 #include "siod.h"

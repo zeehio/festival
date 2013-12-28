@@ -60,8 +60,6 @@
 #include "ling_class/EST_Item.h"
 #include <iostream>
 
-using namespace std;
-
 class EST_JoinCost;
 
 class EST_JoinCostCache {

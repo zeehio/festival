@@ -41,6 +41,8 @@
 #include "festival.h"
 #include "lexicon.h"
 
+using namespace std;
+
 static EST_VTCandidate *pos_candlist(EST_Item *s,EST_Features &f);
 static EST_VTPath *pos_npath(EST_VTPath *p,EST_VTCandidate *c,EST_Features &f);
 static double find_np_prob(EST_VTPath *p,int n,int *state);

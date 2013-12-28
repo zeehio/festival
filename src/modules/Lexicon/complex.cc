@@ -44,6 +44,8 @@
 #include "lexiconP.h"
 #include "lts.h"
 
+using namespace std;
+
 static LISP check_and_fix(LISP entry);
 static void check_sylphones(const char *name,LISP syls);
 

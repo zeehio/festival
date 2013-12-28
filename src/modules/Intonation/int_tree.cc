@@ -47,6 +47,8 @@
 #include "festival.h"
 #include "intonation.h"
 
+using namespace std;
+
 enum lr_tpos {tp_start, tp_left, tp_mid, tp_right, tp_end};
 
 static EST_String accent_specified(EST_Item *s);

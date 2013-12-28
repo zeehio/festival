@@ -58,6 +58,8 @@
 #include "festival.h"
 #include "lts.h"
 
+using namespace std;
+
 class LTS_Ruleset{
   private:
     EST_String p_name;

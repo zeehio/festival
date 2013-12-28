@@ -43,6 +43,8 @@
 #include "EST_error.h"
 #include "us_features.h"
 
+using namespace std;
+
 void add_feature_function(EST_Relation &r, const EST_String &fname,
 			  const EST_String &funcname)
 {

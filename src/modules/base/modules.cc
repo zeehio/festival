@@ -43,6 +43,8 @@
 #include "modules.h"
 #include "intonation.h"
 
+using namespace std;
+
 static void create_words(EST_Utterance *u);
 static void create_segments(EST_Utterance *u);
 static void create_wave(EST_Utterance *u);

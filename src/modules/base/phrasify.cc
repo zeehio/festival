@@ -41,6 +41,8 @@
 #include "festival.h"
 #include "modules.h"
 
+using namespace std;
+
 static void phrasing_none(EST_Utterance *u);
 static void phrasing_by_cart(EST_Utterance *u);
 static void phrasing_by_probmodels(EST_Utterance *u);
