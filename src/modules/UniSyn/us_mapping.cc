@@ -46,6 +46,8 @@
 
 #include <fstream>
 
+using namespace std;
+
 // void make_segment_single_mapping(EST_Relation &source_lab, 
 // 				 EST_Track &source_pm, 
 // 				 EST_Track &target_pm, EST_IVector &map) 
