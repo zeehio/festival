@@ -30,11 +30,38 @@ dnl ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF       ##
 dnl THIS SOFTWARE.                                                       ##
 dnl                                                                      ##
 dnl########################################################################
-AC_INIT
+AC_PREREQ([2.69])
+AC_INIT([festival], [2.1-release], [festival-talk@festvox.org])
 AC_CONFIG_SRCDIR([src/include/festival.h])
+#AC_CONFIG_HEADERS([config.h])
 
 AC_CANONICAL_TARGET
+# Checks for programs.
+AC_PROG_AWK
+AC_PROG_CXX
 AC_PROG_CC
+AC_PROG_MAKE_SET
+AC_PROG_INSTALL
+
+AC_LANG(C++)
+# Checks for libraries.
+
+# Checks for header files.
+AC_CHECK_HEADERS([arpa/inet.h netdb.h netinet/in.h stdlib.h string.h sys/socket.h unistd.h])
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_CHECK_HEADER_STDBOOL
+AC_C_INLINE
+AC_TYPE_PID_T
+AC_TYPE_SIZE_T
+
+# Checks for library functions.
+AC_FUNC_FORK
+AC_FUNC_MALLOC
+AC_FUNC_REALLOC
+AC_FUNC_STRTOD
+AC_CHECK_FUNCS([dup2 gethostbyaddr gethostbyname inet_ntoa memmove memset pow putenv rint select socket sqrt strchr strdup strrchr strstr strtol])
+
 if test "x$GCC" = "xyes"; then
 	CFLAGS="$CFLAGS -Wall"
 fi
