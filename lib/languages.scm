@@ -65,6 +65,77 @@
   "language-location-trace
    Set t to print language locations as they are found")
 
+(defvar Language_descriptions nil
+  "Internal variable containing list of language descriptions as
+decribed by proclaim_language.")
+
+(define (language.get_voices langname)
+  "Returns a list with the installed voices for language langname"
+ (let ( (defmale nil) (deffemale nil) (lang nil) )
+
+  (set! lang (cdr (assoc langname Language_aliases)))
+  (if (string-equal lang nil)
+    (set! lang langname)
+  )
+ 
+  (set! defmale (cdr (assoc 'default_male (cadr (assoc langname Language_descriptions)))))
+  (set! deffemale (cdr (assoc 'default_female (cadr (assoc langname Language_descriptions)))))
+  (list (cons 'male defmale) (cons 'female deffemale))
+ )
+)
+
+
+(define (proclaim_language name description)
+"(proclaim_language NAME DESCRIPTION)
+Describe a language to the systen.  NAME should be atomic name, that
+conventionally will have language_ prepended to name the basic selection
+function.  OPTIONS is an assoc list of feature and value and must
+have at least features for default_male, default_female and name aliases.
+Values for these features must be lists of atoms."
+  (let ((langdesc (assoc name Language_descriptions))
+        (default_male (cadr (assoc 'default_male description)))
+        (default_female (cadr (assoc 'default_female description)))
+        (aliases (cadr (assoc 'aliases description)))
+        (langname (cadr (assoc 'language description)))
+        (voice_conditions nil)
+        (dialect (cadr (assoc 'dialect description)))
+        (voice_conditions_gender nil)
+       )
+    (set! voice_conditions (list (list 'language langname)))
+    ; In order to find available voices we may need to impose 
+    ; specific dialect conditions
+    (if dialect
+       (set! voice_conditions (cons (list 'dialect dialect) voice_conditions))
+    )
+
+    ; Let's find available male voices:
+    (set! voice_conditions_gender (cons (list 'gender 'male) voice_conditions))
+    (set! default_male (append default_male (voice.find voice_conditions_gender)))
+    (set! default_male (voice.remove_unavailable default_male))
+    (set! default_male (reverse (remove-duplicates (reverse default_male))))
+
+    ; Let's find available female voices:
+    (set! voice_conditions_gender (cons (list 'gender 'female) voice_conditions))
+    (set! default_female (append default_female (voice.find voice_conditions_gender)))
+    (set! default_female (voice.remove_unavailable default_female))
+    (set! default_female (reverse (remove-duplicates (reverse default_female))))
+
+    ; Now we change the given description replacing default voices:
+    (set-car! (cdr (assoc 'default_male description)) default_male)
+    (set-car! (cdr (assoc 'default_female description)) default_female)
+
+    ; Set up language aliases:
+    (if aliases
+       (language.names.add name aliases))
+    ; Set up description:
+    (if langdesc
+       (set-car! (cdr langdesc) description)
+       (set! Language_descriptions
+             (cons (list name description) Language_descriptions)))
+  )
+)
+
+
 (defvar Language_aliases nil
   "Internal variable containing an association of language name
    aliases such as english-> british_english.")
@@ -112,13 +183,14 @@ function. ALIASES is a list of names for that language."
 "(language.list)
 List of all (potential) languages in the system.  This checks the language-location
 list of potential languages found be scanning the language-path at start up time."
-   (mapcar car Language_aliases))
+   (mapcar car Language_descriptions))
 
 (define (language.select name)
 "(language.select LANG)
 Call function to set up language LANG.  This is normally done by 
 prepending language_ to LANG and call it as a function."
-       (set! lang (cdr(assoc name Language_aliases)))
+   (let ( (lang nil) )
+       (set! lang (cdr (assoc name Language_aliases)))
        (if (string-equal lang nil)
            (set! lang name)
        )
@@ -132,8 +204,9 @@ prepending language_ to LANG and call it as a function."
       )
       (t ;;else, print a message with available languages
         (print "Language not installed. The installed languages are:")
-        (language.list)
+        (print (language.list))
       )
+   )
    )
 nil
 )

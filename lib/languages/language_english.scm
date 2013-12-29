@@ -1,4 +1,4 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;                                                                       ;;
 ;;;                Centre for Speech Technology Research                  ;;
 ;;;                     University of Edinburgh, UK                       ;;
@@ -34,47 +34,45 @@
 ;;;                         Date:   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Castillian Spanish language description
+;; American English language description
 ;;
 ;;
 
-(define (language_castillian_spanish)
-"(language_castillian_spanish)
-Set up language parameters for Castillian Spanish."
+(define (language_english)
+"(language_english)
+Set up language parameters for English."
 
-  (let ( (mydefault_voices (language.get_voices 'spanish))
-         (mymalevoices nil)
-         (myfemalevoices nil)
-       )
-  (set! mymalevoices (cadr (assoc 'male mydefault_voices)))
-  (if (> (length mymalevoices) 0)
-    (set! male1 (lambda () (voice.select (nth 0 mymalevoices))))
+  (let ( (mydefault_voices (language.get_voices 'english)))
+
+  (if (cadr (assoc 'male mydefault_voices ))
+    (set! male1 (lambda () (voice.select (car (cadr (assoc 'male mydefault_voices))))))
     (set! male1 nil)
   )
 
-  (set! myfemalevoices (cadr (assoc 'female mydefault_voices)))
-  (if (> (length myfemalevoices) 0)
-    (set! female1 (lambda () (voice.select (nth 0 myfemalevoices))))
+  (if (cadr (assoc 'female mydefault_voices ))
+    (set! female1 (lambda () (voice.select (car (cadr (assoc 'female mydefault_voices))))))
     (set! female1 nil)
   )
-
+  
   (if (null male1)
      (if (null female1)
-        (format t "Not a Spanish voice installed")
+        (format t "Not an English voice installed")
         (female1)
      )
      (male1)
   )
-  (Param.set 'Language 'spanish)
-nil
+  (if (equal? 'american (cdr (assoc 'dialect (cdr (assoc current-voice Voice_descriptions)))))
+     (Param.set 'Language 'americanenglish)
+     (Param.set 'Language 'britishenglish)
   )
+ )
+current-voice
 )
 
 (proclaim_language
- 'castillian_spanish
- '((language spanish)
-   (default_male (list el_diphone))
+ 'english
+ '((language english)
+   (default_male (list rab_diphone don_diphone))
    (default_female nil)
-   (aliases (list spanish castellano))
+   (aliases nil)
   ))
-

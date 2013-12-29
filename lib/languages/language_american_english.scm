@@ -42,14 +42,33 @@
 "(language_american_english)
 Set up language parameters for American English."
 
-  (if (symbol-bound? 'voice_kal_diphone)
-      (set! female1 (lambda () (voice_kal_diphone))))
-  (set! male1 (lambda () (voice_ked_diphone)))
-
-  (male1)
+  (let ( (mydefault_voices (language.get_voices 'american_english))
+       )
+  (if (not (null (cadr (assoc 'male mydefault_voices ))))
+    (set! male1 (lambda () (voice.select (nth 0 (cadr (assoc 'male mydefault_voices))))))
+    (set! male1 nil)
+  )
+  (if (not (null (cadr (assoc 'female mydefault_voices ))))
+    (set! female1 (lambda () (voice.select (nth 0 (cadr (assoc 'female mydefault_voices))))))
+    (set! female1 nil)
+  )
+  (if (null male1)
+     (if (null female1)
+        (format t "Not an american English voice installed")
+        (female1)
+     )
+     (male1)
+  )
   (Param.set 'Language 'americanenglish)
-nil
+current-voice
+  )
 )
 
-
-(language.names.add 'american_english (list 'americanenglish ))
+(proclaim_language
+ 'american_english
+ '((language english)
+   (dialect american)
+   (default_male (list ked_diphone))
+   (default_female (list kal_diphone))
+   (aliases (list americanenglish))
+  ))

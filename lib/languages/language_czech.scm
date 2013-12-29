@@ -41,10 +41,40 @@
 (define (language_czech)
 "(language_czech)
 Set up language parameters for Czech."
-   (set! male1 (lambda () (voice_czech_ph)))
-   (male1)
-   (Param.set 'Language 'czech)
+
+  (let ( (mydefault_voices (language.get_voices 'czech))
+         (mymalevoices nil)
+         (myfemalevoices nil)
+       )
+  (set! mymalevoices (cadr (assoc 'male mydefault_voices)))
+  (if (> (length mymalevoices) 0)
+    (set! male1 (lambda () (voice.select (nth 0 mymalevoices))))
+    (set! male1 nil)
+  )
+
+  (set! myfemalevoices (cadr (assoc 'female mydefault_voices)))
+  (if (> (length myfemalevoices) 0)
+    (set! female1 (lambda () (voice.select (nth 0 myfemalevoices))))
+    (set! female1 nil)
+  )
+
+  (if (null male1)
+     (if (null female1)
+        (format t "Not a Czech voice installed")
+        (female1)
+     )
+     (male1)
+  )
+  (Param.set 'Language 'czech)
 nil
+  )
 )
 
-(language.names.add 'czech (list 'czech ))
+(proclaim_language
+ 'czech
+ '((language czech)
+   (default_male (list czech_ph))
+   (default_female nil)
+   (aliases nil)
+  ))
+

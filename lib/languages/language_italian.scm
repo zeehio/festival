@@ -38,16 +38,44 @@
 ;;
 ;;
 
+
 (define (language_italian)
 "(language_italian)
 Set up language parameters for Italian."
 
-  (if (symbol-bound? 'voice_lp_diphone)
-      (set! female1 (lambda () (voice_lp_diphone))))
-  (set! male1 (lambda () (voice_pc_diphone)))
+  (let ( (mydefault_voices (language.get_voices 'italian))
+         (mymalevoices nil)
+         (myfemalevoices nil)
+       )
+  (set! mymalevoices (cadr (assoc 'male mydefault_voices)))
+  (if (> (length mymalevoices) 0)
+    (set! male1 (lambda () (voice.select (nth 0 mymalevoices))))
+    (set! male1 nil)
+  )
 
-  (male1)
+  (set! myfemalevoices (cadr (assoc 'female mydefault_voices)))
+  (if (> (length myfemalevoices) 0)
+    (set! female1 (lambda () (voice.select (nth 0 myfemalevoices))))
+    (set! female1 nil)
+  )
+
+  (if (null male1)
+     (if (null female1)
+        (format t "Not an Italian voice installed")
+        (female1)
+     )
+     (male1)
+  )
   (Param.set 'Language 'italian)
+current-voice
+  )
 )
 
-(language.names.add 'italian (list 'italian ))
+(proclaim_language
+ 'italian
+ '((language italian)
+   (default_male (list pc_diphone))
+   (default_female (list lp_diphone))
+   (aliases nil)
+  ))
+

@@ -41,18 +41,54 @@
 (define (language_british_english)
 "(language_british_english)
 Set up language parameters for British English."
-  (require 'voices)
-  ;;  Will get more elaborate, with different choices of voices in language
 
-  (set! male1 (lambda () (voice_rab_diphone)))
-  (set! male2 (lambda () (voice_don_diphone)))
-  (if (symbol-bound? 'voice_gsw_diphone)
-      (set! male3 voice_gsw_diphone))
-  (if (symbol-bound? 'voice_gsw_450)
-      (set! male4 voice_gsw_450))
+  (let ( (mydefault_voices (language.get_voices 'british_english))
+         (mymalevoices nil)
+         (myfemalevoices nil)
+       )
+  (set! mymalevoices (cadr (assoc 'male mydefault_voices)))
+  (if (> (length mymalevoices) 0)
+    (set! male1 (lambda () (voice.select (nth 0 mymalevoices))))
+    (set! male1 nil)
+  )
+  (if (> (length mymalevoices) 1)
+    (set! male2 (lambda () (voice.select (nth 1 mymalevoices))))
+    (set! male2 nil)
+  )
+  (if (> (length mymalevoices) 2)
+    (set! male3 (lambda () (voice.select (nth 2 mymalevoices))))
+    (set! male3 nil)
+  )
+  (if (> (length mymalevoices) 3)
+    (set! male4 (lambda () (voice.select (nth 3 mymalevoices))))
+    (set! male4 nil)
+  )
 
-  (male1)
+
+  (set! myfemalevoices (cadr (assoc 'female mydefault_voices)))
+  (if (> (length myfemalevoices) 0)
+    (set! female1 (lambda () (voice.select (nth 0 myfemalevoices))))
+    (set! female1 nil)
+  )
+  
+  (if (null male1)
+     (if (null female1)
+        (format t "Not a british English voice installed")
+        (female1)
+     )
+     (male1)
+  )
   (Param.set 'Language 'britishenglish)
+nil
+  )
 )
 
-(language.names.add 'british_english (list 'britishenglish 'english));; we all know its the *real* English
+(proclaim_language
+ 'british_english
+ '((language english)
+   (dialect british)
+   (default_male (list rab_diphone don_diphone gsw_diphone gsw_450))
+   (default_female nil)
+   (aliases (list britishenglish))
+  ))
+

@@ -46,4 +46,10 @@ Set up language parameters for Scots Gaelic."
   (Param.set 'Language 'scotsgaelic)
 )
 
-(language.names.add 'scotsgaelic (list 'scotsgaelic ))
+(proclaim_language
+ 'scots_gaelic
+ '((language scotsgaelic)
+   (default_male nil)
+   (default_female nil)
+   (aliases (list scotsgaelic))
+  ))

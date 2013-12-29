@@ -42,11 +42,39 @@
 "(language_welsh)
 Set up language parameters for Welsh."
 
-  (set! male1 (lambda () (voice_welsh_hl)))
+  (let ( (mydefault_voices (language.get_voices 'welsh))
+         (mymalevoices nil)
+         (myfemalevoices nil)
+       )
+  (set! mymalevoices (cadr (assoc 'male mydefault_voices)))
+  (if (> (length mymalevoices) 0)
+    (set! male1 (lambda () (voice.select (nth 0 mymalevoices))))
+    (set! male1 nil)
+  )
 
-  (male1)
+  (set! myfemalevoices (cadr (assoc 'female mydefault_voices)))
+  (if (> (length myfemalevoices) 0)
+    (set! female1 (lambda () (voice.select (nth 0 myfemalevoices))))
+    (set! female1 nil)
+  )
+
+  (if (null male1)
+     (if (null female1)
+        (format t "Not a Welsh voice installed")
+        (female1)
+     )
+     (male1)
+  )
   (Param.set 'Language 'welsh)
+current-voice
+  )
 )
 
+(proclaim_language
+ 'welsh
+ '((language welsh)
+   (default_male (list welsh_hl))
+   (default_female nil)
+   (aliases nil)
+  ))
 
-(language.names.add 'welsh (list 'welsh ))

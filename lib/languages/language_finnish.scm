@@ -38,19 +38,43 @@
 ;;
 ;;
 
-
 (define (language_finnish)
 "(language_finnish)
 Set up language parameters for Finnish."
-  (if (symbol-bound? 'voice_suo_fi_lj_diphone)
-      (set! female1 (lambda () (voice_suo_fi_lj_diphone))))
-  (set! male1 (lambda () (voice_hy_fi_mv_diphone)))
 
-  (male1)
+  (let ( (mydefault_voices (language.get_voices 'finnish))
+         (mymalevoices nil)
+         (myfemalevoices nil)
+       )
+  (set! mymalevoices (cadr (assoc 'male mydefault_voices)))
+  (if (> (length mymalevoices) 0)
+    (set! male1 (lambda () (voice.select (nth 0 mymalevoices))))
+    (set! male1 nil)
+  )
+
+  (set! myfemalevoices (cadr (assoc 'female mydefault_voices)))
+  (if (> (length myfemalevoices) 0)
+    (set! female1 (lambda () (voice.select (nth 0 myfemalevoices))))
+    (set! female1 nil)
+  )
+
+  (if (null male1)
+     (if (null female1)
+        (format t "Not a Finnish voice installed")
+        (female1)
+     )
+     (male1)
+  )
   (Param.set 'Language 'finnish)
-nil
+current-voice
+  )
 )
 
+(proclaim_language
+ 'finnish
+ '((language finnish)
+   (default_male (list hy_fi_mv_diphone))
+   (default_female (list suo_fi_lj_diphone))
+   (aliases nil)
+  ))
 
-
-(language.names.add 'finnish (list 'finnish ))

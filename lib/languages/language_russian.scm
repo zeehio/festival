@@ -34,16 +34,48 @@
 ;;;                         Date:   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Czech language description
+;; Russian language description
 ;;
 ;;
 
 (define (language_russian)
-"(language_russian)
+"(language_finnish)
 Set up language parameters for Russian."
-  (set! male1 voice_msu_ru_nsh_clunits)
-  (male1)
+
+  (let ( (mydefault_voices (language.get_voices 'russian))
+         (mymalevoices nil)
+         (myfemalevoices nil)
+       )
+  (set! mymalevoices (cadr (assoc 'male mydefault_voices)))
+  (if (> (length mymalevoices) 0)
+    (set! male1 (lambda () (voice.select (nth 0 mymalevoices))))
+    (set! male1 nil)
+  )
+
+  (set! myfemalevoices (cadr (assoc 'female mydefault_voices)))
+  (if (> (length myfemalevoices) 0)
+    (set! female1 (lambda () (voice.select (nth 0 myfemalevoices))))
+    (set! female1 nil)
+  )
+
+  (if (null male1)
+     (if (null female1)
+        (format t "Not a Russian voice installed")
+        (female1)
+     )
+     (male1)
+  )
   (Param.set 'Language 'russian)
+current-voice
+  )
 )
 
-(language.names.add 'czech (list 'czech ))
+(proclaim_language
+ 'russian
+ '((language russian)
+   (default_male (list msu_ru_nsh_clunits))
+   (default_female nil)
+   (aliases nil)
+  ))
+
+
