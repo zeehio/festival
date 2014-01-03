@@ -439,16 +439,19 @@ void InitDWin(PStream *pst)
             
          /* check the number of coefficients */
          fseek(fp, 0L, 2);
-	 fpos = (int)ftell(fp);
+         fpos = (int)ftell(fp);
          fsize = fpos/sizeof (float);
          fseek(fp, 0L, 0);
 
          /* read coefficients */
          pst->dw.coef[i] = fcalloc (fsize);
          pst->dw.coefr[i] = pst->dw.coef[i];
-         fread(pst->dw.coef[i], sizeof(float), fsize, fp);
-	 if (EST_BIG_ENDIAN)
-		 swap_bytes_float(pst->dw.coef[i],fsize);
+         if (fread(pst->dw.coef[i], sizeof(float), fsize, fp) != fsize) {
+            fprintf(stderr, "Error reading window coefficients\n");
+            festival_error();
+         }
+	      if (EST_BIG_ENDIAN)
+		      swap_bytes_float(pst->dw.coef[i],fsize);
 
          fclose(fp);
       }

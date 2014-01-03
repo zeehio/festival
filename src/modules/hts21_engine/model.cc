@@ -57,9 +57,14 @@ void LoadModelFiles(ModelSet *ms)
 
    /*-------------------- load pdfs for duration --------------------*/
    /* read the number of states & the number of pdfs (leaf nodes) */
-   fread(&ms->nstate,  sizeof(int), 1, ms->fp[DUR]);
+   if (fread(&ms->nstate,  sizeof(int), 1, ms->fp[DUR]) != 1) {
+      fprintf(stderr, "Error reading number of states\n");
+      festival_error();
+   }
    if (EST_BIG_ENDIAN) ms->nstate = SWAPINT(ms->nstate);
-   fread(&ms->ndurpdf, sizeof(int), 1, ms->fp[DUR]);
+   if (fread(&ms->ndurpdf, sizeof(int), 1, ms->fp[DUR]) != 1) {
+      fprintf(stderr, "Error reading number of pdfs\n");
+   }
    if (EST_BIG_ENDIAN) ms->ndurpdf = SWAPINT(ms->ndurpdf);
 
    ms->durpdf = walloc(float *,ms->ndurpdf+2);
@@ -67,19 +72,28 @@ void LoadModelFiles(ModelSet *ms)
    /* read pdfs (mean & variance) */
    for (i=1; i<=ms->ndurpdf; i++) {
       ms->durpdf[i] = walloc(float,2*ms->nstate+2);
-      fread(ms->durpdf[i]+2, sizeof(float), 2*ms->nstate, ms->fp[DUR]);
+      if (fread(ms->durpdf[i]+2, sizeof(float), 2*ms->nstate, ms->fp[DUR]) != 2*ms->nstate) {
+         fprintf(stderr, "Error reading means and variances for durpdf\n");
+         festival_error();
+      }
       if (EST_BIG_ENDIAN)
 	      swap_bytes_float(ms->durpdf[i]+2,2*ms->nstate);
    }
 
    /*-------------------- load pdfs for mcep --------------------*/
    /* read vector size for spectrum */
-   fread(&ms->mcepvsize, sizeof(int), 1, ms->fp[MCP]);
+   if (fread(&ms->mcepvsize, sizeof(int), 1, ms->fp[MCP]) != 1) {
+      fprintf(stderr, "Error reading vector size for mcep\n");
+      festival_error();
+   }
    if (EST_BIG_ENDIAN) ms->mcepvsize = SWAPINT(ms->mcepvsize);
    ms->nmceppdf = walloc(int,ms->nstate);
 
    /* read the number of pdfs for each state position */
-   fread(ms->nmceppdf, sizeof(int), ms->nstate, ms->fp[MCP]);
+   if (fread(ms->nmceppdf, sizeof(int), ms->nstate, ms->fp[MCP]) != ms->nstate) {
+      fprintf(stderr, "Error reading number of pdfs for each mcep state position\n");
+      festival_error();
+   }
    if (EST_BIG_ENDIAN) swap_bytes_int(ms->nmceppdf,ms->nstate);
    ms->mceppdf = walloc(float **,ms->nstate+2);
    
@@ -88,7 +102,10 @@ void LoadModelFiles(ModelSet *ms)
       ms->mceppdf[i] = walloc(float *,ms->nmceppdf[i-2]+2);
       for (j=1; j<=ms->nmceppdf[i-2]; j++) {
          ms->mceppdf[i][j] = walloc(float,ms->mcepvsize*2);
-         fread(ms->mceppdf[i][j], sizeof(float), ms->mcepvsize*2, ms->fp[MCP]);
+         if (fread(ms->mceppdf[i][j], sizeof(float), ms->mcepvsize*2, ms->fp[MCP]) != ms->mcepvsize*2) {
+            fprintf(stderr, "Error reading  mean and variance for mcep pdfs\n");
+            festival_error();
+         }
 	 if (EST_BIG_ENDIAN)
 		 swap_bytes_float(ms->mceppdf[i][j],ms->mcepvsize*2);
       }
@@ -96,11 +113,17 @@ void LoadModelFiles(ModelSet *ms)
 
    /*-------------------- load pdfs for log F0 --------------------*/
    /* read the number of streams for f0 modeling */
-   fread(&ms->lf0stream, sizeof(int), 1, ms->fp[LF0]);
+   if (fread(&ms->lf0stream, sizeof(int), 1, ms->fp[LF0]) != 1) {
+      fprintf(stderr, "Error reading the number of streams for f0\n");
+      festival_error();
+   }
    if (EST_BIG_ENDIAN) ms->lf0stream = SWAPINT(ms->lf0stream);
    ms->nlf0pdf = walloc(int,ms->nstate+2);
    /* read the number of pdfs for each state position */
-   fread(ms->nlf0pdf, sizeof(int), ms->nstate, ms->fp[LF0]);
+   if (fread(ms->nlf0pdf, sizeof(int), ms->nstate, ms->fp[LF0]) != ms->nstate) {
+      fprintf(stderr, "Error reading the number of pdfs for each f0 state position\n");
+      festival_error();
+   }
    if (EST_BIG_ENDIAN) swap_bytes_int(ms->nlf0pdf,ms->nstate);
    ms->lf0pdf = walloc(float ***,ms->nstate+3);
    
@@ -111,7 +134,10 @@ void LoadModelFiles(ModelSet *ms)
          ms->lf0pdf[i][j] = walloc(float *,ms->lf0stream+1);
          for (k=1; k<=ms->lf0stream; k++) {
             ms->lf0pdf[i][j][k] = walloc(float,4);
-            fread(ms->lf0pdf[i][j][k], sizeof(float), 4, ms->fp[LF0]);
+            if (fread(ms->lf0pdf[i][j][k], sizeof(float), 4, ms->fp[LF0]) != 4) {
+               fprintf(stderr, "Error means, variances and weights for f0\n");
+               festival_error();
+            }
 	    if (EST_BIG_ENDIAN)
 		 swap_bytes_float(ms->lf0pdf[i][j][k],4);
          }

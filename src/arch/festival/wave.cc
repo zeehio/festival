@@ -659,9 +659,15 @@ static LISP utt_send_wave_client(LISP utt)
 	type = get_c_string(ltype);
     w->save(tmpfile,type);
 #ifdef WIN32
-    send(ft_server_socket,"WV\n",3,0);
+    if (send(ft_server_socket,"WV\n",3,0) != 3) {
+        std::cerr << "Error sending wave to client" << std::endl;
+        return NIL;
+    }
 #else
-    write(ft_server_socket,"WV\n",3);
+    if (write(ft_server_socket,"WV\n",3) != 3) {
+        std::cerr << "Error sending wave to client" << std::endl;
+        return NIL;
+    }
 #endif
     socket_send_file(ft_server_socket,tmpfile);
     unlink(tmpfile);
@@ -697,9 +703,15 @@ static LISP utt_send_wave_asterisk(LISP utt)
 
     w->save(tmpfile,type);
 #ifdef WIN32
-    send(ft_server_socket,"WV\n",3,0);
+    if (send(ft_server_socket,"WV\n",3,0) != 3) {
+        std::cerr << "Error sending wave to asterisk" << std::endl;
+        return NIL;
+    }
 #else
-    write(ft_server_socket,"WV\n",3);
+    if (write(ft_server_socket,"WV\n",3) != 3) {
+        std::cerr << "Error sending wave to asterisk" << std::endl;
+        return NIL;
+    }
 #endif
     socket_send_file(ft_server_socket,tmpfile);
     unlink(tmpfile);
@@ -719,9 +731,15 @@ static LISP send_sexpr_to_client(LISP l)
     fprintf(fd,"\n");
     fclose(fd);
 #ifdef WIN32
-    send(ft_server_socket,"LP\n",3,0);
+    if (send(ft_server_socket,"LP\n",3,0) != 3) {
+        std::cerr << "Error sending expression to client" << std::endl;
+        return NIL;
+    }
 #else
-    write(ft_server_socket,"LP\n",3);
+    if (write(ft_server_socket,"LP\n",3) != 3) {
+        std::cerr << "Error sending expression to client" << std::endl;
+        return NIL;
+    }
 #endif
     socket_send_file(ft_server_socket,tmpfile);
     unlink(tmpfile);

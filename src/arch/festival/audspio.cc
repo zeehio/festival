@@ -88,9 +88,16 @@ static void audsp_send(const char *c)
 	festival_error();
     }
 	
-    write(audfds[0],c,strlen(c));
-    write(audfds[0],"\n",1);
-    read(audfds[1],reply,3);  /* confirmation */
+    if (write(audfds[0],c,strlen(c))!= strlen(c)) {
+        cerr << "Could not write to audio spooler pipe" << endl;
+    }
+    if (write(audfds[0],"\n",1) != 1){
+        cerr << "Could not write to audio spooler pipe" << endl;
+    }
+
+    if (read(audfds[1],reply,3) != 3) {
+        cerr << "Could not read confirmation from the audio spooler" << endl;  /* confirmation */
+    }
 }
 
 LISP l_audio_mode(LISP mode)
@@ -181,7 +188,7 @@ static void pipe_close(int *fds)
 
 static int *pipe_open(const char *command)
 {
-    // Starts a subprocess with its stdin and stdout bounad to pipes
+    // Starts a subprocess with its stdin and stdout bound to pipes
     // the ends of which are returned in an array
     int argc;
     char **argv;
