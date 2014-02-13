@@ -1,0 +1,376 @@
+<!doctype html>
+<html>
+<head>
+<title>xxml.cc</title>
+<style type="text/css">
+ body { color:#000000; background-color:#ffffff }
+ body { font-family:Helvetica, sans-serif; font-size:10pt }
+ h1 { font-size:14pt }
+ .code { border-collapse:collapse; width:100%; }
+ .code { font-family: "Monospace", monospace; font-size:10pt }
+ .code { line-height: 1.2em }
+ .comment { color: green; font-style: oblique }
+ .keyword { color: blue }
+ .string_literal { color: red }
+ .directive { color: darkmagenta }
+ .expansion { display: none; }
+ .macro:hover .expansion { display: block; border: 2px solid #FF0000; padding: 2px; background-color:#FFF0F0; font-weight: normal;   -webkit-border-radius:5px;  -webkit-box-shadow:1px 1px 7px #000; position: absolute; top: -1em; left:10em; z-index: 1 } 
+ .macro { color: darkmagenta; background-color:LemonChiffon; position: relative }
+ .num { width:2.5em; padding-right:2ex; background-color:#eeeeee }
+ .num { text-align:right; font-size:8pt }
+ .num { color:#444444 }
+ .line { padding-left: 1ex; border-left: 3px solid #ccc }
+ .line { white-space: pre }
+ .msg { -webkit-box-shadow:1px 1px 7px #000 }
+ .msg { -webkit-border-radius:5px }
+ .msg { font-family:Helvetica, sans-serif; font-size:8pt }
+ .msg { float:left }
+ .msg { padding:0.25em 1ex 0.25em 1ex }
+ .msg { margin-top:10px; margin-bottom:10px }
+ .msg { font-weight:bold }
+ .msg { max-width:60em; word-wrap: break-word; white-space: pre-wrap }
+ .msgT { padding:0x; spacing:0x }
+ .msgEvent { background-color:#fff8b4; color:#000000 }
+ .msgControl { background-color:#bbbbbb; color:#000000 }
+ .mrange { background-color:#dfddf3 }
+ .mrange { border-bottom:1px solid #6F9DBE }
+ .PathIndex { font-weight: bold; padding:0px 5px; margin-right:5px; }
+ .PathIndex { -webkit-border-radius:8px }
+ .PathIndexEvent { background-color:#bfba87 }
+ .PathIndexControl { background-color:#8c8c8c }
+ .PathNav a { text-decoration:none; font-size: larger }
+ .CodeInsertionHint { font-weight: bold; background-color: #10dd10 }
+ .CodeRemovalHint { background-color:#de1010 }
+ .CodeRemovalHint { border-bottom:1px solid #6F9DBE }
+ table.simpletable {
+   padding: 5px;
+   font-size:12pt;
+   margin:20px;
+   border-collapse: collapse; border-spacing: 0px;
+ }
+ td.rowname {
+   text-align:right; font-weight:bold; color:#444444;
+   padding-right:2ex; }
+</style>
+</head>
+<body>
+<!-- BUGDESC Value stored to 'utt' is never read -->
+
+<!-- BUGTYPE Dead assignment -->
+
+<!-- BUGCATEGORY Dead store -->
+
+<!-- BUGFILE /media/dades/src/festival-2013/festival/src/modules/Text/xxml.cc -->
+
+<!-- BUGLINE 125 -->
+
+<!-- BUGPATHLENGTH 1 -->
+
+<!-- BUGMETAEND -->
+<!-- REPORTHEADER -->
+<h3>Bug Summary</h3>
+<table class="simpletable">
+<tr><td class="rowname">File:</td><td>modules/Text/xxml.cc</td></tr>
+<tr><td class="rowname">Location:</td><td><a href="#EndPath">line 125, column 5</a></td></tr>
+<tr><td class="rowname">Description:</td><td>Value stored to 'utt' is never read</td></tr>
+</table>
+<!-- REPORTSUMMARYEXTRA -->
+<h3>Annotated Source Code</h3>
+<table class="code">
+<tr><td class="num" id="LN1">1</td><td class="line"><span class='comment'>/*************************************************************************/</span></td></tr>
+<tr><td class="num" id="LN2">2</td><td class="line"><span class='comment'>/*                                                                       */</span></td></tr>
+<tr><td class="num" id="LN3">3</td><td class="line"><span class='comment'>/*                Centre for Speech Technology Research                  */</span></td></tr>
+<tr><td class="num" id="LN4">4</td><td class="line"><span class='comment'>/*                     University of Edinburgh, UK                       */</span></td></tr>
+<tr><td class="num" id="LN5">5</td><td class="line"><span class='comment'>/*                       Copyright (c) 1996,1997                         */</span></td></tr>
+<tr><td class="num" id="LN6">6</td><td class="line"><span class='comment'>/*                        All Rights Reserved.                           */</span></td></tr>
+<tr><td class="num" id="LN7">7</td><td class="line"><span class='comment'>/*                                                                       */</span></td></tr>
+<tr><td class="num" id="LN8">8</td><td class="line"><span class='comment'>/*  Permission is hereby granted, free of charge, to use and distribute  */</span></td></tr>
+<tr><td class="num" id="LN9">9</td><td class="line"><span class='comment'>/*  this software and its documentation without restriction, including   */</span></td></tr>
+<tr><td class="num" id="LN10">10</td><td class="line"><span class='comment'>/*  without limitation the rights to use, copy, modify, merge, publish,  */</span></td></tr>
+<tr><td class="num" id="LN11">11</td><td class="line"><span class='comment'>/*  distribute, sublicense, and/or sell copies of this work, and to      */</span></td></tr>
+<tr><td class="num" id="LN12">12</td><td class="line"><span class='comment'>/*  permit persons to whom this work is furnished to do so, subject to   */</span></td></tr>
+<tr><td class="num" id="LN13">13</td><td class="line"><span class='comment'>/*  the following conditions:                                            */</span></td></tr>
+<tr><td class="num" id="LN14">14</td><td class="line"><span class='comment'>/*   1. The code must retain the above copyright notice, this list of    */</span></td></tr>
+<tr><td class="num" id="LN15">15</td><td class="line"><span class='comment'>/*      conditions and the following disclaimer.                         */</span></td></tr>
+<tr><td class="num" id="LN16">16</td><td class="line"><span class='comment'>/*   2. Any modifications must be clearly marked as such.                */</span></td></tr>
+<tr><td class="num" id="LN17">17</td><td class="line"><span class='comment'>/*   3. Original authors' names are not deleted.                         */</span></td></tr>
+<tr><td class="num" id="LN18">18</td><td class="line"><span class='comment'>/*   4. The authors' names are not used to endorse or promote products   */</span></td></tr>
+<tr><td class="num" id="LN19">19</td><td class="line"><span class='comment'>/*      derived from this software without specific prior written        */</span></td></tr>
+<tr><td class="num" id="LN20">20</td><td class="line"><span class='comment'>/*      permission.                                                      */</span></td></tr>
+<tr><td class="num" id="LN21">21</td><td class="line"><span class='comment'>/*                                                                       */</span></td></tr>
+<tr><td class="num" id="LN22">22</td><td class="line"><span class='comment'>/*  THE UNIVERSITY OF EDINBURGH AND THE CONTRIBUTORS TO THIS WORK        */</span></td></tr>
+<tr><td class="num" id="LN23">23</td><td class="line"><span class='comment'>/*  DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING      */</span></td></tr>
+<tr><td class="num" id="LN24">24</td><td class="line"><span class='comment'>/*  ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT   */</span></td></tr>
+<tr><td class="num" id="LN25">25</td><td class="line"><span class='comment'>/*  SHALL THE UNIVERSITY OF EDINBURGH NOR THE CONTRIBUTORS BE LIABLE     */</span></td></tr>
+<tr><td class="num" id="LN26">26</td><td class="line"><span class='comment'>/*  FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES    */</span></td></tr>
+<tr><td class="num" id="LN27">27</td><td class="line"><span class='comment'>/*  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN   */</span></td></tr>
+<tr><td class="num" id="LN28">28</td><td class="line"><span class='comment'>/*  AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,          */</span></td></tr>
+<tr><td class="num" id="LN29">29</td><td class="line"><span class='comment'>/*  ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF       */</span></td></tr>
+<tr><td class="num" id="LN30">30</td><td class="line"><span class='comment'>/*  THIS SOFTWARE.                                                       */</span></td></tr>
+<tr><td class="num" id="LN31">31</td><td class="line"><span class='comment'>/*                                                                       */</span></td></tr>
+<tr><td class="num" id="LN32">32</td><td class="line"><span class='comment'>/*************************************************************************/</span></td></tr>
+<tr><td class="num" id="LN33">33</td><td class="line"><span class='comment'>/*             Author :  Alan W Black                                    */</span></td></tr>
+<tr><td class="num" id="LN34">34</td><td class="line"><span class='comment'>/*             Date   :  August 1997                                     */</span></td></tr>
+<tr><td class="num" id="LN35">35</td><td class="line"><span class='comment'>/*-----------------------------------------------------------------------*/</span></td></tr>
+<tr><td class="num" id="LN36">36</td><td class="line"><span class='comment'>/*                                                                       */</span></td></tr>
+<tr><td class="num" id="LN37">37</td><td class="line"><span class='comment'>/*  There are just too many different versions of sgml-based mark up     */</span></td></tr>
+<tr><td class="num" id="LN38">38</td><td class="line"><span class='comment'>/*  and none of them are stable so this is allows arbitrary              */</span></td></tr>
+<tr><td class="num" id="LN39">39</td><td class="line"><span class='comment'>/*  of tags to Lisp functions so any of them can be implemented in Lisp  */</span></td></tr>
+<tr><td class="num" id="LN40">40</td><td class="line"><span class='comment'>/*  That is people can worry about the actual content later and do not   */</span></td></tr>
+<tr><td class="num" id="LN41">41</td><td class="line"><span class='comment'>/*  need to change the C++                                               */</span></td></tr>
+<tr><td class="num" id="LN42">42</td><td class="line"><span class='comment'>/*                                                                       */</span></td></tr>
+<tr><td class="num" id="LN43">43</td><td class="line"><span class='comment'>/*  Of course once I give you this functionality you'll just want more   */</span></td></tr>
+<tr><td class="num" id="LN44">44</td><td class="line"><span class='comment'>/*                                                                       */</span></td></tr>
+<tr><td class="num" id="LN45">45</td><td class="line"><span class='comment'>/*=======================================================================*/</span></td></tr>
+<tr><td class="num" id="LN46">46</td><td class="line"><span class='directive'>#include "EST_unix.h"</span></td></tr>
+<tr><td class="num" id="LN47">47</td><td class="line"><span class='directive'>#include "festival.h"</span></td></tr>
+<tr><td class="num" id="LN48">48</td><td class="line"><span class='directive'>#include "text.h"</span></td></tr>
+<tr><td class="num" id="LN49">49</td><td class="line"><span class='directive'>#include "lexicon.h"</span></td></tr>
+<tr><td class="num" id="LN50">50</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN51">51</td><td class="line"><span class='keyword'>using</span> <span class='keyword'>namespace</span> std;</td></tr>
+<tr><td class="num" id="LN52">52</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN53">53</td><td class="line"><span class='keyword'>static</span> LISP xxml_get_attribute(<span class='keyword'>const</span> EST_String &amp;remainder);</td></tr>
+<tr><td class="num" id="LN54">54</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>char</span> *xxml_process_line(<span class='keyword'>const</span> <span class='keyword'>char</span> *line);</td></tr>
+<tr><td class="num" id="LN55">55</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>void</span> tts_xxml_token(EST_Item *t);</td></tr>
+<tr><td class="num" id="LN56">56</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>void</span> tts_xxml_utt(LISP lutt);</td></tr>
+<tr><td class="num" id="LN57">57</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN58">58</td><td class="line"><span class='keyword'>static</span> LISP xxml_word_features = <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>;</td></tr>
+<tr><td class="num" id="LN59">59</td><td class="line"><span class='keyword'>static</span> LISP xxml_token_hooks = <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>;</td></tr>
+<tr><td class="num" id="LN60">60</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN61">61</td><td class="line"><span class='keyword'>void</span> tts_file_xxml(LISP filename)</td></tr>
+<tr><td class="num" id="LN62">62</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN63">63</td><td class="line">    <span class='comment'>// For stml ssml rsml and jsml etc</span></td></tr>
+<tr><td class="num" id="LN64">64</td><td class="line">    <span class='comment'>// filename contains *output* from something like nsgml</span></td></tr>
+<tr><td class="num" id="LN65">65</td><td class="line">    EST_String inname = get_c_string(filename);</td></tr>
+<tr><td class="num" id="LN66">66</td><td class="line">    EST_String line, type, remainder;</td></tr>
+<tr><td class="num" id="LN67">67</td><td class="line">    EST_TokenStream ts;</td></tr>
+<tr><td class="num" id="LN68">68</td><td class="line">    LISP atts, element_defs;</td></tr>
+<tr><td class="num" id="LN69">69</td><td class="line">    LISP utt = <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>;   <span class='comment'>// for cummulation of tokens</span></td></tr>
+<tr><td class="num" id="LN70">70</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN71">71</td><td class="line">    <span class='keyword'>if</span> (ts.open(inname) == -1)</td></tr>
+<tr><td class="num" id="LN72">72</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN73">73</td><td class="line">	cerr &lt;&lt; <span class='string_literal'>"xxml: unable to open output from SGML parser"</span> &lt;&lt; endl;</td></tr>
+<tr><td class="num" id="LN74">74</td><td class="line">	<span class='macro'>festival_error()<span class='expansion'>(errjmp_ok ? longjmp(*est_errjmp,1) : festival_tidy_up(),exit<br>(-1))</span></span>;</td></tr>
+<tr><td class="num" id="LN75">75</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN76">76</td><td class="line">    ts.set_WhiteSpaceChars(<span class='string_literal'>" \t\r\n"</span>);</td></tr>
+<tr><td class="num" id="LN77">77</td><td class="line">    ts.set_SingleCharSymbols(<span class='string_literal'>""</span>);</td></tr>
+<tr><td class="num" id="LN78">78</td><td class="line">    ts.set_PunctuationSymbols(<span class='string_literal'>""</span>);</td></tr>
+<tr><td class="num" id="LN79">79</td><td class="line">    ts.set_PrePunctuationSymbols(<span class='string_literal'>""</span>);</td></tr>
+<tr><td class="num" id="LN80">80</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN81">81</td><td class="line">    element_defs = siod_get_lval(<span class='string_literal'>"xxml_elements"</span>,<span class='macro'>NULL<span class='expansion'>__null</span></span>);</td></tr>
+<tr><td class="num" id="LN82">82</td><td class="line">    atts = <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>;</td></tr>
+<tr><td class="num" id="LN83">83</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN84">84</td><td class="line">    <span class='keyword'>if</span> (ts.peek() != get_c_string(car(car(element_defs))))</td></tr>
+<tr><td class="num" id="LN85">85</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN86">86</td><td class="line">	cerr &lt;&lt; <span class='string_literal'>"xxml parse error: "</span> &lt;&lt; get_c_string(filename) &lt;&lt;</td></tr>
+<tr><td class="num" id="LN87">87</td><td class="line">	    <span class='string_literal'>" Expected "</span> &lt;&lt; get_c_string(car(car(element_defs)))</td></tr>
+<tr><td class="num" id="LN88">88</td><td class="line">		&lt;&lt; <span class='string_literal'>" but found "</span> &lt;&lt; ts.peek() &lt;&lt; endl;</td></tr>
+<tr><td class="num" id="LN89">89</td><td class="line">	<span class='macro'>festival_error()<span class='expansion'>(errjmp_ok ? longjmp(*est_errjmp,1) : festival_tidy_up(),exit<br>(-1))</span></span>;</td></tr>
+<tr><td class="num" id="LN90">90</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN91">91</td><td class="line">    <span class='keyword'>while</span> (ts.peek() != get_c_string(car(car(cdr(element_defs)))))</td></tr>
+<tr><td class="num" id="LN92">92</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN93">93</td><td class="line">	<span class='keyword'>if</span> (ts.eof())</td></tr>
+<tr><td class="num" id="LN94">94</td><td class="line">	{</td></tr>
+<tr><td class="num" id="LN95">95</td><td class="line">	    cerr &lt;&lt; <span class='string_literal'>"xxml parse error: unexpected end of file \n"</span>;</td></tr>
+<tr><td class="num" id="LN96">96</td><td class="line">	    <span class='macro'>festival_error()<span class='expansion'>(errjmp_ok ? longjmp(*est_errjmp,1) : festival_tidy_up(),exit<br>(-1))</span></span>;</td></tr>
+<tr><td class="num" id="LN97">97</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN98">98</td><td class="line">	line = (EST_String)ts.get_upto_eoln();</td></tr>
+<tr><td class="num" id="LN99">99</td><td class="line">	type = line.at(0,1);</td></tr>
+<tr><td class="num" id="LN100">100</td><td class="line">	remainder = line.after(0);</td></tr>
+<tr><td class="num" id="LN101">101</td><td class="line">	<span class='keyword'>if</span> (type == <span class='string_literal'>"-"</span>)</td></tr>
+<tr><td class="num" id="LN102">102</td><td class="line">	{   <span class='comment'>//  Segments into utterances as it goes along</span></td></tr>
+<tr><td class="num" id="LN103">103</td><td class="line">	    utt = xxml_get_tokens(remainder,</td></tr>
+<tr><td class="num" id="LN104">104</td><td class="line">				  siod_get_lval(<span class='string_literal'>"xxml_word_features"</span>,<span class='macro'>NULL<span class='expansion'>__null</span></span>),</td></tr>
+<tr><td class="num" id="LN105">105</td><td class="line">				  utt);</td></tr>
+<tr><td class="num" id="LN106">106</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN107">107</td><td class="line">	<span class='keyword'>else</span> <span class='keyword'>if</span> (type == <span class='string_literal'>"A"</span>)        <span class='comment'>// general attribute</span></td></tr>
+<tr><td class="num" id="LN108">108</td><td class="line">	{</td></tr>
+<tr><td class="num" id="LN109">109</td><td class="line">	    atts = cons(xxml_get_attribute(remainder),atts);</td></tr>
+<tr><td class="num" id="LN110">110</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN111">111</td><td class="line">	<span class='keyword'>else</span> <span class='keyword'>if</span> ((type == <span class='string_literal'>"("</span>) || (type == <span class='string_literal'>")"</span>))</td></tr>
+<tr><td class="num" id="LN112">112</td><td class="line">	{   </td></tr>
+<tr><td class="num" id="LN113">113</td><td class="line">	    utt = xxml_call_element_function(type+remainder,atts,</td></tr>
+<tr><td class="num" id="LN114">114</td><td class="line">					     element_defs,utt);</td></tr>
+<tr><td class="num" id="LN115">115</td><td class="line">	    atts = <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>;</td></tr>
+<tr><td class="num" id="LN116">116</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN117">117</td><td class="line">	<span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN118">118</td><td class="line">	{</td></tr>
+<tr><td class="num" id="LN119">119</td><td class="line">	    cerr &lt;&lt; <span class='string_literal'>"xxml parse error: unexpected token found "</span> </td></tr>
+<tr><td class="num" id="LN120">120</td><td class="line">		&lt;&lt; line &lt;&lt; endl;</td></tr>
+<tr><td class="num" id="LN121">121</td><td class="line">	    <span class='macro'>festival_error()<span class='expansion'>(errjmp_ok ? longjmp(*est_errjmp,1) : festival_tidy_up(),exit<br>(-1))</span></span>;</td></tr>
+<tr><td class="num" id="LN122">122</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN123">123</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN124">124</td><td class="line">    <span class='comment'>// Last call (should synthesize trailing tokens</span></td></tr>
+<tr><td class="num" id="LN125">125</td><td class="line">    utt = <span class="mrange">xxml_call_element_function(ts.get().string(),atts,element_defs,utt)</span>;</td></tr>
+<tr><td class="num"></td><td class="line"><div id="EndPath" class="msg msgEvent" style="margin-left:5ex">Value stored to 'utt' is never read</div></td></tr>
+<tr><td class="num" id="LN126">126</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN127">127</td><td class="line">    ts.close();</td></tr>
+<tr><td class="num" id="LN128">128</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN129">129</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN130">130</td><td class="line">LISP xxml_call_element_function(<span class='keyword'>const</span> EST_String &amp;element,</td></tr>
+<tr><td class="num" id="LN131">131</td><td class="line">				LISP atts, LISP elements, LISP utt)</td></tr>
+<tr><td class="num" id="LN132">132</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN133">133</td><td class="line">    <span class='comment'>// Form the call to the defined element function, with the attributes</span></td></tr>
+<tr><td class="num" id="LN134">134</td><td class="line">    <span class='comment'>// and the utterance, returns the utterance</span></td></tr>
+<tr><td class="num" id="LN135">135</td><td class="line">    LISP def,l;</td></tr>
+<tr><td class="num" id="LN136">136</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN137">137</td><td class="line">    def = siod_assoc_str(element,elements);</td></tr>
+<tr><td class="num" id="LN138">138</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN139">139</td><td class="line">    <span class='keyword'>if</span> (def != <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>)</td></tr>
+<tr><td class="num" id="LN140">140</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN141">141</td><td class="line">	<span class='comment'>// You get two arguments, ATTLIST and UTTERANCE</span></td></tr>
+<tr><td class="num" id="LN142">142</td><td class="line">	l = cons(</td></tr>
+<tr><td class="num" id="LN143">143</td><td class="line">	    make_param_lisp(<span class='string_literal'>"ATTLIST"</span>,</td></tr>
+<tr><td class="num" id="LN144">144</td><td class="line">			    cons(rintern(<span class='string_literal'>"quote"</span>),cons(atts,<span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>))),</td></tr>
+<tr><td class="num" id="LN145">145</td><td class="line">	    cons(</td></tr>
+<tr><td class="num" id="LN146">146</td><td class="line">	    make_param_lisp(<span class='string_literal'>"UTT"</span>,</td></tr>
+<tr><td class="num" id="LN147">147</td><td class="line">			    cons(rintern(<span class='string_literal'>"quote"</span>),cons(utt,<span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>))),</td></tr>
+<tr><td class="num" id="LN148">148</td><td class="line">		 <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>));</td></tr>
+<tr><td class="num" id="LN149">149</td><td class="line">	<span class='keyword'>return</span> leval(cons(rintern(<span class='string_literal'>"let"</span>),</td></tr>
+<tr><td class="num" id="LN150">150</td><td class="line">			  cons(l,cdr(cdr(def)))),<span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>);</td></tr>
+<tr><td class="num" id="LN151">151</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN152">152</td><td class="line">    <span class='keyword'>else</span>   <span class='comment'>// no definition to do nothing</span></td></tr>
+<tr><td class="num" id="LN153">153</td><td class="line">	<span class='keyword'>return</span> utt;</td></tr>
+<tr><td class="num" id="LN154">154</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN155">155</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN156">156</td><td class="line"><span class='keyword'>static</span> LISP xxml_get_attribute(<span class='keyword'>const</span> EST_String &amp;remainder)</td></tr>
+<tr><td class="num" id="LN157">157</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN158">158</td><td class="line">    EST_TokenStream ts;</td></tr>
+<tr><td class="num" id="LN159">159</td><td class="line">    LISP tokens=<span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>,att=<span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>;</td></tr>
+<tr><td class="num" id="LN160">160</td><td class="line">    EST_String name;</td></tr>
+<tr><td class="num" id="LN161">161</td><td class="line">    EST_Token t;</td></tr>
+<tr><td class="num" id="LN162">162</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN163">163</td><td class="line">    ts.open_string(remainder);</td></tr>
+<tr><td class="num" id="LN164">164</td><td class="line">    name = (EST_String)ts.get();</td></tr>
+<tr><td class="num" id="LN165">165</td><td class="line">    <span class='keyword'>if</span> ((t=ts.get()) == <span class='string_literal'>"IMPLIED"</span>)</td></tr>
+<tr><td class="num" id="LN166">166</td><td class="line">	att = cons(rintern(name),cons(<span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>,<span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>));</td></tr>
+<tr><td class="num" id="LN167">167</td><td class="line">    <span class='keyword'>else</span> <span class='keyword'>if</span> (t == <span class='string_literal'>"TOKEN"</span>)</td></tr>
+<tr><td class="num" id="LN168">168</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN169">169</td><td class="line">	EST_Token v = ts.get();</td></tr>
+<tr><td class="num" id="LN170">170</td><td class="line">	att = cons(rintern(name),cons(cons(rintern(v.string()),<span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>),<span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>));</td></tr>
+<tr><td class="num" id="LN171">171</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN172">172</td><td class="line">    <span class='keyword'>else</span> <span class='keyword'>if</span> (t == <span class='string_literal'>"CDATA"</span>)</td></tr>
+<tr><td class="num" id="LN173">173</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN174">174</td><td class="line">	<span class='keyword'>while</span> (!ts.eof())</td></tr>
+<tr><td class="num" id="LN175">175</td><td class="line">	    tokens = cons(rintern(ts.get().string()),tokens);</td></tr>
+<tr><td class="num" id="LN176">176</td><td class="line">	att = cons(rintern(name),cons(reverse(tokens),<span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>));</td></tr>
+<tr><td class="num" id="LN177">177</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN178">178</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN179">179</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN180">180</td><td class="line">	cerr &lt;&lt; <span class='string_literal'>"XXML: unknow attribute type "</span> &lt;&lt; remainder &lt;&lt; endl;</td></tr>
+<tr><td class="num" id="LN181">181</td><td class="line">	<span class='macro'>festival_error()<span class='expansion'>(errjmp_ok ? longjmp(*est_errjmp,1) : festival_tidy_up(),exit<br>(-1))</span></span>;</td></tr>
+<tr><td class="num" id="LN182">182</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN183">183</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN184">184</td><td class="line">    ts.close();</td></tr>
+<tr><td class="num" id="LN185">185</td><td class="line">    <span class='keyword'>return</span> att;</td></tr>
+<tr><td class="num" id="LN186">186</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN187">187</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN188">188</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>char</span> *xxml_process_line(<span class='keyword'>const</span> <span class='keyword'>char</span> *line)</td></tr>
+<tr><td class="num" id="LN189">189</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN190">190</td><td class="line">    <span class='comment'>// STML (sgml) data line have a number of special escape characters</span></td></tr>
+<tr><td class="num" id="LN191">191</td><td class="line">    <span class='comment'>// this undoes them, namely "\\n" to "\n"</span></td></tr>
+<tr><td class="num" id="LN192">192</td><td class="line">    <span class='keyword'>char</span> *procline = <span class='macro'>walloc(<span class='keyword'>char</span>,strlen(line)+1)<span class='expansion'>((char *)safe_walloc(sizeof(char)*(strlen(line)+1)))</span></span>;</td></tr>
+<tr><td class="num" id="LN193">193</td><td class="line">    <span class='keyword'>int</span> i,j;</td></tr>
+<tr><td class="num" id="LN194">194</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN195">195</td><td class="line">    <span class='keyword'>for</span> (i=j=0; line[i] != '\0'; j++,i++)</td></tr>
+<tr><td class="num" id="LN196">196</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN197">197</td><td class="line">	<span class='keyword'>if</span> (line[i] == '\\')</td></tr>
+<tr><td class="num" id="LN198">198</td><td class="line">	{</td></tr>
+<tr><td class="num" id="LN199">199</td><td class="line">	    i++;</td></tr>
+<tr><td class="num" id="LN200">200</td><td class="line">	    <span class='keyword'>if</span> (line[i] == 'n')</td></tr>
+<tr><td class="num" id="LN201">201</td><td class="line">		procline[j] = '\n';</td></tr>
+<tr><td class="num" id="LN202">202</td><td class="line">	    <span class='keyword'>else</span> <span class='keyword'>if</span> (line[i] == '\\')</td></tr>
+<tr><td class="num" id="LN203">203</td><td class="line">		procline[j] = '\\';</td></tr>
+<tr><td class="num" id="LN204">204</td><td class="line">	    <span class='keyword'>else</span> <span class='keyword'>if</span> ((line[i] == '0') || <span class='comment'>// its an octal number </span></td></tr>
+<tr><td class="num" id="LN205">205</td><td class="line">		     (line[i] == '1'))</td></tr>
+<tr><td class="num" id="LN206">206</td><td class="line">	    {</td></tr>
+<tr><td class="num" id="LN207">207</td><td class="line">		<span class='keyword'>int</span> k,oct = 0;</td></tr>
+<tr><td class="num" id="LN208">208</td><td class="line">		<span class='keyword'>for</span> (k=0; k &lt; 3; k++,i++)</td></tr>
+<tr><td class="num" id="LN209">209</td><td class="line">		    oct = (oct*8)+(line[i]-'0');</td></tr>
+<tr><td class="num" id="LN210">210</td><td class="line">		procline[j] = oct;</td></tr>
+<tr><td class="num" id="LN211">211</td><td class="line">		i--;</td></tr>
+<tr><td class="num" id="LN212">212</td><td class="line">	    }</td></tr>
+<tr><td class="num" id="LN213">213</td><td class="line">	    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN214">214</td><td class="line">	    {</td></tr>
+<tr><td class="num" id="LN215">215</td><td class="line">		procline[j] = line[i]; <span class='comment'>// no change</span></td></tr>
+<tr><td class="num" id="LN216">216</td><td class="line">		i--;</td></tr>
+<tr><td class="num" id="LN217">217</td><td class="line">	    }</td></tr>
+<tr><td class="num" id="LN218">218</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN219">219</td><td class="line">	<span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN220">220</td><td class="line">	    procline[j] = line[i]; <span class='comment'>// no change</span></td></tr>
+<tr><td class="num" id="LN221">221</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN222">222</td><td class="line">    procline[j] = '\0';</td></tr>
+<tr><td class="num" id="LN223">223</td><td class="line">    <span class='keyword'>return</span> procline;</td></tr>
+<tr><td class="num" id="LN224">224</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN225">225</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN226">226</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>void</span> tts_xxml_token(EST_Item *t)</td></tr>
+<tr><td class="num" id="LN227">227</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN228">228</td><td class="line">    <span class='comment'>// Add xxml_word features to t</span></td></tr>
+<tr><td class="num" id="LN229">229</td><td class="line">    LISP a;</td></tr>
+<tr><td class="num" id="LN230">230</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN231">231</td><td class="line">    <span class='keyword'>for</span> (a=xxml_word_features; a != <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>; a=cdr(a))</td></tr>
+<tr><td class="num" id="LN232">232</td><td class="line">	<span class='keyword'>if</span> ((car(cdr(car(a))) != <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>) &amp;&amp;</td></tr>
+<tr><td class="num" id="LN233">233</td><td class="line">	    (!<span class='macro'>streq(<span class='string_literal'>"NAME"</span>,get_c_string(car(car(a))))<span class='expansion'>(strcmp("NAME",get_c_string(car(car(a))))==0)</span></span>))</td></tr>
+<tr><td class="num" id="LN234">234</td><td class="line">	{</td></tr>
+<tr><td class="num" id="LN235">235</td><td class="line">	    <span class='keyword'>if</span> (cdr(cdr(car(a))) == <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>)</td></tr>
+<tr><td class="num" id="LN236">236</td><td class="line">		t-&gt;set(get_c_string(car(car(a))),</td></tr>
+<tr><td class="num" id="LN237">237</td><td class="line">		       get_c_string(car(cdr(car(a)))));</td></tr>
+<tr><td class="num" id="LN238">238</td><td class="line">	    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN239">239</td><td class="line">	    {</td></tr>
+<tr><td class="num" id="LN240">240</td><td class="line">		<span class='comment'>// Its more complex than a single atom so save the list</span></td></tr>
+<tr><td class="num" id="LN241">241</td><td class="line">		t-&gt;set(get_c_string(car(car(a))),</td></tr>
+<tr><td class="num" id="LN242">242</td><td class="line">		       siod_sprint(car(cdr(car(a)))));</td></tr>
+<tr><td class="num" id="LN243">243</td><td class="line">	    }</td></tr>
+<tr><td class="num" id="LN244">244</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN245">245</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN246">246</td><td class="line">    apply_hooks(xxml_token_hooks,siod(t));</td></tr>
+<tr><td class="num" id="LN247">247</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN248">248</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN249">249</td><td class="line">LISP xxml_get_tokens(<span class='keyword'>const</span> EST_String &amp;line,LISP feats,LISP utt)</td></tr>
+<tr><td class="num" id="LN250">250</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN251">251</td><td class="line">    <span class='comment'>// Read from here until end of line collects all the tokens </span></td></tr>
+<tr><td class="num" id="LN252">252</td><td class="line">    <span class='comment'>// Note tokens are in reverse order until they are made into an</span></td></tr>
+<tr><td class="num" id="LN253">253</td><td class="line">    <span class='comment'>// utterance</span></td></tr>
+<tr><td class="num" id="LN254">254</td><td class="line">    EST_TokenStream ls;</td></tr>
+<tr><td class="num" id="LN255">255</td><td class="line">    EST_Token t;</td></tr>
+<tr><td class="num" id="LN256">256</td><td class="line">    LISP eou_tree;</td></tr>
+<tr><td class="num" id="LN257">257</td><td class="line">    <span class='keyword'>char</span> *processed_line;</td></tr>
+<tr><td class="num" id="LN258">258</td><td class="line">    processed_line = xxml_process_line(line);</td></tr>
+<tr><td class="num" id="LN259">259</td><td class="line">    ls.open_string(processed_line);</td></tr>
+<tr><td class="num" id="LN260">260</td><td class="line">    ls.set_SingleCharSymbols(</td></tr>
+<tr><td class="num" id="LN261">261</td><td class="line">        get_c_string(siod_get_lval(<span class='string_literal'>"token.singlecharsymbols"</span>,</td></tr>
+<tr><td class="num" id="LN262">262</td><td class="line">				   <span class='string_literal'>"token.singlecharsymbols unset"</span>)));</td></tr>
+<tr><td class="num" id="LN263">263</td><td class="line">    ls.set_PunctuationSymbols(</td></tr>
+<tr><td class="num" id="LN264">264</td><td class="line">        get_c_string(siod_get_lval(<span class='string_literal'>"token.punctuation"</span>,</td></tr>
+<tr><td class="num" id="LN265">265</td><td class="line">				   <span class='string_literal'>"token.punctuation unset"</span>)));</td></tr>
+<tr><td class="num" id="LN266">266</td><td class="line">    ls.set_PrePunctuationSymbols(</td></tr>
+<tr><td class="num" id="LN267">267</td><td class="line">        get_c_string(siod_get_lval(<span class='string_literal'>"token.prepunctuation"</span>,</td></tr>
+<tr><td class="num" id="LN268">268</td><td class="line">				   <span class='string_literal'>"token.prepunctuation unset"</span>)));</td></tr>
+<tr><td class="num" id="LN269">269</td><td class="line">    ls.set_WhiteSpaceChars(</td></tr>
+<tr><td class="num" id="LN270">270</td><td class="line">        get_c_string(siod_get_lval(<span class='string_literal'>"token.whitespace"</span>,</td></tr>
+<tr><td class="num" id="LN271">271</td><td class="line">				   <span class='string_literal'>"token.whitespace unset"</span>)));</td></tr>
+<tr><td class="num" id="LN272">272</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN273">273</td><td class="line">    eou_tree = siod_get_lval(<span class='string_literal'>"eou_tree"</span>,<span class='string_literal'>"No end of utterance tree set"</span>);</td></tr>
+<tr><td class="num" id="LN274">274</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN275">275</td><td class="line">    xxml_word_features = feats;</td></tr>
+<tr><td class="num" id="LN276">276</td><td class="line">    xxml_token_hooks = siod_get_lval(<span class='string_literal'>"xxml_token_hooks"</span>,<span class='macro'>NULL<span class='expansion'>__null</span></span>);</td></tr>
+<tr><td class="num" id="LN277">277</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN278">278</td><td class="line">    <span class='comment'>// Segment and synth as much as appropriate</span></td></tr>
+<tr><td class="num" id="LN279">279</td><td class="line">    utt = tts_chunk_stream(ls,tts_xxml_token,tts_xxml_utt,eou_tree,utt);</td></tr>
+<tr><td class="num" id="LN280">280</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN281">281</td><td class="line">    <span class='keyword'>return</span> utt;</td></tr>
+<tr><td class="num" id="LN282">282</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN283">283</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN284">284</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>void</span> tts_xxml_utt(LISP lutt)</td></tr>
+<tr><td class="num" id="LN285">285</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN286">286</td><td class="line">    <span class='comment'>// Build and utterance with these tokens and apply xxml synth function</span></td></tr>
+<tr><td class="num" id="LN287">287</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN288">288</td><td class="line">    <span class='keyword'>if</span> ((lutt == <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>) ||</td></tr>
+<tr><td class="num" id="LN289">289</td><td class="line">	(<span class='macro'>get_c_utt(lutt)<span class='expansion'>(utterance(lutt))</span></span>-&gt;relation(<span class='string_literal'>"Token"</span>)-&gt;length() == 0))</td></tr>
+<tr><td class="num" id="LN290">290</td><td class="line">	<span class='keyword'>return</span>;   <span class='comment'>// in this case do nothing.</span></td></tr>
+<tr><td class="num" id="LN291">291</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN292">292</td><td class="line">    leval(cons(rintern(<span class='string_literal'>"xxml_synth"</span>),</td></tr>
+<tr><td class="num" id="LN293">293</td><td class="line">	       cons(quote(lutt),<span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>)),<span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>);</td></tr>
+<tr><td class="num" id="LN294">294</td><td class="line">}    </td></tr>
+<tr><td class="num" id="LN295">295</td><td class="line"> </td></tr>
+</table></body></html>

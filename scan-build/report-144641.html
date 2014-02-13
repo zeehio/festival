@@ -1,0 +1,567 @@
+<!doctype html>
+<html>
+<head>
+<title>mlpg.cc</title>
+<style type="text/css">
+ body { color:#000000; background-color:#ffffff }
+ body { font-family:Helvetica, sans-serif; font-size:10pt }
+ h1 { font-size:14pt }
+ .code { border-collapse:collapse; width:100%; }
+ .code { font-family: "Monospace", monospace; font-size:10pt }
+ .code { line-height: 1.2em }
+ .comment { color: green; font-style: oblique }
+ .keyword { color: blue }
+ .string_literal { color: red }
+ .directive { color: darkmagenta }
+ .expansion { display: none; }
+ .macro:hover .expansion { display: block; border: 2px solid #FF0000; padding: 2px; background-color:#FFF0F0; font-weight: normal;   -webkit-border-radius:5px;  -webkit-box-shadow:1px 1px 7px #000; position: absolute; top: -1em; left:10em; z-index: 1 } 
+ .macro { color: darkmagenta; background-color:LemonChiffon; position: relative }
+ .num { width:2.5em; padding-right:2ex; background-color:#eeeeee }
+ .num { text-align:right; font-size:8pt }
+ .num { color:#444444 }
+ .line { padding-left: 1ex; border-left: 3px solid #ccc }
+ .line { white-space: pre }
+ .msg { -webkit-box-shadow:1px 1px 7px #000 }
+ .msg { -webkit-border-radius:5px }
+ .msg { font-family:Helvetica, sans-serif; font-size:8pt }
+ .msg { float:left }
+ .msg { padding:0.25em 1ex 0.25em 1ex }
+ .msg { margin-top:10px; margin-bottom:10px }
+ .msg { font-weight:bold }
+ .msg { max-width:60em; word-wrap: break-word; white-space: pre-wrap }
+ .msgT { padding:0x; spacing:0x }
+ .msgEvent { background-color:#fff8b4; color:#000000 }
+ .msgControl { background-color:#bbbbbb; color:#000000 }
+ .mrange { background-color:#dfddf3 }
+ .mrange { border-bottom:1px solid #6F9DBE }
+ .PathIndex { font-weight: bold; padding:0px 5px; margin-right:5px; }
+ .PathIndex { -webkit-border-radius:8px }
+ .PathIndexEvent { background-color:#bfba87 }
+ .PathIndexControl { background-color:#8c8c8c }
+ .PathNav a { text-decoration:none; font-size: larger }
+ .CodeInsertionHint { font-weight: bold; background-color: #10dd10 }
+ .CodeRemovalHint { background-color:#de1010 }
+ .CodeRemovalHint { border-bottom:1px solid #6F9DBE }
+ table.simpletable {
+   padding: 5px;
+   font-size:12pt;
+   margin:20px;
+   border-collapse: collapse; border-spacing: 0px;
+ }
+ td.rowname {
+   text-align:right; font-weight:bold; color:#444444;
+   padding-right:2ex; }
+</style>
+</head>
+<body>
+<!-- BUGDESC Value stored to 'buf' is never read -->
+
+<!-- BUGTYPE Dead assignment -->
+
+<!-- BUGCATEGORY Dead store -->
+
+<!-- BUGFILE /media/dades/src/festival-2013/festival/src/modules/hts21_engine/mlpg.cc -->
+
+<!-- BUGLINE 130 -->
+
+<!-- BUGPATHLENGTH 1 -->
+
+<!-- BUGMETAEND -->
+<!-- REPORTHEADER -->
+<h3>Bug Summary</h3>
+<table class="simpletable">
+<tr><td class="rowname">File:</td><td>modules/hts21_engine/mlpg.cc</td></tr>
+<tr><td class="rowname">Location:</td><td><a href="#EndPath">line 130, column 4</a></td></tr>
+<tr><td class="rowname">Description:</td><td>Value stored to 'buf' is never read</td></tr>
+</table>
+<!-- REPORTSUMMARYEXTRA -->
+<h3>Annotated Source Code</h3>
+<table class="code">
+<tr><td class="num" id="LN1">1</td><td class="line"><span class='comment'>/*  ---------------------------------------------------------------  */</span></td></tr>
+<tr><td class="num" id="LN2">2</td><td class="line"><span class='comment'>/*      The HMM-Based Speech Synthesis System (HTS): version 1.1b    */</span></td></tr>
+<tr><td class="num" id="LN3">3</td><td class="line"><span class='comment'>/*                        HTS Working Group                          */</span></td></tr>
+<tr><td class="num" id="LN4">4</td><td class="line"><span class='comment'>/*                                                                   */</span></td></tr>
+<tr><td class="num" id="LN5">5</td><td class="line"><span class='comment'>/*                   Department of Computer Science                  */</span></td></tr>
+<tr><td class="num" id="LN6">6</td><td class="line"><span class='comment'>/*                   Nagoya Institute of Technology                  */</span></td></tr>
+<tr><td class="num" id="LN7">7</td><td class="line"><span class='comment'>/*                                and                                */</span></td></tr>
+<tr><td class="num" id="LN8">8</td><td class="line"><span class='comment'>/*    Interdisciplinary Graduate School of Science and Engineering   */</span></td></tr>
+<tr><td class="num" id="LN9">9</td><td class="line"><span class='comment'>/*                   Tokyo Institute of Technology                   */</span></td></tr>
+<tr><td class="num" id="LN10">10</td><td class="line"><span class='comment'>/*                      Copyright (c) 2001-2003                      */</span></td></tr>
+<tr><td class="num" id="LN11">11</td><td class="line"><span class='comment'>/*                        All Rights Reserved.                       */</span></td></tr>
+<tr><td class="num" id="LN12">12</td><td class="line"><span class='comment'>/*                                                                   */</span></td></tr>
+<tr><td class="num" id="LN13">13</td><td class="line"><span class='comment'>/*  Permission is hereby granted, free of charge, to use and         */</span></td></tr>
+<tr><td class="num" id="LN14">14</td><td class="line"><span class='comment'>/*  distribute this software and its documentation without           */</span></td></tr>
+<tr><td class="num" id="LN15">15</td><td class="line"><span class='comment'>/*  restriction, including without limitation the rights to use,     */</span></td></tr>
+<tr><td class="num" id="LN16">16</td><td class="line"><span class='comment'>/*  copy, modify, merge, publish, distribute, sublicense, and/or     */</span></td></tr>
+<tr><td class="num" id="LN17">17</td><td class="line"><span class='comment'>/*  sell copies of this work, and to permit persons to whom this     */</span></td></tr>
+<tr><td class="num" id="LN18">18</td><td class="line"><span class='comment'>/*  work is furnished to do so, subject to the following conditions: */</span></td></tr>
+<tr><td class="num" id="LN19">19</td><td class="line"><span class='comment'>/*                                                                   */</span></td></tr>
+<tr><td class="num" id="LN20">20</td><td class="line"><span class='comment'>/*    1. The code must retain the above copyright notice, this list  */</span></td></tr>
+<tr><td class="num" id="LN21">21</td><td class="line"><span class='comment'>/*       of conditions and the following disclaimer.                 */</span></td></tr>
+<tr><td class="num" id="LN22">22</td><td class="line"><span class='comment'>/*                                                                   */</span></td></tr>
+<tr><td class="num" id="LN23">23</td><td class="line"><span class='comment'>/*    2. Any modifications must be clearly marked as such.           */</span></td></tr>
+<tr><td class="num" id="LN24">24</td><td class="line"><span class='comment'>/*                                                                   */</span>    </td></tr>
+<tr><td class="num" id="LN25">25</td><td class="line"><span class='comment'>/*  NAGOYA INSTITUTE OF TECHNOLOGY, TOKYO INSITITUTE OF TECHNOLOGY,  */</span></td></tr>
+<tr><td class="num" id="LN26">26</td><td class="line"><span class='comment'>/*  HTS WORKING GROUP, AND THE CONTRIBUTORS TO THIS WORK DISCLAIM    */</span></td></tr>
+<tr><td class="num" id="LN27">27</td><td class="line"><span class='comment'>/*  ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL       */</span></td></tr>
+<tr><td class="num" id="LN28">28</td><td class="line"><span class='comment'>/*  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT   */</span></td></tr>
+<tr><td class="num" id="LN29">29</td><td class="line"><span class='comment'>/*  SHALL NAGOYA INSTITUTE OF TECHNOLOGY, TOKYO INSITITUTE OF        */</span></td></tr>
+<tr><td class="num" id="LN30">30</td><td class="line"><span class='comment'>/*  TECHNOLOGY, HTS WORKING GROUP, NOR THE CONTRIBUTORS BE LIABLE    */</span></td></tr>
+<tr><td class="num" id="LN31">31</td><td class="line"><span class='comment'>/*  FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY        */</span></td></tr>
+<tr><td class="num" id="LN32">32</td><td class="line"><span class='comment'>/*  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,  */</span></td></tr>
+<tr><td class="num" id="LN33">33</td><td class="line"><span class='comment'>/*  WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTUOUS   */</span></td></tr>
+<tr><td class="num" id="LN34">34</td><td class="line"><span class='comment'>/*  ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR          */</span></td></tr>
+<tr><td class="num" id="LN35">35</td><td class="line"><span class='comment'>/*  PERFORMANCE OF THIS SOFTWARE.                                    */</span></td></tr>
+<tr><td class="num" id="LN36">36</td><td class="line"><span class='comment'>/*                                                                   */</span></td></tr>
+<tr><td class="num" id="LN37">37</td><td class="line"><span class='comment'>/*  ---------------------------------------------------------------  */</span></td></tr>
+<tr><td class="num" id="LN38">38</td><td class="line"><span class='comment'>/*    mlpg.c : speech parameter generation from pdf sequence         */</span></td></tr>
+<tr><td class="num" id="LN39">39</td><td class="line"><span class='comment'>/*                                                                   */</span> </td></tr>
+<tr><td class="num" id="LN40">40</td><td class="line"><span class='comment'>/*                                    2003/06/11 by Heiga Zen        */</span></td></tr>
+<tr><td class="num" id="LN41">41</td><td class="line"><span class='comment'>/*  ---------------------------------------------------------------  */</span></td></tr>
+<tr><td class="num" id="LN42">42</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN43">43</td><td class="line"><span class='directive'>#include &lt;cstdio&gt;</span></td></tr>
+<tr><td class="num" id="LN44">44</td><td class="line"><span class='directive'>#include &lt;cstdlib&gt;</span></td></tr>
+<tr><td class="num" id="LN45">45</td><td class="line"><span class='directive'>#include &lt;cstring&gt;</span></td></tr>
+<tr><td class="num" id="LN46">46</td><td class="line"><span class='directive'>#include &lt;cctype&gt;</span></td></tr>
+<tr><td class="num" id="LN47">47</td><td class="line"><span class='directive'>#include &lt;cmath&gt;</span></td></tr>
+<tr><td class="num" id="LN48">48</td><td class="line"><span class='directive'>#include "festival.h"</span></td></tr>
+<tr><td class="num" id="LN49">49</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN50">50</td><td class="line"><span class='directive'>#include "defaults.h"</span></td></tr>
+<tr><td class="num" id="LN51">51</td><td class="line"><span class='directive'>#include "misc.h"</span></td></tr>
+<tr><td class="num" id="LN52">52</td><td class="line"><span class='directive'>#include "model.h"</span></td></tr>
+<tr><td class="num" id="LN53">53</td><td class="line"><span class='directive'>#include "global.h"</span></td></tr>
+<tr><td class="num" id="LN54">54</td><td class="line"><span class='directive'>#include "vocoder.h"</span></td></tr>
+<tr><td class="num" id="LN55">55</td><td class="line"><span class='directive'>#include "mlpg.h"</span></td></tr>
+<tr><td class="num" id="LN56">56</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN57">57</td><td class="line"><span class='keyword'>double</span> finv (<span class='keyword'>double</span> x)</td></tr>
+<tr><td class="num" id="LN58">58</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN59">59</td><td class="line">   <span class='keyword'>if</span> (x &gt;= <span class='macro'>INFTY2<span class='expansion'>((double) 1.0e+19)</span></span>) <span class='keyword'>return</span> 0.0;</td></tr>
+<tr><td class="num" id="LN60">60</td><td class="line">   <span class='keyword'>if</span> (x &lt;= -<span class='macro'>INFTY2<span class='expansion'>((double) 1.0e+19)</span></span>) <span class='keyword'>return</span> 0.0;</td></tr>
+<tr><td class="num" id="LN61">61</td><td class="line">   <span class='keyword'>if</span> (x &lt;= <span class='macro'>INVINF2<span class='expansion'>((double) 1.0e-19)</span></span> &amp;&amp; x &gt;= 0) <span class='keyword'>return</span> <span class='macro'>INFTY<span class='expansion'>((double) 1.0e+38)</span></span>;</td></tr>
+<tr><td class="num" id="LN62">62</td><td class="line">   <span class='keyword'>if</span> (x &gt;= -<span class='macro'>INVINF2<span class='expansion'>((double) 1.0e-19)</span></span> &amp;&amp; x &lt; 0) <span class='keyword'>return</span> -<span class='macro'>INFTY<span class='expansion'>((double) 1.0e+38)</span></span>;</td></tr>
+<tr><td class="num" id="LN63">63</td><td class="line">   </td></tr>
+<tr><td class="num" id="LN64">64</td><td class="line">   <span class='keyword'>return</span> 1.0/x;</td></tr>
+<tr><td class="num" id="LN65">65</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN66">66</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN67">67</td><td class="line"><span class='keyword'>double</span> *dcalloc(<span class='keyword'>int</span> x)</td></tr>
+<tr><td class="num" id="LN68">68</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN69">69</td><td class="line">    <span class='keyword'>return</span> <span class='macro'>walloc(<span class='keyword'>double</span>,x)<span class='expansion'>((double *)safe_walloc(sizeof(double)*(x)))</span></span>;</td></tr>
+<tr><td class="num" id="LN70">70</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN71">71</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN72">72</td><td class="line"><span class='keyword'>double</span> **ddcalloc(<span class='keyword'>int</span> x, <span class='keyword'>int</span> y)</td></tr>
+<tr><td class="num" id="LN73">73</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN74">74</td><td class="line">   <span class='keyword'>register</span> <span class='keyword'>int</span> i;</td></tr>
+<tr><td class="num" id="LN75">75</td><td class="line">   <span class='keyword'>double</span> **ptr;</td></tr>
+<tr><td class="num" id="LN76">76</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN77">77</td><td class="line">   ptr = <span class='macro'>walloc(<span class='keyword'>double</span> *,x)<span class='expansion'>((double * *)safe_walloc(sizeof(double *)*(x)))</span></span>;</td></tr>
+<tr><td class="num" id="LN78">78</td><td class="line">	</td></tr>
+<tr><td class="num" id="LN79">79</td><td class="line">   <span class='keyword'>for</span> (i=0; i&lt;x; i++)</td></tr>
+<tr><td class="num" id="LN80">80</td><td class="line">      ptr[i] = dcalloc(y);</td></tr>
+<tr><td class="num" id="LN81">81</td><td class="line">   </td></tr>
+<tr><td class="num" id="LN82">82</td><td class="line">   <span class='keyword'>return</span>(ptr);</td></tr>
+<tr><td class="num" id="LN83">83</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN84">84</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN85">85</td><td class="line"><span class='keyword'>float</span> *fcalloc(<span class='keyword'>int</span> x)</td></tr>
+<tr><td class="num" id="LN86">86</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN87">87</td><td class="line">   <span class='keyword'>return</span> <span class='macro'>walloc(<span class='keyword'>float</span>,x)<span class='expansion'>((float *)safe_walloc(sizeof(float)*(x)))</span></span>;</td></tr>
+<tr><td class="num" id="LN88">88</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN89">89</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN90">90</td><td class="line"><span class='keyword'>float</span> **ffcalloc(<span class='keyword'>int</span> x, <span class='keyword'>int</span> y)</td></tr>
+<tr><td class="num" id="LN91">91</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN92">92</td><td class="line">   <span class='keyword'>register</span> <span class='keyword'>int</span> i;</td></tr>
+<tr><td class="num" id="LN93">93</td><td class="line">   <span class='keyword'>float</span> **ptr;</td></tr>
+<tr><td class="num" id="LN94">94</td><td class="line">   </td></tr>
+<tr><td class="num" id="LN95">95</td><td class="line">   ptr = <span class='macro'>walloc(<span class='keyword'>float</span> *,x)<span class='expansion'>((float * *)safe_walloc(sizeof(float *)*(x)))</span></span>;</td></tr>
+<tr><td class="num" id="LN96">96</td><td class="line">	</td></tr>
+<tr><td class="num" id="LN97">97</td><td class="line">   <span class='keyword'>for</span> (i=0; i&lt;x; i++)</td></tr>
+<tr><td class="num" id="LN98">98</td><td class="line">      ptr[i] = fcalloc(y);</td></tr>
+<tr><td class="num" id="LN99">99</td><td class="line">   </td></tr>
+<tr><td class="num" id="LN100">100</td><td class="line">   <span class='keyword'>return</span>(ptr);</td></tr>
+<tr><td class="num" id="LN101">101</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN102">102</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN103">103</td><td class="line"><span class='keyword'>int</span> str2farray (<span class='keyword'>char</span> *c, <span class='keyword'>float</span> **x)</td></tr>
+<tr><td class="num" id="LN104">104</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN105">105</td><td class="line">   <span class='keyword'>int</span> i, size, sp;</td></tr>
+<tr><td class="num" id="LN106">106</td><td class="line">   <span class='keyword'>char</span> *p, *buf;</td></tr>
+<tr><td class="num" id="LN107">107</td><td class="line">   </td></tr>
+<tr><td class="num" id="LN108">108</td><td class="line">   <span class='keyword'>while</span> (isspace(*c))</td></tr>
+<tr><td class="num" id="LN109">109</td><td class="line">      c++;</td></tr>
+<tr><td class="num" id="LN110">110</td><td class="line">   </td></tr>
+<tr><td class="num" id="LN111">111</td><td class="line">   <span class='keyword'>if</span> (*c == '\0') {</td></tr>
+<tr><td class="num" id="LN112">112</td><td class="line">      *x = <span class='macro'>NULL<span class='expansion'>__null</span></span>;</td></tr>
+<tr><td class="num" id="LN113">113</td><td class="line">      <span class='keyword'>return</span> (0);</td></tr>
+<tr><td class="num" id="LN114">114</td><td class="line">   }</td></tr>
+<tr><td class="num" id="LN115">115</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN116">116</td><td class="line">   size = 1;</td></tr>
+<tr><td class="num" id="LN117">117</td><td class="line">   sp = 0;</td></tr>
+<tr><td class="num" id="LN118">118</td><td class="line">  </td></tr>
+<tr><td class="num" id="LN119">119</td><td class="line">   <span class='keyword'>for</span> (p = c; *p != '\0'; p++) {</td></tr>
+<tr><td class="num" id="LN120">120</td><td class="line">      <span class='keyword'>if</span> (!isspace (*p)) {</td></tr>
+<tr><td class="num" id="LN121">121</td><td class="line">         <span class='keyword'>if</span> (sp == 1) {</td></tr>
+<tr><td class="num" id="LN122">122</td><td class="line">            size++;</td></tr>
+<tr><td class="num" id="LN123">123</td><td class="line">            sp = 0;</td></tr>
+<tr><td class="num" id="LN124">124</td><td class="line">         }</td></tr>
+<tr><td class="num" id="LN125">125</td><td class="line">      }</td></tr>
+<tr><td class="num" id="LN126">126</td><td class="line">      <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN127">127</td><td class="line">         sp = 1;</td></tr>
+<tr><td class="num" id="LN128">128</td><td class="line">   }</td></tr>
+<tr><td class="num" id="LN129">129</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN130">130</td><td class="line">   buf = <span class="mrange"><span class='macro'>walloc</span>(<span class='keyword'>char</span>,strlen(c))<span class='expansion'>((char *)safe_walloc(sizeof(char)*(strlen(c))))</span></span>;</td></tr>
+<tr><td class="num"></td><td class="line"><div id="EndPath" class="msg msgEvent" style="margin-left:4ex">Value stored to 'buf' is never read</div></td></tr>
+<tr><td class="num" id="LN131">131</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN132">132</td><td class="line">   *x = <span class='macro'>walloc(<span class='keyword'>float</span>,size)<span class='expansion'>((float *)safe_walloc(sizeof(float)*(size)))</span></span>;</td></tr>
+<tr><td class="num" id="LN133">133</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN134">134</td><td class="line">  <span class='keyword'>for</span> (i=0; i&lt;size; i++)</td></tr>
+<tr><td class="num" id="LN135">135</td><td class="line">     (*x)[i] = (<span class='keyword'>float</span>)strtod (c, &amp;c);</td></tr>
+<tr><td class="num" id="LN136">136</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN137">137</td><td class="line">  <span class='keyword'>return</span> (size);</td></tr>
+<tr><td class="num" id="LN138">138</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN139">139</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN140">140</td><td class="line"><span class='comment'>/*----------------------------------------------------------------</span></td></tr>
+<tr><td class="num" id="LN141">141</td><td class="line">	<span class='comment'>matrix calcuration functions</span></td></tr>
+<tr><td class="num" id="LN142">142</td><td class="line"><span class='comment'>----------------------------------------------------------------*/</span></td></tr>
+<tr><td class="num" id="LN143">143</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN144">144</td><td class="line"><span class='comment'>/* calc_R_and_r : calcurate R=W'U^{-1}W and r=W'U^{-1}M */</span></td></tr>
+<tr><td class="num" id="LN145">145</td><td class="line"><span class='keyword'>void</span> calc_R_and_r(PStream *pst, <span class='keyword'>int</span> m)</td></tr>
+<tr><td class="num" id="LN146">146</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN147">147</td><td class="line">   <span class='keyword'>register</span> <span class='keyword'>int</span> i, j, k, l, n;</td></tr>
+<tr><td class="num" id="LN148">148</td><td class="line">   <span class='keyword'>double</span>   wu;</td></tr>
+<tr><td class="num" id="LN149">149</td><td class="line">   </td></tr>
+<tr><td class="num" id="LN150">150</td><td class="line">   <span class='keyword'>for</span> (i=0; i&lt;pst-&gt;T; i++) {</td></tr>
+<tr><td class="num" id="LN151">151</td><td class="line">		pst-&gt;sm.r[i]    = pst-&gt;sm.ivseq[i][m] * pst-&gt;sm.mseq[i][m];</td></tr>
+<tr><td class="num" id="LN152">152</td><td class="line">		pst-&gt;sm.R[i][0] = pst-&gt;sm.ivseq[i][m];</td></tr>
+<tr><td class="num" id="LN153">153</td><td class="line">      </td></tr>
+<tr><td class="num" id="LN154">154</td><td class="line">		<span class='keyword'>for</span> (j=1; j&lt;pst-&gt;width; j++)</td></tr>
+<tr><td class="num" id="LN155">155</td><td class="line">         pst-&gt;sm.R[i][j]=0.0;</td></tr>
+<tr><td class="num" id="LN156">156</td><td class="line">      </td></tr>
+<tr><td class="num" id="LN157">157</td><td class="line">      <span class='keyword'>for</span> (j=1; j&lt;pst-&gt;dw.num; j++)</td></tr>
+<tr><td class="num" id="LN158">158</td><td class="line">         <span class='keyword'>for</span> (k=pst-&gt;dw.width[j][0]; k&lt;=pst-&gt;dw.width[j][1]; k++) {</td></tr>
+<tr><td class="num" id="LN159">159</td><td class="line">            n = i+k;</td></tr>
+<tr><td class="num" id="LN160">160</td><td class="line">            <span class='keyword'>if</span> ( (n&gt;=0) &amp;&amp; (n&lt;pst-&gt;T) &amp;&amp; (pst-&gt;dw.coef[j][-k]!=0.0) ) {</td></tr>
+<tr><td class="num" id="LN161">161</td><td class="line">               l = j*(pst-&gt;order+1)+m;</td></tr>
+<tr><td class="num" id="LN162">162</td><td class="line">               wu = pst-&gt;dw.coef[j][-k] * pst-&gt;sm.ivseq[n][l];</td></tr>
+<tr><td class="num" id="LN163">163</td><td class="line">               pst-&gt;sm.r[i] += wu*pst-&gt;sm.mseq[n][l]; </td></tr>
+<tr><td class="num" id="LN164">164</td><td class="line">            </td></tr>
+<tr><td class="num" id="LN165">165</td><td class="line">               <span class='keyword'>for</span> (l=0; l&lt;pst-&gt;width; l++) {</td></tr>
+<tr><td class="num" id="LN166">166</td><td class="line">                  n = l-k;</td></tr>
+<tr><td class="num" id="LN167">167</td><td class="line">                  <span class='keyword'>if</span> ( (n&lt;=pst-&gt;dw.width[j][1]) &amp;&amp; (i+l&lt;pst-&gt;T) &amp;&amp; (pst-&gt;dw.coef[j][n] != 0.0) )</td></tr>
+<tr><td class="num" id="LN168">168</td><td class="line">                     pst-&gt;sm.R[i][l] += wu * pst-&gt;dw.coef[j][n];</td></tr>
+<tr><td class="num" id="LN169">169</td><td class="line">               }</td></tr>
+<tr><td class="num" id="LN170">170</td><td class="line">            }</td></tr>
+<tr><td class="num" id="LN171">171</td><td class="line">         }</td></tr>
+<tr><td class="num" id="LN172">172</td><td class="line">   }</td></tr>
+<tr><td class="num" id="LN173">173</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN174">174</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN175">175</td><td class="line"><span class='comment'>/* Cholesky : Cholesky factorization of Matrix R */</span></td></tr>
+<tr><td class="num" id="LN176">176</td><td class="line"><span class='keyword'>void</span> Cholesky(PStream *pst)</td></tr>
+<tr><td class="num" id="LN177">177</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN178">178</td><td class="line">   <span class='keyword'>register</span> <span class='keyword'>int</span> i, j, k;</td></tr>
+<tr><td class="num" id="LN179">179</td><td class="line">	</td></tr>
+<tr><td class="num" id="LN180">180</td><td class="line">   pst-&gt;sm.R[0][0] = sqrt(pst-&gt;sm.R[0][0]);</td></tr>
+<tr><td class="num" id="LN181">181</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN182">182</td><td class="line">   <span class='keyword'>for</span> (i=1; i&lt;pst-&gt;width; i++)</td></tr>
+<tr><td class="num" id="LN183">183</td><td class="line">      pst-&gt;sm.R[0][i] /= pst-&gt;sm.R[0][0];</td></tr>
+<tr><td class="num" id="LN184">184</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN185">185</td><td class="line">	<span class='keyword'>for</span> (i=1; i&lt;pst-&gt;T; i++) {</td></tr>
+<tr><td class="num" id="LN186">186</td><td class="line">      <span class='keyword'>for</span> (j=1; j&lt;pst-&gt;width; j++)</td></tr>
+<tr><td class="num" id="LN187">187</td><td class="line">         <span class='keyword'>if</span> (i-j &gt;= 0)</td></tr>
+<tr><td class="num" id="LN188">188</td><td class="line">            pst-&gt;sm.R[i][0] -= pst-&gt;sm.R[i-j][j] * pst-&gt;sm.R[i-j][j];</td></tr>
+<tr><td class="num" id="LN189">189</td><td class="line">         </td></tr>
+<tr><td class="num" id="LN190">190</td><td class="line">      pst-&gt;sm.R[i][0] = sqrt(pst-&gt;sm.R[i][0]);</td></tr>
+<tr><td class="num" id="LN191">191</td><td class="line">         </td></tr>
+<tr><td class="num" id="LN192">192</td><td class="line">      <span class='keyword'>for</span> (j=1; j&lt;pst-&gt;width; j++) {</td></tr>
+<tr><td class="num" id="LN193">193</td><td class="line">			<span class='keyword'>for</span> (k=0; k&lt;pst-&gt;dw.max_L; k++)</td></tr>
+<tr><td class="num" id="LN194">194</td><td class="line">            <span class='keyword'>if</span> (j!=pst-&gt;width-1)</td></tr>
+<tr><td class="num" id="LN195">195</td><td class="line">               pst-&gt;sm.R[i][j] -= pst-&gt;sm.R[i-k-1][j-k]*pst-&gt;sm.R[i-k-1][j+1];</td></tr>
+<tr><td class="num" id="LN196">196</td><td class="line">            </td></tr>
+<tr><td class="num" id="LN197">197</td><td class="line">         pst-&gt;sm.R[i][j] /= pst-&gt;sm.R[i][0];</td></tr>
+<tr><td class="num" id="LN198">198</td><td class="line">      }</td></tr>
+<tr><td class="num" id="LN199">199</td><td class="line">   }</td></tr>
+<tr><td class="num" id="LN200">200</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN201">201</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN202">202</td><td class="line"><span class='comment'>/* Cholesky_forward : forward substitution to solve linear equations */</span></td></tr>
+<tr><td class="num" id="LN203">203</td><td class="line"><span class='keyword'>void</span> Cholesky_forward(PStream *pst)</td></tr>
+<tr><td class="num" id="LN204">204</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN205">205</td><td class="line">   <span class='keyword'>register</span> <span class='keyword'>int</span> i, j;</td></tr>
+<tr><td class="num" id="LN206">206</td><td class="line">   <span class='keyword'>double</span> hold;</td></tr>
+<tr><td class="num" id="LN207">207</td><td class="line">   </td></tr>
+<tr><td class="num" id="LN208">208</td><td class="line">   pst-&gt;sm.g[0] = pst-&gt;sm.r[0] / pst-&gt;sm.R[0][0];</td></tr>
+<tr><td class="num" id="LN209">209</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN210">210</td><td class="line">   <span class='keyword'>for</span> (i=1; i&lt;pst-&gt;T; i++) {</td></tr>
+<tr><td class="num" id="LN211">211</td><td class="line">      hold = 0.0;</td></tr>
+<tr><td class="num" id="LN212">212</td><td class="line">      <span class='keyword'>for</span> (j=1; j&lt;pst-&gt;width; j++) {</td></tr>
+<tr><td class="num" id="LN213">213</td><td class="line">         <span class='keyword'>if</span> (i-j &gt;= 0)</td></tr>
+<tr><td class="num" id="LN214">214</td><td class="line">            hold += pst-&gt;sm.R[i-j][j]*pst-&gt;sm.g[i-j];</td></tr>
+<tr><td class="num" id="LN215">215</td><td class="line">      }</td></tr>
+<tr><td class="num" id="LN216">216</td><td class="line">      pst-&gt;sm.g[i] = (pst-&gt;sm.r[i]-hold)/pst-&gt;sm.R[i][0];</td></tr>
+<tr><td class="num" id="LN217">217</td><td class="line">   }</td></tr>
+<tr><td class="num" id="LN218">218</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN219">219</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN220">220</td><td class="line"><span class='comment'>/* Cholesky_backward : backward substitution to solve linear equations */</span></td></tr>
+<tr><td class="num" id="LN221">221</td><td class="line"><span class='keyword'>void</span> Cholesky_backward(PStream *pst, <span class='keyword'>int</span> m)</td></tr>
+<tr><td class="num" id="LN222">222</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN223">223</td><td class="line">   <span class='keyword'>register</span> <span class='keyword'>int</span> i, j;</td></tr>
+<tr><td class="num" id="LN224">224</td><td class="line">   <span class='keyword'>double</span> hold;</td></tr>
+<tr><td class="num" id="LN225">225</td><td class="line">   </td></tr>
+<tr><td class="num" id="LN226">226</td><td class="line">   pst-&gt;par[pst-&gt;T-1][m] = pst-&gt;sm.g[pst-&gt;T-1] / pst-&gt;sm.R[pst-&gt;T-1][0];</td></tr>
+<tr><td class="num" id="LN227">227</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN228">228</td><td class="line">   <span class='keyword'>for</span> (i=pst-&gt;T-2; i&gt;=0; i--) {</td></tr>
+<tr><td class="num" id="LN229">229</td><td class="line">      hold = 0.0;</td></tr>
+<tr><td class="num" id="LN230">230</td><td class="line">      <span class='keyword'>for</span> (j=1; j&lt;pst-&gt;width; j++) {</td></tr>
+<tr><td class="num" id="LN231">231</td><td class="line">         <span class='keyword'>if</span> (pst-&gt;sm.R[i][j] != 0.0)</td></tr>
+<tr><td class="num" id="LN232">232</td><td class="line">            hold += pst-&gt;sm.R[i][j]*pst-&gt;par[i+j][m];</td></tr>
+<tr><td class="num" id="LN233">233</td><td class="line">      }</td></tr>
+<tr><td class="num" id="LN234">234</td><td class="line">		pst-&gt;par[i][m] = (<span class='keyword'>float</span>)((pst-&gt;sm.g[i] - hold) / pst-&gt;sm.R[i][0]);</td></tr>
+<tr><td class="num" id="LN235">235</td><td class="line">   }</td></tr>
+<tr><td class="num" id="LN236">236</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN237">237</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN238">238</td><td class="line"><span class='comment'>/* generate parameter sequence from pdf sequence */</span></td></tr>
+<tr><td class="num" id="LN239">239</td><td class="line"><span class='keyword'>void</span> mlpg(PStream *pst)</td></tr>
+<tr><td class="num" id="LN240">240</td><td class="line">{	</td></tr>
+<tr><td class="num" id="LN241">241</td><td class="line">   <span class='keyword'>int</span> m;</td></tr>
+<tr><td class="num" id="LN242">242</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN243">243</td><td class="line">   <span class='keyword'>for</span> (m=0; m&lt;=pst-&gt;order; m++) {</td></tr>
+<tr><td class="num" id="LN244">244</td><td class="line">      calc_R_and_r(pst,m);</td></tr>
+<tr><td class="num" id="LN245">245</td><td class="line">      Cholesky(pst);</td></tr>
+<tr><td class="num" id="LN246">246</td><td class="line">      Cholesky_forward(pst);</td></tr>
+<tr><td class="num" id="LN247">247</td><td class="line">      Cholesky_backward(pst,m);</td></tr>
+<tr><td class="num" id="LN248">248</td><td class="line">   }</td></tr>
+<tr><td class="num" id="LN249">249</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN250">250</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN251">251</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN252">252</td><td class="line"><span class='comment'>/* InitPStream : Initialise PStream for parameter generation */</span></td></tr>
+<tr><td class="num" id="LN253">253</td><td class="line"><span class='keyword'>void</span> InitPStream(PStream *pst)</td></tr>
+<tr><td class="num" id="LN254">254</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN255">255</td><td class="line">   pst-&gt;width	   = pst-&gt;dw.max_L*2+1;  <span class='comment'>/* band width of R */</span></td></tr>
+<tr><td class="num" id="LN256">256</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN257">257</td><td class="line">   pst-&gt;sm.mseq  = ddcalloc(pst-&gt;T, pst-&gt;vSize);</td></tr>
+<tr><td class="num" id="LN258">258</td><td class="line">   pst-&gt;sm.ivseq = ddcalloc(pst-&gt;T, pst-&gt;vSize);</td></tr>
+<tr><td class="num" id="LN259">259</td><td class="line">   pst-&gt;sm.g     = dcalloc (pst-&gt;T);</td></tr>
+<tr><td class="num" id="LN260">260</td><td class="line">   pst-&gt;sm.R     = ddcalloc(pst-&gt;T, pst-&gt;width);</td></tr>
+<tr><td class="num" id="LN261">261</td><td class="line">   pst-&gt;sm.r     = dcalloc (pst-&gt;T);</td></tr>
+<tr><td class="num" id="LN262">262</td><td class="line">   pst-&gt;par      = ffcalloc(pst-&gt;T,pst-&gt;order+1);</td></tr>
+<tr><td class="num" id="LN263">263</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN264">264</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN265">265</td><td class="line"><span class='comment'>/* FreePStream : Free PStream */</span></td></tr>
+<tr><td class="num" id="LN266">266</td><td class="line"><span class='keyword'>void</span> FreePStream(PStream *pst)</td></tr>
+<tr><td class="num" id="LN267">267</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN268">268</td><td class="line">   <span class='keyword'>register</span> <span class='keyword'>int</span> t;</td></tr>
+<tr><td class="num" id="LN269">269</td><td class="line">   </td></tr>
+<tr><td class="num" id="LN270">270</td><td class="line">   <span class='keyword'>for</span> (t=0; t&lt;pst-&gt;T; t++) {</td></tr>
+<tr><td class="num" id="LN271">271</td><td class="line">      wfree(pst-&gt;sm.mseq[t]);</td></tr>
+<tr><td class="num" id="LN272">272</td><td class="line">      wfree(pst-&gt;sm.ivseq[t]);</td></tr>
+<tr><td class="num" id="LN273">273</td><td class="line">      wfree(pst-&gt;sm.R[t]);</td></tr>
+<tr><td class="num" id="LN274">274</td><td class="line">      wfree(pst-&gt;par[t]);</td></tr>
+<tr><td class="num" id="LN275">275</td><td class="line">   }</td></tr>
+<tr><td class="num" id="LN276">276</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN277">277</td><td class="line">   <span class='keyword'>for</span> (t=0; t&lt;pst-&gt;dw.num; t++)</td></tr>
+<tr><td class="num" id="LN278">278</td><td class="line">       wfree(pst-&gt;dw.width[t]);</td></tr>
+<tr><td class="num" id="LN279">279</td><td class="line">   wfree(pst-&gt;dw.width);</td></tr>
+<tr><td class="num" id="LN280">280</td><td class="line">   wfree(pst-&gt;dw.coefr[0]);</td></tr>
+<tr><td class="num" id="LN281">281</td><td class="line">   <span class='keyword'>for</span> (t=1; t&lt;pst-&gt;dw.num; t++)</td></tr>
+<tr><td class="num" id="LN282">282</td><td class="line">       wfree(pst-&gt;dw.coefr[t]);</td></tr>
+<tr><td class="num" id="LN283">283</td><td class="line">   wfree(pst-&gt;dw.coefr);</td></tr>
+<tr><td class="num" id="LN284">284</td><td class="line">   wfree(pst-&gt;dw.coef);</td></tr>
+<tr><td class="num" id="LN285">285</td><td class="line">	</td></tr>
+<tr><td class="num" id="LN286">286</td><td class="line">   wfree(pst-&gt;sm.mseq);</td></tr>
+<tr><td class="num" id="LN287">287</td><td class="line">   wfree(pst-&gt;sm.ivseq);</td></tr>
+<tr><td class="num" id="LN288">288</td><td class="line">   wfree(pst-&gt;sm.R);</td></tr>
+<tr><td class="num" id="LN289">289</td><td class="line">   wfree(pst-&gt;sm.g);</td></tr>
+<tr><td class="num" id="LN290">290</td><td class="line">   wfree(pst-&gt;sm.r);</td></tr>
+<tr><td class="num" id="LN291">291</td><td class="line">   wfree(pst-&gt;par);</td></tr>
+<tr><td class="num" id="LN292">292</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN293">293</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN294">294</td><td class="line"><span class='comment'>/* pdf2speech : parameter generation from pdf sequence */</span></td></tr>
+<tr><td class="num" id="LN295">295</td><td class="line"><span class='keyword'>void</span> pdf2speech( FILE *rawfp, FILE *lf0fp, FILE *mcepfp, </td></tr>
+<tr><td class="num" id="LN296">296</td><td class="line">                  PStream *mceppst, PStream *lf0pst, globalP *gp, ModelSet *ms, UttModel *um, VocoderSetup *vs)</td></tr>
+<tr><td class="num" id="LN297">297</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN298">298</td><td class="line">   <span class='keyword'>int</span> frame, mcepframe, lf0frame;</td></tr>
+<tr><td class="num" id="LN299">299</td><td class="line">   <span class='keyword'>int</span> state, lw, rw, k, n;</td></tr>
+<tr><td class="num" id="LN300">300</td><td class="line">   Model *m;</td></tr>
+<tr><td class="num" id="LN301">301</td><td class="line">   HTS_Boolean nobound, *voiced;</td></tr>
+<tr><td class="num" id="LN302">302</td><td class="line">   </td></tr>
+<tr><td class="num" id="LN303">303</td><td class="line">   <span class='keyword'>float</span> f0;</td></tr>
+<tr><td class="num" id="LN304">304</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN305">305</td><td class="line">   lf0pst-&gt;vSize = ms-&gt;lf0stream;</td></tr>
+<tr><td class="num" id="LN306">306</td><td class="line">   lf0pst-&gt;order = 0;</td></tr>
+<tr><td class="num" id="LN307">307</td><td class="line">   mceppst-&gt;vSize = ms-&gt;mcepvsize;</td></tr>
+<tr><td class="num" id="LN308">308</td><td class="line">   mceppst-&gt;order = mceppst-&gt;vSize / mceppst-&gt;dw.num - 1;</td></tr>
+<tr><td class="num" id="LN309">309</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN310">310</td><td class="line">   InitDWin(lf0pst);</td></tr>
+<tr><td class="num" id="LN311">311</td><td class="line">   InitDWin(mceppst);</td></tr>
+<tr><td class="num" id="LN312">312</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN313">313</td><td class="line">   mcepframe  = 0;</td></tr>
+<tr><td class="num" id="LN314">314</td><td class="line">   lf0frame = 0;</td></tr>
+<tr><td class="num" id="LN315">315</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN316">316</td><td class="line">   voiced = <span class='macro'>walloc(HTS_Boolean,um-&gt;totalframe+1)<span class='expansion'>((HTS_Boolean *)safe_walloc(sizeof(HTS_Boolean)*(um-&gt;totalframe<br>+1)))</span></span>;</td></tr>
+<tr><td class="num" id="LN317">317</td><td class="line">   </td></tr>
+<tr><td class="num" id="LN318">318</td><td class="line">   <span class='keyword'>for</span> (m=um-&gt;mhead; m!=um-&gt;mtail ; m=m-&gt;next) {</td></tr>
+<tr><td class="num" id="LN319">319</td><td class="line">      <span class='keyword'>for</span> (state=2; state&lt;=ms-&gt;nstate+1; state++) {</td></tr>
+<tr><td class="num" id="LN320">320</td><td class="line">         <span class='keyword'>for</span> (frame=1; frame&lt;=m-&gt;dur[state]; frame++) {</td></tr>
+<tr><td class="num" id="LN321">321</td><td class="line">            voiced[mcepframe++] = m-&gt;voiced[state];</td></tr>
+<tr><td class="num" id="LN322">322</td><td class="line">            <span class='keyword'>if</span> (m-&gt;voiced[state]) {</td></tr>
+<tr><td class="num" id="LN323">323</td><td class="line">               lf0frame++;</td></tr>
+<tr><td class="num" id="LN324">324</td><td class="line">            }</td></tr>
+<tr><td class="num" id="LN325">325</td><td class="line">         }</td></tr>
+<tr><td class="num" id="LN326">326</td><td class="line">      }</td></tr>
+<tr><td class="num" id="LN327">327</td><td class="line">   }</td></tr>
+<tr><td class="num" id="LN328">328</td><td class="line">         </td></tr>
+<tr><td class="num" id="LN329">329</td><td class="line">   mceppst-&gt;T = mcepframe;</td></tr>
+<tr><td class="num" id="LN330">330</td><td class="line">   lf0pst-&gt;T  = lf0frame;</td></tr>
+<tr><td class="num" id="LN331">331</td><td class="line">  </td></tr>
+<tr><td class="num" id="LN332">332</td><td class="line">   InitPStream(mceppst);      </td></tr>
+<tr><td class="num" id="LN333">333</td><td class="line">   InitPStream(lf0pst);</td></tr>
+<tr><td class="num" id="LN334">334</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN335">335</td><td class="line">   mcepframe = 0;</td></tr>
+<tr><td class="num" id="LN336">336</td><td class="line">   lf0frame  = 0;</td></tr>
+<tr><td class="num" id="LN337">337</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN338">338</td><td class="line">   <span class='keyword'>for</span> (m=um-&gt;mhead; m!=um-&gt;mtail; m=m-&gt;next) {</td></tr>
+<tr><td class="num" id="LN339">339</td><td class="line">      <span class='keyword'>for</span> (state=2; state&lt;=ms-&gt;nstate+1; state++) {</td></tr>
+<tr><td class="num" id="LN340">340</td><td class="line">         <span class='keyword'>for</span> (frame=1; frame&lt;=m-&gt;dur[state]; frame++) {</td></tr>
+<tr><td class="num" id="LN341">341</td><td class="line">            <span class='keyword'>for</span> (k=0; k&lt;ms-&gt;mcepvsize; k++) {</td></tr>
+<tr><td class="num" id="LN342">342</td><td class="line">               mceppst-&gt;sm.mseq[mcepframe][k]  = m-&gt;mcepmean[state][k];</td></tr>
+<tr><td class="num" id="LN343">343</td><td class="line">               mceppst-&gt;sm.ivseq[mcepframe][k] = finv(m-&gt;mcepvariance[state][k]);</td></tr>
+<tr><td class="num" id="LN344">344</td><td class="line">            }</td></tr>
+<tr><td class="num" id="LN345">345</td><td class="line">            <span class='keyword'>for</span> (k=0; k&lt;ms-&gt;lf0stream; k++) {</td></tr>
+<tr><td class="num" id="LN346">346</td><td class="line">               lw = lf0pst-&gt;dw.width[k][<span class='macro'>WLEFT<span class='expansion'>0</span></span>];</td></tr>
+<tr><td class="num" id="LN347">347</td><td class="line">               rw = lf0pst-&gt;dw.width[k][<span class='macro'>WRIGHT<span class='expansion'>1</span></span>];</td></tr>
+<tr><td class="num" id="LN348">348</td><td class="line">               nobound = (HTS_Boolean)1;</td></tr>
+<tr><td class="num" id="LN349">349</td><td class="line">               </td></tr>
+<tr><td class="num" id="LN350">350</td><td class="line">               <span class='keyword'>for</span> (n=lw; n&lt;=rw;n++)</td></tr>
+<tr><td class="num" id="LN351">351</td><td class="line">                  <span class='keyword'>if</span> (mcepframe+n&lt;0 || um-&gt;totalframe&lt;mcepframe+n)</td></tr>
+<tr><td class="num" id="LN352">352</td><td class="line">                     nobound = (HTS_Boolean)0;</td></tr>
+<tr><td class="num" id="LN353">353</td><td class="line">                  <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN354">354</td><td class="line">		      nobound = (HTS_Boolean)((<span class='keyword'>int</span>)nobound &amp; voiced[mcepframe+n]);</td></tr>
+<tr><td class="num" id="LN355">355</td><td class="line">                  </td></tr>
+<tr><td class="num" id="LN356">356</td><td class="line">               <span class='keyword'>if</span> (voiced[mcepframe]) {</td></tr>
+<tr><td class="num" id="LN357">357</td><td class="line">                  lf0pst-&gt;sm.mseq[lf0frame][k] = m-&gt;lf0mean[state][k+1];</td></tr>
+<tr><td class="num" id="LN358">358</td><td class="line">                  <span class='keyword'>if</span> (nobound || k==0)</td></tr>
+<tr><td class="num" id="LN359">359</td><td class="line">                     lf0pst-&gt;sm.ivseq[lf0frame][k] = finv(m-&gt;lf0variance[state][k+1]);</td></tr>
+<tr><td class="num" id="LN360">360</td><td class="line">                  <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN361">361</td><td class="line">                     lf0pst-&gt;sm.ivseq[lf0frame][k] = 0.0;</td></tr>
+<tr><td class="num" id="LN362">362</td><td class="line">               }</td></tr>
+<tr><td class="num" id="LN363">363</td><td class="line">            }</td></tr>
+<tr><td class="num" id="LN364">364</td><td class="line">            <span class='keyword'>if</span> (voiced[mcepframe])</td></tr>
+<tr><td class="num" id="LN365">365</td><td class="line">               lf0frame++;</td></tr>
+<tr><td class="num" id="LN366">366</td><td class="line">            mcepframe++;</td></tr>
+<tr><td class="num" id="LN367">367</td><td class="line">         }</td></tr>
+<tr><td class="num" id="LN368">368</td><td class="line">      }</td></tr>
+<tr><td class="num" id="LN369">369</td><td class="line">   }</td></tr>
+<tr><td class="num" id="LN370">370</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN371">371</td><td class="line">   mlpg(mceppst);</td></tr>
+<tr><td class="num" id="LN372">372</td><td class="line">   </td></tr>
+<tr><td class="num" id="LN373">373</td><td class="line">   <span class='keyword'>if</span> (lf0frame&gt;0)</td></tr>
+<tr><td class="num" id="LN374">374</td><td class="line">      mlpg(lf0pst);</td></tr>
+<tr><td class="num" id="LN375">375</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN376">376</td><td class="line">   lf0frame = 0;</td></tr>
+<tr><td class="num" id="LN377">377</td><td class="line">   </td></tr>
+<tr><td class="num" id="LN378">378</td><td class="line">   <span class='keyword'>if</span> (gp-&gt;XIMERA &amp;&amp; lf0fp!=<span class='macro'>NULL<span class='expansion'>__null</span></span>)</td></tr>
+<tr><td class="num" id="LN379">379</td><td class="line">      fprintf(lf0fp, <span class='string_literal'>"# FrameShift=%dms\n"</span>, (<span class='macro'>FPERIOD<span class='expansion'>80</span></span>*1000)/<span class='macro'>RATE<span class='expansion'>16000</span></span>);</td></tr>
+<tr><td class="num" id="LN380">380</td><td class="line">   </td></tr>
+<tr><td class="num" id="LN381">381</td><td class="line">   <span class='keyword'>for</span> (mcepframe=0; mcepframe&lt;mceppst-&gt;T; mcepframe++) { </td></tr>
+<tr><td class="num" id="LN382">382</td><td class="line">      <span class='keyword'>if</span> (voiced[mcepframe])</td></tr>
+<tr><td class="num" id="LN383">383</td><td class="line">         f0 = gp-&gt;F0_STD * exp(lf0pst-&gt;par[lf0frame++][0]) + gp-&gt;F0_MEAN;  </td></tr>
+<tr><td class="num" id="LN384">384</td><td class="line">      <span class='keyword'>else</span>                  </td></tr>
+<tr><td class="num" id="LN385">385</td><td class="line">         f0 = 0.0;</td></tr>
+<tr><td class="num" id="LN386">386</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN387">387</td><td class="line">      <span class='keyword'>if</span> (mcepfp != <span class='macro'>NULL<span class='expansion'>__null</span></span>)</td></tr>
+<tr><td class="num" id="LN388">388</td><td class="line">         fwrite(mceppst-&gt;par[mcepframe], <span class='keyword'>sizeof</span>(<span class='keyword'>float</span>), mceppst-&gt;order+1, mcepfp);</td></tr>
+<tr><td class="num" id="LN389">389</td><td class="line">      <span class='keyword'>if</span> (lf0fp != <span class='macro'>NULL<span class='expansion'>__null</span></span>) {</td></tr>
+<tr><td class="num" id="LN390">390</td><td class="line">         <span class='keyword'>if</span> (gp-&gt;XIMERA)  </td></tr>
+<tr><td class="num" id="LN391">391</td><td class="line">            fprintf(lf0fp, <span class='string_literal'>"%.1f 1\n"</span>, f0);</td></tr>
+<tr><td class="num" id="LN392">392</td><td class="line">         <span class='keyword'>else</span> </td></tr>
+<tr><td class="num" id="LN393">393</td><td class="line">            fwrite(&amp;f0, <span class='keyword'>sizeof</span>(<span class='keyword'>double</span>), 1, lf0fp);</td></tr>
+<tr><td class="num" id="LN394">394</td><td class="line">      }</td></tr>
+<tr><td class="num" id="LN395">395</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN396">396</td><td class="line">      <span class='keyword'>if</span> (rawfp!=<span class='macro'>NULL<span class='expansion'>__null</span></span>)</td></tr>
+<tr><td class="num" id="LN397">397</td><td class="line">         vocoder(f0, mceppst-&gt;par[mcepframe], mceppst-&gt;order, rawfp, gp, vs);</td></tr>
+<tr><td class="num" id="LN398">398</td><td class="line">   }</td></tr>
+<tr><td class="num" id="LN399">399</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN400">400</td><td class="line">   FreePStream(mceppst);</td></tr>
+<tr><td class="num" id="LN401">401</td><td class="line">   FreePStream(lf0pst);</td></tr>
+<tr><td class="num" id="LN402">402</td><td class="line">   wfree(voiced);</td></tr>
+<tr><td class="num" id="LN403">403</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN404">404</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN405">405</td><td class="line"><span class='comment'>/* InitDWin : Initialise dynamic window */</span></td></tr>
+<tr><td class="num" id="LN406">406</td><td class="line"><span class='keyword'>void</span> InitDWin(PStream *pst)</td></tr>
+<tr><td class="num" id="LN407">407</td><td class="line">{   </td></tr>
+<tr><td class="num" id="LN408">408</td><td class="line">   <span class='keyword'>int</span> i;</td></tr>
+<tr><td class="num" id="LN409">409</td><td class="line">   <span class='keyword'>int</span> fsize, leng, fpos;</td></tr>
+<tr><td class="num" id="LN410">410</td><td class="line">   FILE *fp;</td></tr>
+<tr><td class="num" id="LN411">411</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN412">412</td><td class="line">   <span class='comment'>/* memory allocation */</span></td></tr>
+<tr><td class="num" id="LN413">413</td><td class="line">   pst-&gt;dw.width = <span class='macro'>walloc(<span class='keyword'>int</span> *,pst-&gt;dw.num)<span class='expansion'>((int * *)safe_walloc(sizeof(int *)*(pst-&gt;dw.num)))</span></span>;</td></tr>
+<tr><td class="num" id="LN414">414</td><td class="line">  </td></tr>
+<tr><td class="num" id="LN415">415</td><td class="line">   <span class='keyword'>for</span> (i=0; i&lt;pst-&gt;dw.num; i++) {</td></tr>
+<tr><td class="num" id="LN416">416</td><td class="line">       pst-&gt;dw.width[i] = <span class='macro'>walloc(<span class='keyword'>int</span>,2)<span class='expansion'>((int *)safe_walloc(sizeof(int)*(2)))</span></span>;</td></tr>
+<tr><td class="num" id="LN417">417</td><td class="line">   }</td></tr>
+<tr><td class="num" id="LN418">418</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN419">419</td><td class="line">   pst-&gt;dw.coef= <span class='macro'>walloc(<span class='keyword'>float</span> *,pst-&gt;dw.num)<span class='expansion'>((float * *)safe_walloc(sizeof(float *)*(pst-&gt;dw.num)))</span></span>;</td></tr>
+<tr><td class="num" id="LN420">420</td><td class="line">   <span class='comment'>/* because the pointers are moved, keep an original of the memory</span></td></tr>
+<tr><td class="num" id="LN421">421</td><td class="line">      <span class='comment'>being allocated */</span></td></tr>
+<tr><td class="num" id="LN422">422</td><td class="line">   pst-&gt;dw.coefr= <span class='macro'>walloc(<span class='keyword'>float</span> *,pst-&gt;dw.num)<span class='expansion'>((float * *)safe_walloc(sizeof(float *)*(pst-&gt;dw.num)))</span></span>;</td></tr>
+<tr><td class="num" id="LN423">423</td><td class="line">   </td></tr>
+<tr><td class="num" id="LN424">424</td><td class="line">   <span class='comment'>/* window for static parameter */</span></td></tr>
+<tr><td class="num" id="LN425">425</td><td class="line">   pst-&gt;dw.width[0][<span class='macro'>WLEFT<span class='expansion'>0</span></span>] = pst-&gt;dw.width[0][<span class='macro'>WRIGHT<span class='expansion'>1</span></span>] = 0;</td></tr>
+<tr><td class="num" id="LN426">426</td><td class="line">   pst-&gt;dw.coef[0] = fcalloc (1);</td></tr>
+<tr><td class="num" id="LN427">427</td><td class="line">   pst-&gt;dw.coefr[0] = pst-&gt;dw.coef[0];</td></tr>
+<tr><td class="num" id="LN428">428</td><td class="line">   pst-&gt;dw.coef[0][0] = 1;</td></tr>
+<tr><td class="num" id="LN429">429</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN430">430</td><td class="line">   <span class='comment'>/* set delta coefficients */</span></td></tr>
+<tr><td class="num" id="LN431">431</td><td class="line">   <span class='keyword'>for</span> (i=1; i&lt;pst-&gt;dw.num; i++) {</td></tr>
+<tr><td class="num" id="LN432">432</td><td class="line">      <span class='keyword'>if</span> (pst-&gt;dw.fn[i][0] == ' ')</td></tr>
+<tr><td class="num" id="LN433">433</td><td class="line">         fsize = str2farray(pst-&gt;dw.fn[i], &amp;(pst-&gt;dw.coef[i]));</td></tr>
+<tr><td class="num" id="LN434">434</td><td class="line">      <span class='keyword'>else</span> {         <span class='comment'>/* read from file */</span></td></tr>
+<tr><td class="num" id="LN435">435</td><td class="line">         <span class='keyword'>if</span> ((fp = fopen (pst-&gt;dw.fn[i], <span class='string_literal'>"r"</span>)) == <span class='macro'>NULL<span class='expansion'>__null</span></span>) {</td></tr>
+<tr><td class="num" id="LN436">436</td><td class="line">            fprintf(<span class='macro'>stderr<span class='expansion'>stderr</span></span>, <span class='string_literal'>"file %s not found\n"</span>, pst-&gt;dw.fn[i]);</td></tr>
+<tr><td class="num" id="LN437">437</td><td class="line">            <span class='macro'>festival_error()<span class='expansion'>(errjmp_ok ? longjmp(*est_errjmp,1) : festival_tidy_up(),exit<br>(-1))</span></span>;</td></tr>
+<tr><td class="num" id="LN438">438</td><td class="line">         }</td></tr>
+<tr><td class="num" id="LN439">439</td><td class="line">            </td></tr>
+<tr><td class="num" id="LN440">440</td><td class="line">         <span class='comment'>/* check the number of coefficients */</span></td></tr>
+<tr><td class="num" id="LN441">441</td><td class="line">         fseek(fp, 0L, 2);</td></tr>
+<tr><td class="num" id="LN442">442</td><td class="line">         fpos = (<span class='keyword'>int</span>)ftell(fp);</td></tr>
+<tr><td class="num" id="LN443">443</td><td class="line">         fsize = fpos/<span class='keyword'>sizeof</span> (<span class='keyword'>float</span>);</td></tr>
+<tr><td class="num" id="LN444">444</td><td class="line">         fseek(fp, 0L, 0);</td></tr>
+<tr><td class="num" id="LN445">445</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN446">446</td><td class="line">         <span class='comment'>/* read coefficients */</span></td></tr>
+<tr><td class="num" id="LN447">447</td><td class="line">         pst-&gt;dw.coef[i] = fcalloc (fsize);</td></tr>
+<tr><td class="num" id="LN448">448</td><td class="line">         pst-&gt;dw.coefr[i] = pst-&gt;dw.coef[i];</td></tr>
+<tr><td class="num" id="LN449">449</td><td class="line">         <span class='keyword'>if</span> (fread(pst-&gt;dw.coef[i], <span class='keyword'>sizeof</span>(<span class='keyword'>float</span>), fsize, fp) != fsize) {</td></tr>
+<tr><td class="num" id="LN450">450</td><td class="line">            fprintf(<span class='macro'>stderr<span class='expansion'>stderr</span></span>, <span class='string_literal'>"Error reading window coefficients\n"</span>);</td></tr>
+<tr><td class="num" id="LN451">451</td><td class="line">            <span class='macro'>festival_error()<span class='expansion'>(errjmp_ok ? longjmp(*est_errjmp,1) : festival_tidy_up(),exit<br>(-1))</span></span>;</td></tr>
+<tr><td class="num" id="LN452">452</td><td class="line">         }</td></tr>
+<tr><td class="num" id="LN453">453</td><td class="line">	      <span class='keyword'>if</span> (<span class='macro'>EST_BIG_ENDIAN<span class='expansion'>(((char *)&amp;est_endian_loc)[0] == 0)</span></span>)</td></tr>
+<tr><td class="num" id="LN454">454</td><td class="line">		      swap_bytes_float(pst-&gt;dw.coef[i],fsize);</td></tr>
+<tr><td class="num" id="LN455">455</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN456">456</td><td class="line">         fclose(fp);</td></tr>
+<tr><td class="num" id="LN457">457</td><td class="line">      }</td></tr>
+<tr><td class="num" id="LN458">458</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN459">459</td><td class="line">      <span class='comment'>/* set pointer */</span></td></tr>
+<tr><td class="num" id="LN460">460</td><td class="line">      leng = fsize / 2;</td></tr>
+<tr><td class="num" id="LN461">461</td><td class="line">      pst-&gt;dw.coef[i] += leng;</td></tr>
+<tr><td class="num" id="LN462">462</td><td class="line">      pst-&gt;dw.width[i][<span class='macro'>WLEFT<span class='expansion'>0</span></span>] = -leng;</td></tr>
+<tr><td class="num" id="LN463">463</td><td class="line">      pst-&gt;dw.width[i][<span class='macro'>WRIGHT<span class='expansion'>1</span></span>] = leng;</td></tr>
+<tr><td class="num" id="LN464">464</td><td class="line">         </td></tr>
+<tr><td class="num" id="LN465">465</td><td class="line">      <span class='keyword'>if</span> (fsize % 2 == 0)</td></tr>
+<tr><td class="num" id="LN466">466</td><td class="line">         pst-&gt;dw.width[i][<span class='macro'>WRIGHT<span class='expansion'>1</span></span>]--;</td></tr>
+<tr><td class="num" id="LN467">467</td><td class="line">   }</td></tr>
+<tr><td class="num" id="LN468">468</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN469">469</td><td class="line">   pst-&gt;dw.maxw[<span class='macro'>WLEFT<span class='expansion'>0</span></span>] = pst-&gt;dw.maxw[<span class='macro'>WRIGHT<span class='expansion'>1</span></span>] = 0;</td></tr>
+<tr><td class="num" id="LN470">470</td><td class="line">      </td></tr>
+<tr><td class="num" id="LN471">471</td><td class="line">   <span class='keyword'>for</span> (i=0; i&lt;pst-&gt;dw.num; i++) {</td></tr>
+<tr><td class="num" id="LN472">472</td><td class="line">      <span class='keyword'>if</span> (pst-&gt;dw.maxw[<span class='macro'>WLEFT<span class='expansion'>0</span></span>] &gt; pst-&gt;dw.width[i][<span class='macro'>WLEFT<span class='expansion'>0</span></span>])</td></tr>
+<tr><td class="num" id="LN473">473</td><td class="line">         pst-&gt;dw.maxw[<span class='macro'>WLEFT<span class='expansion'>0</span></span>] = pst-&gt;dw.width[i][<span class='macro'>WLEFT<span class='expansion'>0</span></span>];</td></tr>
+<tr><td class="num" id="LN474">474</td><td class="line">      <span class='keyword'>if</span> (pst-&gt;dw.maxw[<span class='macro'>WRIGHT<span class='expansion'>1</span></span>] &lt; pst-&gt;dw.width[i][<span class='macro'>WRIGHT<span class='expansion'>1</span></span>])</td></tr>
+<tr><td class="num" id="LN475">475</td><td class="line">         pst-&gt;dw.maxw[<span class='macro'>WRIGHT<span class='expansion'>1</span></span>] = pst-&gt;dw.width[i][<span class='macro'>WRIGHT<span class='expansion'>1</span></span>];</td></tr>
+<tr><td class="num" id="LN476">476</td><td class="line">   }</td></tr>
+<tr><td class="num" id="LN477">477</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN478">478</td><td class="line">   <span class='comment'>/* calcurate max_L to determine size of band matrix */</span></td></tr>
+<tr><td class="num" id="LN479">479</td><td class="line">   <span class='keyword'>if</span> ( pst-&gt;dw.maxw[<span class='macro'>WLEFT<span class='expansion'>0</span></span>] &gt;= pst-&gt;dw.maxw[<span class='macro'>WRIGHT<span class='expansion'>1</span></span>] )</td></tr>
+<tr><td class="num" id="LN480">480</td><td class="line">      pst-&gt;dw.max_L = pst-&gt;dw.maxw[<span class='macro'>WLEFT<span class='expansion'>0</span></span>];</td></tr>
+<tr><td class="num" id="LN481">481</td><td class="line">   <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN482">482</td><td class="line">      pst-&gt;dw.max_L = pst-&gt;dw.maxw[<span class='macro'>WRIGHT<span class='expansion'>1</span></span>];</td></tr>
+<tr><td class="num" id="LN483">483</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN484">484</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN485">485</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN486">486</td><td class="line"><span class='comment'>/* -------------------- End of "mlpg.c" -------------------- */</span></td></tr>
+</table></body></html>

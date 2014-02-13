@@ -1,0 +1,775 @@
+<!doctype html>
+<html>
+<head>
+<title>phrasify.cc</title>
+<style type="text/css">
+ body { color:#000000; background-color:#ffffff }
+ body { font-family:Helvetica, sans-serif; font-size:10pt }
+ h1 { font-size:14pt }
+ .code { border-collapse:collapse; width:100%; }
+ .code { font-family: "Monospace", monospace; font-size:10pt }
+ .code { line-height: 1.2em }
+ .comment { color: green; font-style: oblique }
+ .keyword { color: blue }
+ .string_literal { color: red }
+ .directive { color: darkmagenta }
+ .expansion { display: none; }
+ .macro:hover .expansion { display: block; border: 2px solid #FF0000; padding: 2px; background-color:#FFF0F0; font-weight: normal;   -webkit-border-radius:5px;  -webkit-box-shadow:1px 1px 7px #000; position: absolute; top: -1em; left:10em; z-index: 1 } 
+ .macro { color: darkmagenta; background-color:LemonChiffon; position: relative }
+ .num { width:2.5em; padding-right:2ex; background-color:#eeeeee }
+ .num { text-align:right; font-size:8pt }
+ .num { color:#444444 }
+ .line { padding-left: 1ex; border-left: 3px solid #ccc }
+ .line { white-space: pre }
+ .msg { -webkit-box-shadow:1px 1px 7px #000 }
+ .msg { -webkit-border-radius:5px }
+ .msg { font-family:Helvetica, sans-serif; font-size:8pt }
+ .msg { float:left }
+ .msg { padding:0.25em 1ex 0.25em 1ex }
+ .msg { margin-top:10px; margin-bottom:10px }
+ .msg { font-weight:bold }
+ .msg { max-width:60em; word-wrap: break-word; white-space: pre-wrap }
+ .msgT { padding:0x; spacing:0x }
+ .msgEvent { background-color:#fff8b4; color:#000000 }
+ .msgControl { background-color:#bbbbbb; color:#000000 }
+ .mrange { background-color:#dfddf3 }
+ .mrange { border-bottom:1px solid #6F9DBE }
+ .PathIndex { font-weight: bold; padding:0px 5px; margin-right:5px; }
+ .PathIndex { -webkit-border-radius:8px }
+ .PathIndexEvent { background-color:#bfba87 }
+ .PathIndexControl { background-color:#8c8c8c }
+ .PathNav a { text-decoration:none; font-size: larger }
+ .CodeInsertionHint { font-weight: bold; background-color: #10dd10 }
+ .CodeRemovalHint { background-color:#de1010 }
+ .CodeRemovalHint { border-bottom:1px solid #6F9DBE }
+ table.simpletable {
+   padding: 5px;
+   font-size:12pt;
+   margin:20px;
+   border-collapse: collapse; border-spacing: 0px;
+ }
+ td.rowname {
+   text-align:right; font-weight:bold; color:#444444;
+   padding-right:2ex; }
+</style>
+</head>
+<body>
+<!-- BUGDESC Value stored to 'lang_prob' is never read -->
+
+<!-- BUGTYPE Dead assignment -->
+
+<!-- BUGCATEGORY Dead store -->
+
+<!-- BUGFILE /media/dades/src/festival-2013/festival/src/modules/base/phrasify.cc -->
+
+<!-- BUGLINE 442 -->
+
+<!-- BUGPATHLENGTH 1 -->
+
+<!-- BUGMETAEND -->
+<!-- REPORTHEADER -->
+<h3>Bug Summary</h3>
+<table class="simpletable">
+<tr><td class="rowname">File:</td><td>modules/base/phrasify.cc</td></tr>
+<tr><td class="rowname">Location:</td><td><a href="#EndPath">line 442, column 5</a></td></tr>
+<tr><td class="rowname">Description:</td><td>Value stored to 'lang_prob' is never read</td></tr>
+</table>
+<!-- REPORTSUMMARYEXTRA -->
+<h3>Annotated Source Code</h3>
+<table class="code">
+<tr><td class="num" id="LN1">1</td><td class="line"><span class='comment'>/*************************************************************************/</span></td></tr>
+<tr><td class="num" id="LN2">2</td><td class="line"><span class='comment'>/*                                                                       */</span></td></tr>
+<tr><td class="num" id="LN3">3</td><td class="line"><span class='comment'>/*                Centre for Speech Technology Research                  */</span></td></tr>
+<tr><td class="num" id="LN4">4</td><td class="line"><span class='comment'>/*                     University of Edinburgh, UK                       */</span></td></tr>
+<tr><td class="num" id="LN5">5</td><td class="line"><span class='comment'>/*                       Copyright (c) 1996,1997                         */</span></td></tr>
+<tr><td class="num" id="LN6">6</td><td class="line"><span class='comment'>/*                        All Rights Reserved.                           */</span></td></tr>
+<tr><td class="num" id="LN7">7</td><td class="line"><span class='comment'>/*                                                                       */</span></td></tr>
+<tr><td class="num" id="LN8">8</td><td class="line"><span class='comment'>/*  Permission is hereby granted, free of charge, to use and distribute  */</span></td></tr>
+<tr><td class="num" id="LN9">9</td><td class="line"><span class='comment'>/*  this software and its documentation without restriction, including   */</span></td></tr>
+<tr><td class="num" id="LN10">10</td><td class="line"><span class='comment'>/*  without limitation the rights to use, copy, modify, merge, publish,  */</span></td></tr>
+<tr><td class="num" id="LN11">11</td><td class="line"><span class='comment'>/*  distribute, sublicense, and/or sell copies of this work, and to      */</span></td></tr>
+<tr><td class="num" id="LN12">12</td><td class="line"><span class='comment'>/*  permit persons to whom this work is furnished to do so, subject to   */</span></td></tr>
+<tr><td class="num" id="LN13">13</td><td class="line"><span class='comment'>/*  the following conditions:                                            */</span></td></tr>
+<tr><td class="num" id="LN14">14</td><td class="line"><span class='comment'>/*   1. The code must retain the above copyright notice, this list of    */</span></td></tr>
+<tr><td class="num" id="LN15">15</td><td class="line"><span class='comment'>/*      conditions and the following disclaimer.                         */</span></td></tr>
+<tr><td class="num" id="LN16">16</td><td class="line"><span class='comment'>/*   2. Any modifications must be clearly marked as such.                */</span></td></tr>
+<tr><td class="num" id="LN17">17</td><td class="line"><span class='comment'>/*   3. Original authors' names are not deleted.                         */</span></td></tr>
+<tr><td class="num" id="LN18">18</td><td class="line"><span class='comment'>/*   4. The authors' names are not used to endorse or promote products   */</span></td></tr>
+<tr><td class="num" id="LN19">19</td><td class="line"><span class='comment'>/*      derived from this software without specific prior written        */</span></td></tr>
+<tr><td class="num" id="LN20">20</td><td class="line"><span class='comment'>/*      permission.                                                      */</span></td></tr>
+<tr><td class="num" id="LN21">21</td><td class="line"><span class='comment'>/*                                                                       */</span></td></tr>
+<tr><td class="num" id="LN22">22</td><td class="line"><span class='comment'>/*  THE UNIVERSITY OF EDINBURGH AND THE CONTRIBUTORS TO THIS WORK        */</span></td></tr>
+<tr><td class="num" id="LN23">23</td><td class="line"><span class='comment'>/*  DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING      */</span></td></tr>
+<tr><td class="num" id="LN24">24</td><td class="line"><span class='comment'>/*  ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT   */</span></td></tr>
+<tr><td class="num" id="LN25">25</td><td class="line"><span class='comment'>/*  SHALL THE UNIVERSITY OF EDINBURGH NOR THE CONTRIBUTORS BE LIABLE     */</span></td></tr>
+<tr><td class="num" id="LN26">26</td><td class="line"><span class='comment'>/*  FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES    */</span></td></tr>
+<tr><td class="num" id="LN27">27</td><td class="line"><span class='comment'>/*  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN   */</span></td></tr>
+<tr><td class="num" id="LN28">28</td><td class="line"><span class='comment'>/*  AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,          */</span></td></tr>
+<tr><td class="num" id="LN29">29</td><td class="line"><span class='comment'>/*  ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF       */</span></td></tr>
+<tr><td class="num" id="LN30">30</td><td class="line"><span class='comment'>/*  THIS SOFTWARE.                                                       */</span></td></tr>
+<tr><td class="num" id="LN31">31</td><td class="line"><span class='comment'>/*                                                                       */</span></td></tr>
+<tr><td class="num" id="LN32">32</td><td class="line"><span class='comment'>/*************************************************************************/</span></td></tr>
+<tr><td class="num" id="LN33">33</td><td class="line"><span class='comment'>/*                      Author :  Alan W Black                           */</span></td></tr>
+<tr><td class="num" id="LN34">34</td><td class="line"><span class='comment'>/*                      Date   :  August 1996                            */</span></td></tr>
+<tr><td class="num" id="LN35">35</td><td class="line"><span class='comment'>/*-----------------------------------------------------------------------*/</span></td></tr>
+<tr><td class="num" id="LN36">36</td><td class="line"><span class='comment'>/*                                                                       */</span></td></tr>
+<tr><td class="num" id="LN37">37</td><td class="line"><span class='comment'>/* Phrase break prediction                                               */</span></td></tr>
+<tr><td class="num" id="LN38">38</td><td class="line"><span class='comment'>/*                                                                       */</span></td></tr>
+<tr><td class="num" id="LN39">39</td><td class="line"><span class='comment'>/*=======================================================================*/</span></td></tr>
+<tr><td class="num" id="LN40">40</td><td class="line"><span class='directive'>#include &lt;cstdio&gt;</span></td></tr>
+<tr><td class="num" id="LN41">41</td><td class="line"><span class='directive'>#include "festival.h"</span></td></tr>
+<tr><td class="num" id="LN42">42</td><td class="line"><span class='directive'>#include "modules.h"</span></td></tr>
+<tr><td class="num" id="LN43">43</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN44">44</td><td class="line"><span class='keyword'>using</span> <span class='keyword'>namespace</span> std;</td></tr>
+<tr><td class="num" id="LN45">45</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN46">46</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>void</span> phrasing_none(EST_Utterance *u);</td></tr>
+<tr><td class="num" id="LN47">47</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>void</span> phrasing_by_cart(EST_Utterance *u);</td></tr>
+<tr><td class="num" id="LN48">48</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>void</span> phrasing_by_probmodels(EST_Utterance *u);</td></tr>
+<tr><td class="num" id="LN49">49</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>void</span> phrasing_by_fa(EST_Utterance *u);</td></tr>
+<tr><td class="num" id="LN50">50</td><td class="line"><span class='keyword'>static</span> EST_VTCandidate *bb_candlist(EST_Item *s,EST_Features &amp;f);</td></tr>
+<tr><td class="num" id="LN51">51</td><td class="line"><span class='keyword'>static</span> EST_VTPath *bb_npath(EST_VTPath *p,EST_VTCandidate *c,EST_Features &amp;f);</td></tr>
+<tr><td class="num" id="LN52">52</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>double</span> find_b_prob(EST_VTPath *p,<span class='keyword'>int</span> n,<span class='keyword'>int</span> *state);</td></tr>
+<tr><td class="num" id="LN53">53</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN54">54</td><td class="line"><span class='comment'>// Used in various default value cases</span></td></tr>
+<tr><td class="num" id="LN55">55</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>int</span> B_word = 0;</td></tr>
+<tr><td class="num" id="LN56">56</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>int</span> BB_word = 0;</td></tr>
+<tr><td class="num" id="LN57">57</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>int</span> NB_word = 0;</td></tr>
+<tr><td class="num" id="LN58">58</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>int</span> pos_p_start_tag = 0;</td></tr>
+<tr><td class="num" id="LN59">59</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>int</span> pos_pp_start_tag = 0;</td></tr>
+<tr><td class="num" id="LN60">60</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>int</span> pos_n_start_tag = 0;</td></tr>
+<tr><td class="num" id="LN61">61</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN62">62</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>double</span> gscale_s = 1.0;</td></tr>
+<tr><td class="num" id="LN63">63</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>double</span> gscale_p = 0.0;</td></tr>
+<tr><td class="num" id="LN64">64</td><td class="line"><span class='keyword'>static</span> EST_Ngrammar *bb_ngram = 0;</td></tr>
+<tr><td class="num" id="LN65">65</td><td class="line"><span class='keyword'>static</span> EST_Ngrammar *bb_pos_ngram = 0;</td></tr>
+<tr><td class="num" id="LN66">66</td><td class="line"><span class='keyword'>static</span> LISP bb_tags = <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>;</td></tr>
+<tr><td class="num" id="LN67">67</td><td class="line"><span class='keyword'>static</span> LISP pos_map = <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>;</td></tr>
+<tr><td class="num" id="LN68">68</td><td class="line"><span class='keyword'>static</span> LISP phrase_type_tree = <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>;</td></tr>
+<tr><td class="num" id="LN69">69</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN70">70</td><td class="line"><span class='comment'>/* Interslice */</span></td></tr>
+<tr><td class="num" id="LN71">71</td><td class="line"><span class='keyword'>static</span> EST_Track *bb_track = 0;</td></tr>
+<tr><td class="num" id="LN72">72</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN73">73</td><td class="line">LISP FT_Classic_Phrasify_Utt(LISP utt)</td></tr>
+<tr><td class="num" id="LN74">74</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN75">75</td><td class="line">    <span class='comment'>// Predict and add phrasing to an utterance</span></td></tr>
+<tr><td class="num" id="LN76">76</td><td class="line">    EST_Utterance *u = <span class='macro'>get_c_utt(utt)<span class='expansion'>(utterance(utt))</span></span>;</td></tr>
+<tr><td class="num" id="LN77">77</td><td class="line">    LISP phrase_method = ft_get_param(<span class='string_literal'>"Phrase_Method"</span>);</td></tr>
+<tr><td class="num" id="LN78">78</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN79">79</td><td class="line">    *cdebug &lt;&lt; <span class='string_literal'>"Phrasify module\n"</span>;</td></tr>
+<tr><td class="num" id="LN80">80</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN81">81</td><td class="line">    <span class='keyword'>if</span> (u-&gt;relation_present(<span class='string_literal'>"Phrase"</span>))</td></tr>
+<tr><td class="num" id="LN82">82</td><td class="line">	<span class='keyword'>return</span> utt;               <span class='comment'>// already specified</span></td></tr>
+<tr><td class="num" id="LN83">83</td><td class="line">    <span class='keyword'>else</span> <span class='keyword'>if</span> (phrase_method == <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>)</td></tr>
+<tr><td class="num" id="LN84">84</td><td class="line">	phrasing_none(u);  <span class='comment'>// all one phrase</span></td></tr>
+<tr><td class="num" id="LN85">85</td><td class="line">    <span class='keyword'>else</span> <span class='keyword'>if</span> (<span class='macro'>streq(<span class='string_literal'>"prob_models"</span>,get_c_string(phrase_method))<span class='expansion'>(strcmp("prob_models",get_c_string(phrase_method))==0)</span></span>)</td></tr>
+<tr><td class="num" id="LN86">86</td><td class="line">	phrasing_by_probmodels(u);</td></tr>
+<tr><td class="num" id="LN87">87</td><td class="line">    <span class='keyword'>else</span> <span class='keyword'>if</span> (<span class='macro'>streq(<span class='string_literal'>"cart_tree"</span>,get_c_string(phrase_method))<span class='expansion'>(strcmp("cart_tree",get_c_string(phrase_method))==0)</span></span>)</td></tr>
+<tr><td class="num" id="LN88">88</td><td class="line">	phrasing_by_cart(u);</td></tr>
+<tr><td class="num" id="LN89">89</td><td class="line">    <span class='keyword'>else</span> <span class='keyword'>if</span> (<span class='macro'>streq(<span class='string_literal'>"forced_align"</span>,get_c_string(phrase_method))<span class='expansion'>(strcmp("forced_align",get_c_string(phrase_method))==0)</span></span>)</td></tr>
+<tr><td class="num" id="LN90">90</td><td class="line">	phrasing_by_fa(u);</td></tr>
+<tr><td class="num" id="LN91">91</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN92">92</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN93">93</td><td class="line">	cerr &lt;&lt; <span class='string_literal'>"PHRASIFY: unknown phrase method \""</span> &lt;&lt;</td></tr>
+<tr><td class="num" id="LN94">94</td><td class="line">	    get_c_string(phrase_method) &lt;&lt; endl;</td></tr>
+<tr><td class="num" id="LN95">95</td><td class="line">	<span class='macro'>festival_error()<span class='expansion'>(errjmp_ok ? longjmp(*est_errjmp,1) : festival_tidy_up(),exit<br>(-1))</span></span>;</td></tr>
+<tr><td class="num" id="LN96">96</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN97">97</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN98">98</td><td class="line">    <span class='keyword'>return</span> utt;</td></tr>
+<tr><td class="num" id="LN99">99</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN100">100</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN101">101</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>void</span> phrasing_none(EST_Utterance *u)</td></tr>
+<tr><td class="num" id="LN102">102</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN103">103</td><td class="line">    <span class='comment'>// All in a single phrase</span></td></tr>
+<tr><td class="num" id="LN104">104</td><td class="line">    EST_Item *w,*phr=0;</td></tr>
+<tr><td class="num" id="LN105">105</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN106">106</td><td class="line">    u-&gt;create_relation(<span class='string_literal'>"Phrase"</span>);</td></tr>
+<tr><td class="num" id="LN107">107</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN108">108</td><td class="line">    <span class='keyword'>for</span> (w=u-&gt;relation(<span class='string_literal'>"Word"</span>)-&gt;first(); w != 0; w = w-&gt;next())</td></tr>
+<tr><td class="num" id="LN109">109</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN110">110</td><td class="line">	<span class='keyword'>if</span> (phr == 0)</td></tr>
+<tr><td class="num" id="LN111">111</td><td class="line">	    phr = add_phrase(u);</td></tr>
+<tr><td class="num" id="LN112">112</td><td class="line">	append_daughter(phr,<span class='string_literal'>"Phrase"</span>,w);</td></tr>
+<tr><td class="num" id="LN113">113</td><td class="line">	<span class='keyword'>if</span> (w-&gt;next() == 0)</td></tr>
+<tr><td class="num" id="LN114">114</td><td class="line">	{</td></tr>
+<tr><td class="num" id="LN115">115</td><td class="line">	    w-&gt;set(<span class='string_literal'>"pbreak"</span>,<span class='string_literal'>"B"</span>);</td></tr>
+<tr><td class="num" id="LN116">116</td><td class="line">	    phr-&gt;set_name(<span class='string_literal'>"4"</span>);</td></tr>
+<tr><td class="num" id="LN117">117</td><td class="line">	    phr = 0;</td></tr>
+<tr><td class="num" id="LN118">118</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN119">119</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN120">120</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN121">121</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN122">122</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN123">123</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>void</span> phrasing_by_cart(EST_Utterance *u)</td></tr>
+<tr><td class="num" id="LN124">124</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN125">125</td><td class="line">    EST_Item *w,*phr=0;</td></tr>
+<tr><td class="num" id="LN126">126</td><td class="line">    LISP tree;</td></tr>
+<tr><td class="num" id="LN127">127</td><td class="line">    EST_Val pbreak;</td></tr>
+<tr><td class="num" id="LN128">128</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN129">129</td><td class="line">    u-&gt;create_relation(<span class='string_literal'>"Phrase"</span>);</td></tr>
+<tr><td class="num" id="LN130">130</td><td class="line">    tree = siod_get_lval(<span class='string_literal'>"phrase_cart_tree"</span>,<span class='string_literal'>"no phrase cart tree"</span>);</td></tr>
+<tr><td class="num" id="LN131">131</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN132">132</td><td class="line">    <span class='keyword'>for</span> (w=u-&gt;relation(<span class='string_literal'>"Word"</span>)-&gt;first(); w != 0; w = w-&gt;next())</td></tr>
+<tr><td class="num" id="LN133">133</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN134">134</td><td class="line">	<span class='keyword'>if</span> (phr == 0)</td></tr>
+<tr><td class="num" id="LN135">135</td><td class="line">	    phr = add_phrase(u);</td></tr>
+<tr><td class="num" id="LN136">136</td><td class="line">	append_daughter(phr,<span class='string_literal'>"Phrase"</span>,w);</td></tr>
+<tr><td class="num" id="LN137">137</td><td class="line">	pbreak = wagon_predict(w,tree);</td></tr>
+<tr><td class="num" id="LN138">138</td><td class="line">	w-&gt;set(<span class='string_literal'>"pbreak"</span>,pbreak.string());</td></tr>
+<tr><td class="num" id="LN139">139</td><td class="line">	<span class='keyword'>if</span> ((pbreak == <span class='string_literal'>"B"</span>) || (pbreak == <span class='string_literal'>"BB"</span>))</td></tr>
+<tr><td class="num" id="LN140">140</td><td class="line">	{</td></tr>
+<tr><td class="num" id="LN141">141</td><td class="line">	    phr-&gt;set_name((EST_String)pbreak);</td></tr>
+<tr><td class="num" id="LN142">142</td><td class="line">	    phr = 0;</td></tr>
+<tr><td class="num" id="LN143">143</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN144">144</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN145">145</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN146">146</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN147">147</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN148">148</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>void</span> pbyp_get_params(LISP params)</td></tr>
+<tr><td class="num" id="LN149">149</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN150">150</td><td class="line">    EST_String bb_pos_name,bb_pos_filename,bb_name,bb_break_filename;</td></tr>
+<tr><td class="num" id="LN151">151</td><td class="line">    EST_String bb_track_name;</td></tr>
+<tr><td class="num" id="LN152">152</td><td class="line">    LISP l1;</td></tr>
+<tr><td class="num" id="LN153">153</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN154">154</td><td class="line">    bb_pos_name = get_param_str(<span class='string_literal'>"pos_ngram_name"</span>,params,<span class='string_literal'>""</span>);</td></tr>
+<tr><td class="num" id="LN155">155</td><td class="line">    bb_pos_filename = get_param_str(<span class='string_literal'>"pos_ngram_filename"</span>,params,<span class='string_literal'>""</span>);</td></tr>
+<tr><td class="num" id="LN156">156</td><td class="line">    <span class='keyword'>if</span> ((bb_pos_ngram = get_ngram(bb_pos_name,bb_pos_filename)) == 0)</td></tr>
+<tr><td class="num" id="LN157">157</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN158">158</td><td class="line">	cerr &lt;&lt; <span class='string_literal'>"PHRASIFY: no ngram called \""</span> &lt;&lt;</td></tr>
+<tr><td class="num" id="LN159">159</td><td class="line">	    bb_pos_name &lt;&lt; <span class='string_literal'>"\" defined."</span> &lt;&lt; endl;</td></tr>
+<tr><td class="num" id="LN160">160</td><td class="line">	<span class='macro'>festival_error()<span class='expansion'>(errjmp_ok ? longjmp(*est_errjmp,1) : festival_tidy_up(),exit<br>(-1))</span></span>;</td></tr>
+<tr><td class="num" id="LN161">161</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN162">162</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN163">163</td><td class="line">    gscale_s = get_param_float(<span class='string_literal'>"gram_scale_s"</span>,params,1.0);</td></tr>
+<tr><td class="num" id="LN164">164</td><td class="line">    gscale_p = get_param_float(<span class='string_literal'>"gram_scale_p"</span>,params,0.0);</td></tr>
+<tr><td class="num" id="LN165">165</td><td class="line">    pos_map = get_param_lisp(<span class='string_literal'>"pos_map"</span>,params,<span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>);</td></tr>
+<tr><td class="num" id="LN166">166</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN167">167</td><td class="line">    bb_name = get_param_str(<span class='string_literal'>"break_ngram_name"</span>,params,<span class='string_literal'>""</span>);</td></tr>
+<tr><td class="num" id="LN168">168</td><td class="line">    bb_break_filename = get_param_str(<span class='string_literal'>"break_ngram_filename"</span>,params,<span class='string_literal'>""</span>);</td></tr>
+<tr><td class="num" id="LN169">169</td><td class="line">    <span class='keyword'>if</span> ((bb_ngram = get_ngram(bb_name,bb_break_filename)) == 0)</td></tr>
+<tr><td class="num" id="LN170">170</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN171">171</td><td class="line">	cerr &lt;&lt; <span class='string_literal'>"PHRASIFY: no ngram called \""</span> &lt;&lt;</td></tr>
+<tr><td class="num" id="LN172">172</td><td class="line">	    bb_name &lt;&lt; <span class='string_literal'>"\" defined."</span> &lt;&lt; endl;</td></tr>
+<tr><td class="num" id="LN173">173</td><td class="line">	<span class='macro'>festival_error()<span class='expansion'>(errjmp_ok ? longjmp(*est_errjmp,1) : festival_tidy_up(),exit<br>(-1))</span></span>;</td></tr>
+<tr><td class="num" id="LN174">174</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN175">175</td><td class="line">    bb_tags = get_param_lisp(<span class='string_literal'>"break_tags"</span>,params,<span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>);</td></tr>
+<tr><td class="num" id="LN176">176</td><td class="line">    phrase_type_tree = get_param_lisp(<span class='string_literal'>"phrase_type_tree"</span>,params,<span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>);</td></tr>
+<tr><td class="num" id="LN177">177</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN178">178</td><td class="line">    bb_track_name = get_param_str(<span class='string_literal'>"break_track_name"</span>,params,<span class='string_literal'>""</span>);</td></tr>
+<tr><td class="num" id="LN179">179</td><td class="line">    <span class='keyword'>if</span> (bb_track_name != <span class='string_literal'>""</span>)</td></tr>
+<tr><td class="num" id="LN180">180</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN181">181</td><td class="line">	<span class='keyword'>if</span> (bb_track)</td></tr>
+<tr><td class="num" id="LN182">182</td><td class="line">	    <span class='keyword'>delete</span> bb_track;</td></tr>
+<tr><td class="num" id="LN183">183</td><td class="line">	bb_track = <span class='keyword'>new</span> EST_Track;</td></tr>
+<tr><td class="num" id="LN184">184</td><td class="line">	<span class='keyword'>if</span> (bb_track-&gt;load(bb_track_name) != <span class='macro'>format_ok<span class='expansion'>read_ok</span></span>)</td></tr>
+<tr><td class="num" id="LN185">185</td><td class="line">	{</td></tr>
+<tr><td class="num" id="LN186">186</td><td class="line">	    <span class='keyword'>delete</span> bb_track;</td></tr>
+<tr><td class="num" id="LN187">187</td><td class="line">	    cerr &lt;&lt; <span class='string_literal'>"PHRASE: failed to load FA track "</span> &lt;&lt; </td></tr>
+<tr><td class="num" id="LN188">188</td><td class="line">		bb_track_name &lt;&lt; endl;</td></tr>
+<tr><td class="num" id="LN189">189</td><td class="line">	    <span class='macro'>festival_error()<span class='expansion'>(errjmp_ok ? longjmp(*est_errjmp,1) : festival_tidy_up(),exit<br>(-1))</span></span>;</td></tr>
+<tr><td class="num" id="LN190">190</td><td class="line">	} </td></tr>
+<tr><td class="num" id="LN191">191</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN192">192</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN193">193</td><td class="line">    l1 = siod_get_lval(<span class='string_literal'>"pos_p_start_tag"</span>,<span class='macro'>NULL<span class='expansion'>__null</span></span>);</td></tr>
+<tr><td class="num" id="LN194">194</td><td class="line">    <span class='keyword'>if</span> (l1 != <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>) </td></tr>
+<tr><td class="num" id="LN195">195</td><td class="line">	pos_p_start_tag = bb_pos_ngram-&gt;get_vocab_word(get_c_string(l1));</td></tr>
+<tr><td class="num" id="LN196">196</td><td class="line">    l1 = siod_get_lval(<span class='string_literal'>"pos_pp_start_tag"</span>,<span class='macro'>NULL<span class='expansion'>__null</span></span>);</td></tr>
+<tr><td class="num" id="LN197">197</td><td class="line">    <span class='keyword'>if</span> (l1 != <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>) </td></tr>
+<tr><td class="num" id="LN198">198</td><td class="line">	pos_pp_start_tag = bb_pos_ngram-&gt;get_vocab_word(get_c_string(l1));</td></tr>
+<tr><td class="num" id="LN199">199</td><td class="line">    l1 = siod_get_lval(<span class='string_literal'>"pos_n_start_tag"</span>,<span class='macro'>NULL<span class='expansion'>__null</span></span>);</td></tr>
+<tr><td class="num" id="LN200">200</td><td class="line">    <span class='keyword'>if</span> (l1 != <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>) </td></tr>
+<tr><td class="num" id="LN201">201</td><td class="line">	pos_n_start_tag = bb_pos_ngram-&gt;get_vocab_word(get_c_string(l1));</td></tr>
+<tr><td class="num" id="LN202">202</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN203">203</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN204">204</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>void</span> phrasing_by_probmodels(EST_Utterance *u)</td></tr>
+<tr><td class="num" id="LN205">205</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN206">206</td><td class="line">    <span class='comment'>// Predict phrasing using POS and prob models of B distribution </span></td></tr>
+<tr><td class="num" id="LN207">207</td><td class="line">    EST_Item *w,*phr=0;</td></tr>
+<tr><td class="num" id="LN208">208</td><td class="line">    EST_String pbreak;</td></tr>
+<tr><td class="num" id="LN209">209</td><td class="line">    <span class='keyword'>int</span> num_states;</td></tr>
+<tr><td class="num" id="LN210">210</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN211">211</td><td class="line">    pbyp_get_params(siod_get_lval(<span class='string_literal'>"phr_break_params"</span>,<span class='macro'>NULL<span class='expansion'>__null</span></span>));</td></tr>
+<tr><td class="num" id="LN212">212</td><td class="line">    gc_protect(&amp;bb_tags);</td></tr>
+<tr><td class="num" id="LN213">213</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN214">214</td><td class="line">    <span class='keyword'>for</span> (w=u-&gt;relation(<span class='string_literal'>"Word"</span>)-&gt;first(); w != 0; w = w-&gt;next())</td></tr>
+<tr><td class="num" id="LN215">215</td><td class="line">    {   <span class='comment'>// Set up tag index for pos ngram</span></td></tr>
+<tr><td class="num" id="LN216">216</td><td class="line">	EST_String lpos = map_pos(pos_map,w-&gt;f(<span class='string_literal'>"pos"</span>).string());</td></tr>
+<tr><td class="num" id="LN217">217</td><td class="line">	w-&gt;set(<span class='string_literal'>"phr_pos"</span>,lpos);</td></tr>
+<tr><td class="num" id="LN218">218</td><td class="line">	w-&gt;set(<span class='string_literal'>"pos_index"</span>,bb_pos_ngram-&gt;get_vocab_word(lpos));</td></tr>
+<tr><td class="num" id="LN219">219</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN220">220</td><td class="line">    B_word = bb_ngram-&gt;get_vocab_word(<span class='string_literal'>"B"</span>);</td></tr>
+<tr><td class="num" id="LN221">221</td><td class="line">    NB_word = bb_ngram-&gt;get_vocab_word(<span class='string_literal'>"NB"</span>);</td></tr>
+<tr><td class="num" id="LN222">222</td><td class="line">    BB_word = bb_ngram-&gt;get_vocab_word(<span class='string_literal'>"BB"</span>);</td></tr>
+<tr><td class="num" id="LN223">223</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN224">224</td><td class="line">    num_states = bb_ngram-&gt;num_states();</td></tr>
+<tr><td class="num" id="LN225">225</td><td class="line">    EST_Viterbi_Decoder v(bb_candlist,bb_npath,num_states);</td></tr>
+<tr><td class="num" id="LN226">226</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN227">227</td><td class="line">    v.initialise(u-&gt;relation(<span class='string_literal'>"Word"</span>));</td></tr>
+<tr><td class="num" id="LN228">228</td><td class="line">    v.search();</td></tr>
+<tr><td class="num" id="LN229">229</td><td class="line">    v.result(<span class='string_literal'>"pbreak_index"</span>);</td></tr>
+<tr><td class="num" id="LN230">230</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN231">231</td><td class="line">    <span class='comment'>// Given predicted break, go through and add phrases </span></td></tr>
+<tr><td class="num" id="LN232">232</td><td class="line">    u-&gt;create_relation(<span class='string_literal'>"Phrase"</span>);</td></tr>
+<tr><td class="num" id="LN233">233</td><td class="line">    <span class='keyword'>for</span> (w=u-&gt;relation(<span class='string_literal'>"Word"</span>)-&gt;first(); w != 0; w = w-&gt;next())</td></tr>
+<tr><td class="num" id="LN234">234</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN235">235</td><td class="line">	w-&gt;set(<span class='string_literal'>"pbreak"</span>,bb_ngram-&gt;</td></tr>
+<tr><td class="num" id="LN236">236</td><td class="line">		 get_vocab_word(w-&gt;f(<span class='string_literal'>"pbreak_index"</span>).Int()));</td></tr>
+<tr><td class="num" id="LN237">237</td><td class="line">	<span class='keyword'>if</span> (phr == 0)</td></tr>
+<tr><td class="num" id="LN238">238</td><td class="line">	    phr = add_phrase(u);</td></tr>
+<tr><td class="num" id="LN239">239</td><td class="line">	append_daughter(phr,<span class='string_literal'>"Phrase"</span>,w);</td></tr>
+<tr><td class="num" id="LN240">240</td><td class="line">	<span class='keyword'>if</span> (phrase_type_tree != <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>)</td></tr>
+<tr><td class="num" id="LN241">241</td><td class="line">	{</td></tr>
+<tr><td class="num" id="LN242">242</td><td class="line">	    EST_Val npbreak = wagon_predict(w,phrase_type_tree);</td></tr>
+<tr><td class="num" id="LN243">243</td><td class="line">	    w-&gt;set(<span class='string_literal'>"pbreak"</span>,npbreak.string());  <span class='comment'>// may reset to BB</span></td></tr>
+<tr><td class="num" id="LN244">244</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN245">245</td><td class="line">	pbreak = (EST_String)w-&gt;f(<span class='string_literal'>"pbreak"</span>);</td></tr>
+<tr><td class="num" id="LN246">246</td><td class="line">	<span class='keyword'>if</span> (pbreak == <span class='string_literal'>"B"</span>)</td></tr>
+<tr><td class="num" id="LN247">247</td><td class="line">	    w-&gt;set(<span class='string_literal'>"blevel"</span>,3);</td></tr>
+<tr><td class="num" id="LN248">248</td><td class="line">	<span class='keyword'>else</span> <span class='keyword'>if</span> (pbreak == <span class='string_literal'>"mB"</span>)</td></tr>
+<tr><td class="num" id="LN249">249</td><td class="line">	    w-&gt;set(<span class='string_literal'>"blevel"</span>,2);</td></tr>
+<tr><td class="num" id="LN250">250</td><td class="line">	<span class='keyword'>if</span> ((pbreak == <span class='string_literal'>"B"</span>) || (pbreak == <span class='string_literal'>"BB"</span>) || (pbreak == <span class='string_literal'>"mB"</span>))</td></tr>
+<tr><td class="num" id="LN251">251</td><td class="line">	{</td></tr>
+<tr><td class="num" id="LN252">252</td><td class="line">	    phr-&gt;set_name((EST_String)pbreak);</td></tr>
+<tr><td class="num" id="LN253">253</td><td class="line">	    phr = 0;</td></tr>
+<tr><td class="num" id="LN254">254</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN255">255</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN256">256</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN257">257</td><td class="line">    gc_unprotect(&amp;bb_tags);</td></tr>
+<tr><td class="num" id="LN258">258</td><td class="line">    bb_tags = <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>;</td></tr>
+<tr><td class="num" id="LN259">259</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN260">260</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN261">261</td><td class="line"><span class='keyword'>static</span> EST_VTCandidate *bb_candlist(EST_Item *s,EST_Features &amp;f)</td></tr>
+<tr><td class="num" id="LN262">262</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN263">263</td><td class="line">    <span class='comment'>// Find candidates with a priori probabilities</span></td></tr>
+<tr><td class="num" id="LN264">264</td><td class="line">    EST_IVector window(bb_pos_ngram-&gt;order());</td></tr>
+<tr><td class="num" id="LN265">265</td><td class="line">    (<span class='keyword'>void</span>)f;</td></tr>
+<tr><td class="num" id="LN266">266</td><td class="line">    <span class='keyword'>int</span> tag;</td></tr>
+<tr><td class="num" id="LN267">267</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN268">268</td><td class="line">    <span class='keyword'>if</span> (bb_pos_ngram-&gt;order() == 4)</td></tr>
+<tr><td class="num" id="LN269">269</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN270">270</td><td class="line">	window[1] = s-&gt;I(<span class='string_literal'>"pos_index"</span>,0);</td></tr>
+<tr><td class="num" id="LN271">271</td><td class="line">	<span class='keyword'>if</span> (s-&gt;prev() != 0)</td></tr>
+<tr><td class="num" id="LN272">272</td><td class="line">	    window[0] = s-&gt;prev()-&gt;I(<span class='string_literal'>"pos_index"</span>,0);</td></tr>
+<tr><td class="num" id="LN273">273</td><td class="line">	<span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN274">274</td><td class="line">	    window[0] = pos_p_start_tag;</td></tr>
+<tr><td class="num" id="LN275">275</td><td class="line">	<span class='keyword'>if</span> (s-&gt;next() != 0)</td></tr>
+<tr><td class="num" id="LN276">276</td><td class="line">	    window[2] = s-&gt;next()-&gt;I(<span class='string_literal'>"pos_index"</span>,0);</td></tr>
+<tr><td class="num" id="LN277">277</td><td class="line">	<span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN278">278</td><td class="line">	    window[2] = pos_n_start_tag;</td></tr>
+<tr><td class="num" id="LN279">279</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN280">280</td><td class="line">    <span class='keyword'>else</span> <span class='keyword'>if</span> (bb_pos_ngram-&gt;order() == 3)</td></tr>
+<tr><td class="num" id="LN281">281</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN282">282</td><td class="line">	window[0] = s-&gt;I(<span class='string_literal'>"pos_index"</span>,0);</td></tr>
+<tr><td class="num" id="LN283">283</td><td class="line">	<span class='keyword'>if</span> (s-&gt;next() != 0)</td></tr>
+<tr><td class="num" id="LN284">284</td><td class="line">	    window[1] = s-&gt;next()-&gt;I(<span class='string_literal'>"pos_index"</span>,0);</td></tr>
+<tr><td class="num" id="LN285">285</td><td class="line">	<span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN286">286</td><td class="line">	    window[1] = pos_n_start_tag;</td></tr>
+<tr><td class="num" id="LN287">287</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN288">288</td><td class="line">    <span class='keyword'>else</span> <span class='keyword'>if</span> (bb_pos_ngram-&gt;order() == 5)</td></tr>
+<tr><td class="num" id="LN289">289</td><td class="line">    {   <span class='comment'>// This is specific for some set of pos tagsets</span></td></tr>
+<tr><td class="num" id="LN290">290</td><td class="line">	window[2] = s-&gt;I(<span class='string_literal'>"pos_index"</span>,0);</td></tr>
+<tr><td class="num" id="LN291">291</td><td class="line">	<span class='keyword'>if</span> (s-&gt;prev() != 0)</td></tr>
+<tr><td class="num" id="LN292">292</td><td class="line">	{</td></tr>
+<tr><td class="num" id="LN293">293</td><td class="line">	    window[1] = s-&gt;prev()-&gt;I(<span class='string_literal'>"pos_index"</span>,0);</td></tr>
+<tr><td class="num" id="LN294">294</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN295">295</td><td class="line">	<span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN296">296</td><td class="line">	{</td></tr>
+<tr><td class="num" id="LN297">297</td><td class="line">	    window[1] = pos_p_start_tag;</td></tr>
+<tr><td class="num" id="LN298">298</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN299">299</td><td class="line">	<span class='keyword'>if</span> (s-&gt;next() != 0)</td></tr>
+<tr><td class="num" id="LN300">300</td><td class="line">	{</td></tr>
+<tr><td class="num" id="LN301">301</td><td class="line">	    window[3] = s-&gt;next()-&gt;I(<span class='string_literal'>"pos_index"</span>,0);</td></tr>
+<tr><td class="num" id="LN302">302</td><td class="line">	    <span class='keyword'>if</span> (s-&gt;next()-&gt;next() != 0)</td></tr>
+<tr><td class="num" id="LN303">303</td><td class="line">		window[0] = s-&gt;next()-&gt;next()-&gt;I(<span class='string_literal'>"pos_index"</span>,0);</td></tr>
+<tr><td class="num" id="LN304">304</td><td class="line">	    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN305">305</td><td class="line">		window[0] = 0;</td></tr>
+<tr><td class="num" id="LN306">306</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN307">307</td><td class="line">	<span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN308">308</td><td class="line">	{</td></tr>
+<tr><td class="num" id="LN309">309</td><td class="line">	    window[3] = pos_n_start_tag;</td></tr>
+<tr><td class="num" id="LN310">310</td><td class="line">	    window[0] = 0;</td></tr>
+<tr><td class="num" id="LN311">311</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN312">312</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN313">313</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN314">314</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN315">315</td><td class="line">	cerr &lt;&lt; <span class='string_literal'>"PHRASIFY: can't deal with ngram of size "</span> &lt;&lt;</td></tr>
+<tr><td class="num" id="LN316">316</td><td class="line">	    bb_pos_ngram-&gt;order() &lt;&lt; endl;</td></tr>
+<tr><td class="num" id="LN317">317</td><td class="line">	<span class='macro'>festival_error()<span class='expansion'>(errjmp_ok ? longjmp(*est_errjmp,1) : festival_tidy_up(),exit<br>(-1))</span></span>;</td></tr>
+<tr><td class="num" id="LN318">318</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN319">319</td><td class="line">    <span class='keyword'>double</span> prob=1.0;</td></tr>
+<tr><td class="num" id="LN320">320</td><td class="line">    EST_VTCandidate *all_c = 0;</td></tr>
+<tr><td class="num" id="LN321">321</td><td class="line">    EST_Val labelled_brk = ffeature(s,<span class='string_literal'>"R:Token.parent.pbreak"</span>);</td></tr>
+<tr><td class="num" id="LN322">322</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN323">323</td><td class="line">    <span class='keyword'>if</span> ((labelled_brk != <span class='string_literal'>"0"</span>) &amp;&amp;</td></tr>
+<tr><td class="num" id="LN324">324</td><td class="line">	(ffeature(s,<span class='string_literal'>"R:Token.n.name"</span>) == <span class='string_literal'>"0"</span>)) <span class='comment'>// last word in token</span></td></tr>
+<tr><td class="num" id="LN325">325</td><td class="line">    {   <span class='comment'>// there is a labelled break on the token so respect it </span></td></tr>
+<tr><td class="num" id="LN326">326</td><td class="line">	EST_VTCandidate *c = <span class='keyword'>new</span> EST_VTCandidate;</td></tr>
+<tr><td class="num" id="LN327">327</td><td class="line">	c-&gt;s = s;</td></tr>
+<tr><td class="num" id="LN328">328</td><td class="line">	c-&gt;name = bb_ngram-&gt;get_vocab_word(labelled_brk.string());</td></tr>
+<tr><td class="num" id="LN329">329</td><td class="line">	c-&gt;score = log(0.95);  <span class='comment'>// very very likely, but not absolute</span></td></tr>
+<tr><td class="num" id="LN330">330</td><td class="line">	c-&gt;next = all_c;</td></tr>
+<tr><td class="num" id="LN331">331</td><td class="line">	all_c = c;  <span class='comment'>// but then if you give only one option ...</span></td></tr>
+<tr><td class="num" id="LN332">332</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN333">333</td><td class="line">    <span class='keyword'>else</span> <span class='keyword'>if</span> (s-&gt;next() == 0)  <span class='comment'>// end of utterances so force a break</span></td></tr>
+<tr><td class="num" id="LN334">334</td><td class="line">    {   </td></tr>
+<tr><td class="num" id="LN335">335</td><td class="line">	EST_VTCandidate *c = <span class='keyword'>new</span> EST_VTCandidate;</td></tr>
+<tr><td class="num" id="LN336">336</td><td class="line">	c-&gt;s = s;</td></tr>
+<tr><td class="num" id="LN337">337</td><td class="line">	c-&gt;name = B_word;</td></tr>
+<tr><td class="num" id="LN338">338</td><td class="line">	c-&gt;score = log(0.95);  <span class='comment'>// very very likely, but not absolute</span></td></tr>
+<tr><td class="num" id="LN339">339</td><td class="line">	c-&gt;next = all_c;</td></tr>
+<tr><td class="num" id="LN340">340</td><td class="line">	all_c = c;</td></tr>
+<tr><td class="num" id="LN341">341</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN342">342</td><td class="line">    <span class='keyword'>else</span> <span class='keyword'>if</span> (s-&gt;name() == <span class='string_literal'>".end_utt"</span>)</td></tr>
+<tr><td class="num" id="LN343">343</td><td class="line">    {   <span class='comment'>// This is a quick check to see if forcing "." to B is worth it</span></td></tr>
+<tr><td class="num" id="LN344">344</td><td class="line">	EST_VTCandidate *c = <span class='keyword'>new</span> EST_VTCandidate;</td></tr>
+<tr><td class="num" id="LN345">345</td><td class="line">	c-&gt;s = s;</td></tr>
+<tr><td class="num" id="LN346">346</td><td class="line">	c-&gt;name = B_word;</td></tr>
+<tr><td class="num" id="LN347">347</td><td class="line">	c-&gt;score = log(0.95);  <span class='comment'>// very very likely, but not absolute</span></td></tr>
+<tr><td class="num" id="LN348">348</td><td class="line">	c-&gt;next = all_c;</td></tr>
+<tr><td class="num" id="LN349">349</td><td class="line">	all_c = c;</td></tr>
+<tr><td class="num" id="LN350">350</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN351">351</td><td class="line">    <span class='keyword'>else</span> <span class='keyword'>if</span> (siod_get_lval(<span class='string_literal'>"break_non_bayes"</span>,<span class='macro'>NULL<span class='expansion'>__null</span></span>) != <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>)</td></tr>
+<tr><td class="num" id="LN352">352</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN353">353</td><td class="line">        <span class='comment'>/* This uses the "wrong" formula to extract the  probability      */</span></td></tr>
+<tr><td class="num" id="LN354">354</td><td class="line">        <span class='comment'>/* Extract P(B | context) rather than P(context | B) as below     */</span></td></tr>
+<tr><td class="num" id="LN355">355</td><td class="line">        <span class='comment'>/* This gives worse results as well as not following Bayes        */</span></td></tr>
+<tr><td class="num" id="LN356">356</td><td class="line">        <span class='comment'>/* equations                                                      */</span></td></tr>
+<tr><td class="num" id="LN357">357</td><td class="line">	EST_VTCandidate *c;</td></tr>
+<tr><td class="num" id="LN358">358</td><td class="line">	LISP l;</td></tr>
+<tr><td class="num" id="LN359">359</td><td class="line">	<span class='keyword'>for</span> (l=bb_tags; l != 0; l=cdr(l))</td></tr>
+<tr><td class="num" id="LN360">360</td><td class="line">	{</td></tr>
+<tr><td class="num" id="LN361">361</td><td class="line">	    c = <span class='keyword'>new</span> EST_VTCandidate;</td></tr>
+<tr><td class="num" id="LN362">362</td><td class="line">	    c-&gt;s = s;</td></tr>
+<tr><td class="num" id="LN363">363</td><td class="line">	    tag = bb_ngram-&gt;get_vocab_word(get_c_string(car(l)));</td></tr>
+<tr><td class="num" id="LN364">364</td><td class="line">	    c-&gt;name = tag;</td></tr>
+<tr><td class="num" id="LN365">365</td><td class="line">	    window[bb_pos_ngram-&gt;order()-1] = tag;</td></tr>
+<tr><td class="num" id="LN366">366</td><td class="line">	    <span class='keyword'>const</span> EST_DiscreteProbDistribution &amp;pd = </td></tr>
+<tr><td class="num" id="LN367">367</td><td class="line">		bb_pos_ngram-&gt;prob_dist(window);</td></tr>
+<tr><td class="num" id="LN368">368</td><td class="line">	    <span class='keyword'>if</span> (pd.samples() == 0)</td></tr>
+<tr><td class="num" id="LN369">369</td><td class="line">	    {</td></tr>
+<tr><td class="num" id="LN370">370</td><td class="line">		<span class='keyword'>if</span> (tag == B_word)</td></tr>
+<tr><td class="num" id="LN371">371</td><td class="line">		    prob = 0.2;</td></tr>
+<tr><td class="num" id="LN372">372</td><td class="line">		<span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN373">373</td><td class="line">		    prob = 0.8;</td></tr>
+<tr><td class="num" id="LN374">374</td><td class="line">	    }</td></tr>
+<tr><td class="num" id="LN375">375</td><td class="line">	    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN376">376</td><td class="line">		prob = pd.probability(tag);</td></tr>
+<tr><td class="num" id="LN377">377</td><td class="line">	    <span class='keyword'>if</span> (prob == 0)</td></tr>
+<tr><td class="num" id="LN378">378</td><td class="line">		c-&gt;score = log(0.0000001);</td></tr>
+<tr><td class="num" id="LN379">379</td><td class="line">	    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN380">380</td><td class="line">		c-&gt;score = log(prob);</td></tr>
+<tr><td class="num" id="LN381">381</td><td class="line">	    c-&gt;next = all_c;</td></tr>
+<tr><td class="num" id="LN382">382</td><td class="line">	    all_c = c;</td></tr>
+<tr><td class="num" id="LN383">383</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN384">384</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN385">385</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN386">386</td><td class="line">    {   <span class='comment'>// Standard Bayes model</span></td></tr>
+<tr><td class="num" id="LN387">387</td><td class="line">	EST_VTCandidate *c;</td></tr>
+<tr><td class="num" id="LN388">388</td><td class="line">	LISP l;</td></tr>
+<tr><td class="num" id="LN389">389</td><td class="line">	<span class='keyword'>for</span> (l=bb_tags; l != 0; l=cdr(l))</td></tr>
+<tr><td class="num" id="LN390">390</td><td class="line">	{</td></tr>
+<tr><td class="num" id="LN391">391</td><td class="line">	    c = <span class='keyword'>new</span> EST_VTCandidate;</td></tr>
+<tr><td class="num" id="LN392">392</td><td class="line">	    c-&gt;s = s;</td></tr>
+<tr><td class="num" id="LN393">393</td><td class="line">	    tag = bb_ngram-&gt;get_vocab_word(get_c_string(car(l)));</td></tr>
+<tr><td class="num" id="LN394">394</td><td class="line">	    c-&gt;name = tag;</td></tr>
+<tr><td class="num" id="LN395">395</td><td class="line">	    window[bb_pos_ngram-&gt;order()-1] = tag;</td></tr>
+<tr><td class="num" id="LN396">396</td><td class="line">	    prob = bb_pos_ngram-&gt;reverse_probability(window);</td></tr>
+<tr><td class="num" id="LN397">397</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN398">398</td><td class="line">	    <span class='comment'>// If this word came from inside a token reduce the</span></td></tr>
+<tr><td class="num" id="LN399">399</td><td class="line">	    <span class='comment'>// probability of a break</span></td></tr>
+<tr><td class="num" id="LN400">400</td><td class="line"> 	    <span class='keyword'>if</span> ((ffeature(s,<span class='string_literal'>"R:Token.n.name"</span>) != <span class='string_literal'>"0"</span>) &amp;&amp;</td></tr>
+<tr><td class="num" id="LN401">401</td><td class="line">		((s-&gt;as_relation(<span class='string_literal'>"Token"</span>)-&gt;first()-&gt;length()) &lt; 7))</td></tr>
+<tr><td class="num" id="LN402">402</td><td class="line"> 	    {</td></tr>
+<tr><td class="num" id="LN403">403</td><td class="line"> 		<span class='keyword'>float</span> weight = ffeature(s,<span class='string_literal'>"pbreak_scale"</span>);</td></tr>
+<tr><td class="num" id="LN404">404</td><td class="line"> 		<span class='keyword'>if</span> (weight == 0) weight = 0.5;</td></tr>
+<tr><td class="num" id="LN405">405</td><td class="line"> 		<span class='keyword'>if</span> (tag == B_word)</td></tr>
+<tr><td class="num" id="LN406">406</td><td class="line"> 		    prob *= weight;</td></tr>
+<tr><td class="num" id="LN407">407</td><td class="line"> 		<span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN408">408</td><td class="line"> 		    prob = 1.0-((1.0-prob)*weight);</td></tr>
+<tr><td class="num" id="LN409">409</td><td class="line"> 	    }</td></tr>
+<tr><td class="num" id="LN410">410</td><td class="line">	    <span class='keyword'>if</span> (prob == 0)</td></tr>
+<tr><td class="num" id="LN411">411</td><td class="line">		c-&gt;score = log(0.0000001);</td></tr>
+<tr><td class="num" id="LN412">412</td><td class="line">	    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN413">413</td><td class="line">		c-&gt;score = log(prob);</td></tr>
+<tr><td class="num" id="LN414">414</td><td class="line">	    s-&gt;set(<span class='string_literal'>"phrase_score"</span>,c-&gt;score);</td></tr>
+<tr><td class="num" id="LN415">415</td><td class="line">	    c-&gt;next = all_c;</td></tr>
+<tr><td class="num" id="LN416">416</td><td class="line">	    all_c = c;</td></tr>
+<tr><td class="num" id="LN417">417</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN418">418</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN419">419</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN420">420</td><td class="line">    <span class='keyword'>return</span> all_c;</td></tr>
+<tr><td class="num" id="LN421">421</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN422">422</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN423">423</td><td class="line"><span class='keyword'>static</span> EST_VTPath *bb_npath(EST_VTPath *p,EST_VTCandidate *c,EST_Features &amp;f)</td></tr>
+<tr><td class="num" id="LN424">424</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN425">425</td><td class="line">    EST_VTPath *np = <span class='keyword'>new</span> EST_VTPath;</td></tr>
+<tr><td class="num" id="LN426">426</td><td class="line">    (<span class='keyword'>void</span>)f;</td></tr>
+<tr><td class="num" id="LN427">427</td><td class="line"><span class='comment'>//    static EST_String lscorename("lscore");</span></td></tr>
+<tr><td class="num" id="LN428">428</td><td class="line">    <span class='keyword'>double</span> prob;</td></tr>
+<tr><td class="num" id="LN429">429</td><td class="line">    <span class='keyword'>double</span> lprob,lang_prob;</td></tr>
+<tr><td class="num" id="LN430">430</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN431">431</td><td class="line">    np-&gt;c = c;</td></tr>
+<tr><td class="num" id="LN432">432</td><td class="line">    np-&gt;from = p;</td></tr>
+<tr><td class="num" id="LN433">433</td><td class="line">    <span class='keyword'>int</span> n = c-&gt;name.Int();</td></tr>
+<tr><td class="num" id="LN434">434</td><td class="line">    prob = find_b_prob(p,n,&amp;np-&gt;state);</td></tr>
+<tr><td class="num" id="LN435">435</td><td class="line">    <span class='keyword'>if</span> (np-&gt;state == -1)</td></tr>
+<tr><td class="num" id="LN436">436</td><td class="line">	prob = find_b_prob(p,n,&amp;np-&gt;state);</td></tr>
+<tr><td class="num" id="LN437">437</td><td class="line">    <span class='keyword'>if</span> (prob == 0)</td></tr>
+<tr><td class="num" id="LN438">438</td><td class="line">	lprob = log(0.00000001);</td></tr>
+<tr><td class="num" id="LN439">439</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN440">440</td><td class="line">	lprob = log(prob);</td></tr>
+<tr><td class="num" id="LN441">441</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN442">442</td><td class="line">    lang_prob = <span class="mrange">(1.0 * c-&gt;score) + gscale_p</span>;</td></tr>
+<tr><td class="num"></td><td class="line"><div id="EndPath" class="msg msgEvent" style="margin-left:5ex">Value stored to 'lang_prob' is never read</div></td></tr>
+<tr><td class="num" id="LN443">443</td><td class="line">    lang_prob = c-&gt;score;</td></tr>
+<tr><td class="num" id="LN444">444</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN445">445</td><td class="line"><span class='comment'>//    np-&gt;set_feature(lscorename,lang_prob+lprob);</span></td></tr>
+<tr><td class="num" id="LN446">446</td><td class="line">    <span class='keyword'>if</span> (p==0)</td></tr>
+<tr><td class="num" id="LN447">447</td><td class="line">	np-&gt;score = (lang_prob+lprob);</td></tr>
+<tr><td class="num" id="LN448">448</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN449">449</td><td class="line">	np-&gt;score = (lang_prob+lprob) + p-&gt;score;</td></tr>
+<tr><td class="num" id="LN450">450</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN451">451</td><td class="line">    <span class='keyword'>return</span> np;</td></tr>
+<tr><td class="num" id="LN452">452</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN453">453</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN454">454</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>double</span> find_b_prob(EST_VTPath *p,<span class='keyword'>int</span> n,<span class='keyword'>int</span> *state)</td></tr>
+<tr><td class="num" id="LN455">455</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN456">456</td><td class="line">    <span class='keyword'>int</span> oldstate=0;</td></tr>
+<tr><td class="num" id="LN457">457</td><td class="line">    <span class='keyword'>double</span> prob;</td></tr>
+<tr><td class="num" id="LN458">458</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN459">459</td><td class="line">    <span class='keyword'>if</span> (p == 0)</td></tr>
+<tr><td class="num" id="LN460">460</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN461">461</td><td class="line">	<span class='keyword'>int</span> order = bb_ngram-&gt;order();</td></tr>
+<tr><td class="num" id="LN462">462</td><td class="line">	EST_IVector window(order);</td></tr>
+<tr><td class="num" id="LN463">463</td><td class="line">	<span class='keyword'>int</span> i;</td></tr>
+<tr><td class="num" id="LN464">464</td><td class="line">	window.a_no_check(order-1) = n;</td></tr>
+<tr><td class="num" id="LN465">465</td><td class="line">	window.a_no_check(order-2) = B_word;</td></tr>
+<tr><td class="num" id="LN466">466</td><td class="line">	<span class='keyword'>for</span> (i=order-3; i&gt;=0; i--)</td></tr>
+<tr><td class="num" id="LN467">467</td><td class="line">	    window.a_no_check(i) = NB_word;</td></tr>
+<tr><td class="num" id="LN468">468</td><td class="line">	oldstate = bb_ngram-&gt;find_state_id(window);</td></tr>
+<tr><td class="num" id="LN469">469</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN470">470</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN471">471</td><td class="line">	oldstate = p-&gt;state;</td></tr>
+<tr><td class="num" id="LN472">472</td><td class="line">    <span class='keyword'>const</span> EST_DiscreteProbDistribution &amp;pd = bb_ngram-&gt;prob_dist(oldstate);</td></tr>
+<tr><td class="num" id="LN473">473</td><td class="line">    <span class='keyword'>if</span> (pd.samples() == 0)</td></tr>
+<tr><td class="num" id="LN474">474</td><td class="line">	prob = 0;</td></tr>
+<tr><td class="num" id="LN475">475</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN476">476</td><td class="line">	prob = (<span class='keyword'>double</span>)pd.probability(n);</td></tr>
+<tr><td class="num" id="LN477">477</td><td class="line">    <span class='comment'>// This is too specific</span></td></tr>
+<tr><td class="num" id="LN478">478</td><td class="line">    <span class='keyword'>if</span> (n == B_word)</td></tr>
+<tr><td class="num" id="LN479">479</td><td class="line">	prob *= gscale_s;</td></tr>
+<tr><td class="num" id="LN480">480</td><td class="line">    *state = bb_ngram-&gt;find_next_state_id(oldstate,n);</td></tr>
+<tr><td class="num" id="LN481">481</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN482">482</td><td class="line">    <span class='keyword'>return</span> prob;</td></tr>
+<tr><td class="num" id="LN483">483</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN484">484</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN485">485</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN486">486</td><td class="line"><span class='comment'>/* Part of Interslice */</span></td></tr>
+<tr><td class="num" id="LN487">487</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN488">488</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>double</span> find_b_faprob(EST_VTPath *p,<span class='keyword'>int</span> n,<span class='keyword'>int</span> *state)</td></tr>
+<tr><td class="num" id="LN489">489</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN490">490</td><td class="line">    <span class='keyword'>int</span> oldstate=0;</td></tr>
+<tr><td class="num" id="LN491">491</td><td class="line">    <span class='keyword'>int</span> i,j;</td></tr>
+<tr><td class="num" id="LN492">492</td><td class="line">    EST_VTPath *d;</td></tr>
+<tr><td class="num" id="LN493">493</td><td class="line">    <span class='keyword'>double</span> prob;</td></tr>
+<tr><td class="num" id="LN494">494</td><td class="line">    <span class='keyword'>double</span> atime, wtime, wstddev=0, z;</td></tr>
+<tr><td class="num" id="LN495">495</td><td class="line">    <span class='keyword'>static</span> <span class='keyword'>int</span> ATOTH_BREAK=2;</td></tr>
+<tr><td class="num" id="LN496">496</td><td class="line">    <span class='keyword'>static</span> <span class='keyword'>int</span> ATOTH_NBREAK=1;</td></tr>
+<tr><td class="num" id="LN497">497</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN498">498</td><td class="line">    <span class='keyword'>if</span> (p == 0)</td></tr>
+<tr><td class="num" id="LN499">499</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN500">500</td><td class="line">	oldstate = 0;</td></tr>
+<tr><td class="num" id="LN501">501</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN502">502</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN503">503</td><td class="line">	oldstate = p-&gt;state;</td></tr>
+<tr><td class="num" id="LN504">504</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN505">505</td><td class="line"><span class='comment'>/*    if (streq("of",</span></td></tr>
+<tr><td class="num" id="LN506">506</td><td class="line">	      <span class='comment'>( p &amp;&amp; p-&gt;c &amp;&amp; p-&gt;c-&gt;s ? (const char *)ffeature(p-&gt;c-&gt;s,"name").String() : "null")))</span></td></tr>
+<tr><td class="num" id="LN507">507</td><td class="line">	      <span class='comment'>printf("ding\n"); */</span></td></tr>
+<tr><td class="num" id="LN508">508</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN509">509</td><td class="line">    <span class='comment'>// Prob is the prob that time since last break could be </span></td></tr>
+<tr><td class="num" id="LN510">510</td><td class="line">    <span class='comment'>// generated by the duration model </span></td></tr>
+<tr><td class="num" id="LN511">511</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN512">512</td><td class="line">    <span class='comment'>// Skip over break if we're at one</span></td></tr>
+<tr><td class="num" id="LN513">513</td><td class="line">    <span class='keyword'>for</span> (i = oldstate; i &lt; bb_track-&gt;num_frames(); i++)</td></tr>
+<tr><td class="num" id="LN514">514</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN515">515</td><td class="line">	<span class='keyword'>if</span> (bb_track-&gt;a(i,0) == ATOTH_NBREAK)</td></tr>
+<tr><td class="num" id="LN516">516</td><td class="line">	    <span class='keyword'>break</span>;</td></tr>
+<tr><td class="num" id="LN517">517</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN518">518</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN519">519</td><td class="line">    <span class='comment'>// time since last break in words with std</span></td></tr>
+<tr><td class="num" id="LN520">520</td><td class="line">    <span class='keyword'>for</span> (wstddev=wtime=0.0,d=p; d ; d=d-&gt;from)</td></tr>
+<tr><td class="num" id="LN521">521</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN522">522</td><td class="line">	wtime += ffeature(d-&gt;c-&gt;s,<span class='string_literal'>"word_duration"</span>).Float();</td></tr>
+<tr><td class="num" id="LN523">523</td><td class="line">	wstddev += ffeature(d-&gt;c-&gt;s,<span class='string_literal'>"lisp_word_stddev"</span>).Float();</td></tr>
+<tr><td class="num" id="LN524">524</td><td class="line">	<span class='keyword'>if</span> (bb_track-&gt;a(d-&gt;state,0) == ATOTH_BREAK)</td></tr>
+<tr><td class="num" id="LN525">525</td><td class="line">	    <span class='keyword'>break</span>;</td></tr>
+<tr><td class="num" id="LN526">526</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN527">527</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN528">528</td><td class="line">    <span class='comment'>// time since last break in acoustics</span></td></tr>
+<tr><td class="num" id="LN529">529</td><td class="line">    <span class='keyword'>for</span> (atime=0.01,j=i; j&gt;0; j--)</td></tr>
+<tr><td class="num" id="LN530">530</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN531">531</td><td class="line">	<span class='keyword'>if</span> (bb_track-&gt;a(j,0) == ATOTH_BREAK)</td></tr>
+<tr><td class="num" id="LN532">532</td><td class="line">	    <span class='keyword'>break</span>;</td></tr>
+<tr><td class="num" id="LN533">533</td><td class="line">	atime += bb_track-&gt;t(j) - ( i == 0 ? 0 : bb_track-&gt;t(j-1));</td></tr>
+<tr><td class="num" id="LN534">534</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN535">535</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN536">536</td><td class="line">    <span class='comment'>// Find best state for give time </span></td></tr>
+<tr><td class="num" id="LN537">537</td><td class="line">    <span class='keyword'>if</span> (wstddev == 0)</td></tr>
+<tr><td class="num" id="LN538">538</td><td class="line">	i++;</td></tr>
+<tr><td class="num" id="LN539">539</td><td class="line">    <span class='keyword'>else</span> <span class='keyword'>if</span> (n == B_word)</td></tr>
+<tr><td class="num" id="LN540">540</td><td class="line">    {   <span class='comment'>/* cost of having a break here */</span></td></tr>
+<tr><td class="num" id="LN541">541</td><td class="line">	<span class='comment'>/* extend acoustics until next break */</span></td></tr>
+<tr><td class="num" id="LN542">542</td><td class="line">	<span class='keyword'>for</span> (; i &lt; bb_track-&gt;num_frames(); i++)</td></tr>
+<tr><td class="num" id="LN543">543</td><td class="line">	{</td></tr>
+<tr><td class="num" id="LN544">544</td><td class="line">	    <span class='keyword'>if</span> (bb_track-&gt;a(i,0) == ATOTH_BREAK)</td></tr>
+<tr><td class="num" id="LN545">545</td><td class="line">		<span class='keyword'>break</span>;</td></tr>
+<tr><td class="num" id="LN546">546</td><td class="line">	    atime += bb_track-&gt;t(i) - ( i == 0 ? 0 : bb_track-&gt;t(i-1));</td></tr>
+<tr><td class="num" id="LN547">547</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN548">548</td><td class="line">	z = fabs((atime-wtime)/wstddev);</td></tr>
+<tr><td class="num" id="LN549">549</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN550">550</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN551">551</td><td class="line">    {   <span class='comment'>/* cost of having a non-break here */</span></td></tr>
+<tr><td class="num" id="LN552">552</td><td class="line">	<span class='keyword'>for</span> ( i++,z = fabs((atime-wtime)/wstddev); </td></tr>
+<tr><td class="num" id="LN553">553</td><td class="line">	      (i &lt; bb_track-&gt;num_frames()) &amp;&amp; (bb_track-&gt;a(i,0) == ATOTH_NBREAK);</td></tr>
+<tr><td class="num" id="LN554">554</td><td class="line">	      i++)</td></tr>
+<tr><td class="num" id="LN555">555</td><td class="line">	{</td></tr>
+<tr><td class="num" id="LN556">556</td><td class="line">	    atime += bb_track-&gt;t(i) - ( i == 0 ? 0 : bb_track-&gt;t(i-1));</td></tr>
+<tr><td class="num" id="LN557">557</td><td class="line"><span class='comment'>/*	    printf("better atime %f wtime %f wstddev %f z %f new z %f\n",</span></td></tr>
+<tr><td class="num" id="LN558">558</td><td class="line">		   <span class='comment'>atime,wtime,wstddev,z,</span></td></tr>
+<tr><td class="num" id="LN559">559</td><td class="line">		   <span class='comment'>fabs((atime-wtime)/wstddev)); */</span></td></tr>
+<tr><td class="num" id="LN560">560</td><td class="line">	    <span class='keyword'>if</span> (fabs((atime-wtime)/wstddev) &gt; (<span class='keyword'>float</span>)z)</td></tr>
+<tr><td class="num" id="LN561">561</td><td class="line">		<span class='keyword'>break</span>;</td></tr>
+<tr><td class="num" id="LN562">562</td><td class="line">	    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN563">563</td><td class="line">		z = fabs((atime-wtime)/wstddev);</td></tr>
+<tr><td class="num" id="LN564">564</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN565">565</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN566">566</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN567">567</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN568">568</td><td class="line">    <span class='keyword'>if</span> (d &amp;&amp; d-&gt;c &amp;&amp; d-&gt;c-&gt;s &amp;&amp; (d-&gt;c-&gt;s-&gt;next()-&gt;next()) == <span class='macro'>NULL<span class='expansion'>__null</span></span>)</td></tr>
+<tr><td class="num" id="LN569">569</td><td class="line">    {   <span class='comment'>/* must be in final state */</span></td></tr>
+<tr><td class="num" id="LN570">570</td><td class="line">	printf(<span class='string_literal'>"must be in final state\n"</span>);</td></tr>
+<tr><td class="num" id="LN571">571</td><td class="line">	<span class='keyword'>if</span> (i != bb_track-&gt;num_frames())</td></tr>
+<tr><td class="num" id="LN572">572</td><td class="line">	    z = 0.000001;</td></tr>
+<tr><td class="num" id="LN573">573</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN574">574</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN575">575</td><td class="line">    <span class='keyword'>if</span> (z == 0)</td></tr>
+<tr><td class="num" id="LN576">576</td><td class="line">	printf(<span class='string_literal'>"z == 0"</span>);</td></tr>
+<tr><td class="num" id="LN577">577</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN578">578</td><td class="line">    <span class='comment'>/* number hack */</span></td></tr>
+<tr><td class="num" id="LN579">579</td><td class="line">    prob = (2.0 - z)/2.0;</td></tr>
+<tr><td class="num" id="LN580">580</td><td class="line"><span class='comment'>/*    prob = z; */</span></td></tr>
+<tr><td class="num" id="LN581">581</td><td class="line">    <span class='keyword'>if</span> (prob &lt; 0.000001)</td></tr>
+<tr><td class="num" id="LN582">582</td><td class="line">	prob = 0.000001;</td></tr>
+<tr><td class="num" id="LN583">583</td><td class="line">    <span class='keyword'>else</span> <span class='keyword'>if</span> (prob &gt; 0.999999)</td></tr>
+<tr><td class="num" id="LN584">584</td><td class="line">	prob = 0.999999;</td></tr>
+<tr><td class="num" id="LN585">585</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN586">586</td><td class="line">    <span class='comment'>// prob of atime given (wtime,wstddev)</span></td></tr>
+<tr><td class="num" id="LN587">587</td><td class="line">    printf(<span class='string_literal'>"%d %d %f %f %f %f %s %s %f\n"</span>,oldstate,i,atime,wtime,wstddev,z,</td></tr>
+<tr><td class="num" id="LN588">588</td><td class="line">	   ( p &amp;&amp; p-&gt;c &amp;&amp; p-&gt;c-&gt;s ? (<span class='keyword'>const</span> <span class='keyword'>char</span> *)ffeature(p-&gt;c-&gt;s,<span class='string_literal'>"name"</span>).String() : <span class='string_literal'>"null"</span>),</td></tr>
+<tr><td class="num" id="LN589">589</td><td class="line">	   ( n == B_word ? <span class='string_literal'>"B"</span> : <span class='string_literal'>"NB"</span>),</td></tr>
+<tr><td class="num" id="LN590">590</td><td class="line">	   prob</td></tr>
+<tr><td class="num" id="LN591">591</td><td class="line">	   );</td></tr>
+<tr><td class="num" id="LN592">592</td><td class="line">    <span class='keyword'>if</span> (i &gt;=  bb_track-&gt;num_frames())</td></tr>
+<tr><td class="num" id="LN593">593</td><td class="line">	i =  bb_track-&gt;num_frames() - 1;</td></tr>
+<tr><td class="num" id="LN594">594</td><td class="line">    *state = i;</td></tr>
+<tr><td class="num" id="LN595">595</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN596">596</td><td class="line">    <span class='keyword'>return</span> prob;</td></tr>
+<tr><td class="num" id="LN597">597</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN598">598</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN599">599</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN600">600</td><td class="line"><span class='keyword'>static</span> EST_VTPath *bb_fapath(EST_VTPath *p,EST_VTCandidate *c,EST_Features &amp;f)</td></tr>
+<tr><td class="num" id="LN601">601</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN602">602</td><td class="line">    EST_VTPath *np = <span class='keyword'>new</span> EST_VTPath;</td></tr>
+<tr><td class="num" id="LN603">603</td><td class="line">    (<span class='keyword'>void</span>)f;</td></tr>
+<tr><td class="num" id="LN604">604</td><td class="line"><span class='comment'>//    static EST_String lscorename("lscore");</span></td></tr>
+<tr><td class="num" id="LN605">605</td><td class="line">    <span class='keyword'>double</span> prob;</td></tr>
+<tr><td class="num" id="LN606">606</td><td class="line">    <span class='keyword'>double</span> lprob,lang_prob;</td></tr>
+<tr><td class="num" id="LN607">607</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN608">608</td><td class="line">    np-&gt;c = c;</td></tr>
+<tr><td class="num" id="LN609">609</td><td class="line">    np-&gt;from = p;</td></tr>
+<tr><td class="num" id="LN610">610</td><td class="line">    <span class='keyword'>int</span> n = c-&gt;name.Int();</td></tr>
+<tr><td class="num" id="LN611">611</td><td class="line">    prob = find_b_faprob(p,n,&amp;np-&gt;state);</td></tr>
+<tr><td class="num" id="LN612">612</td><td class="line">    <span class='keyword'>if</span> (prob == 0)</td></tr>
+<tr><td class="num" id="LN613">613</td><td class="line">	lprob = log(0.00000001);</td></tr>
+<tr><td class="num" id="LN614">614</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN615">615</td><td class="line">	lprob = log(prob);</td></tr>
+<tr><td class="num" id="LN616">616</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN617">617</td><td class="line">    lang_prob = (1.0 * c-&gt;score) + gscale_p;</td></tr>
+<tr><td class="num" id="LN618">618</td><td class="line">    lang_prob = c-&gt;score;</td></tr>
+<tr><td class="num" id="LN619">619</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN620">620</td><td class="line"><span class='comment'>//    np-&gt;set_feature(lscorename,lang_prob+lprob);</span></td></tr>
+<tr><td class="num" id="LN621">621</td><td class="line">    <span class='keyword'>if</span> (p==0)</td></tr>
+<tr><td class="num" id="LN622">622</td><td class="line">	np-&gt;score = (lang_prob+lprob);</td></tr>
+<tr><td class="num" id="LN623">623</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN624">624</td><td class="line">	np-&gt;score = (lang_prob+lprob) + p-&gt;score;</td></tr>
+<tr><td class="num" id="LN625">625</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN626">626</td><td class="line">    <span class='keyword'>return</span> np;</td></tr>
+<tr><td class="num" id="LN627">627</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN628">628</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN629">629</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>void</span> phrasing_by_fa(EST_Utterance *u)</td></tr>
+<tr><td class="num" id="LN630">630</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN631">631</td><td class="line">    <span class='comment'>// Predict phrasing using POS and prob models of B distribution </span></td></tr>
+<tr><td class="num" id="LN632">632</td><td class="line">    EST_Item *w,*phr=0;</td></tr>
+<tr><td class="num" id="LN633">633</td><td class="line">    EST_String pbreak;</td></tr>
+<tr><td class="num" id="LN634">634</td><td class="line">    <span class='keyword'>int</span> num_states;</td></tr>
+<tr><td class="num" id="LN635">635</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN636">636</td><td class="line">    pbyp_get_params(siod_get_lval(<span class='string_literal'>"phr_break_params"</span>,<span class='macro'>NULL<span class='expansion'>__null</span></span>));</td></tr>
+<tr><td class="num" id="LN637">637</td><td class="line">    gc_protect(&amp;bb_tags);</td></tr>
+<tr><td class="num" id="LN638">638</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN639">639</td><td class="line">    <span class='keyword'>for</span> (w=u-&gt;relation(<span class='string_literal'>"Word"</span>)-&gt;first(); w != 0; w = w-&gt;next())</td></tr>
+<tr><td class="num" id="LN640">640</td><td class="line">    {   <span class='comment'>// Set up tag index for pos ngram</span></td></tr>
+<tr><td class="num" id="LN641">641</td><td class="line">	EST_String lpos = map_pos(pos_map,w-&gt;f(<span class='string_literal'>"pos"</span>).string());</td></tr>
+<tr><td class="num" id="LN642">642</td><td class="line">	w-&gt;set(<span class='string_literal'>"phr_pos"</span>,lpos);</td></tr>
+<tr><td class="num" id="LN643">643</td><td class="line">	w-&gt;set(<span class='string_literal'>"pos_index"</span>,bb_pos_ngram-&gt;get_vocab_word(lpos));</td></tr>
+<tr><td class="num" id="LN644">644</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN645">645</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN646">646</td><td class="line">    num_states = bb_track-&gt;num_frames();</td></tr>
+<tr><td class="num" id="LN647">647</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN648">648</td><td class="line">    EST_Viterbi_Decoder v(bb_candlist,bb_fapath,num_states);</td></tr>
+<tr><td class="num" id="LN649">649</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN650">650</td><td class="line">    v.initialise(u-&gt;relation(<span class='string_literal'>"Word"</span>));</td></tr>
+<tr><td class="num" id="LN651">651</td><td class="line">    v.search();</td></tr>
+<tr><td class="num" id="LN652">652</td><td class="line">    v.result(<span class='string_literal'>"pbreak_index"</span>);</td></tr>
+<tr><td class="num" id="LN653">653</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN654">654</td><td class="line">    <span class='comment'>// Given predicted break, go through and add phrases </span></td></tr>
+<tr><td class="num" id="LN655">655</td><td class="line">    u-&gt;create_relation(<span class='string_literal'>"Phrase"</span>);</td></tr>
+<tr><td class="num" id="LN656">656</td><td class="line">    <span class='keyword'>for</span> (w=u-&gt;relation(<span class='string_literal'>"Word"</span>)-&gt;first(); w != 0; w = w-&gt;next())</td></tr>
+<tr><td class="num" id="LN657">657</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN658">658</td><td class="line">	w-&gt;set(<span class='string_literal'>"pbreak"</span>,bb_ngram-&gt;</td></tr>
+<tr><td class="num" id="LN659">659</td><td class="line">		 get_vocab_word(w-&gt;f(<span class='string_literal'>"pbreak_index"</span>).Int()));</td></tr>
+<tr><td class="num" id="LN660">660</td><td class="line">	<span class='keyword'>if</span> (phr == 0)</td></tr>
+<tr><td class="num" id="LN661">661</td><td class="line">	    phr = add_phrase(u);</td></tr>
+<tr><td class="num" id="LN662">662</td><td class="line">	append_daughter(phr,<span class='string_literal'>"Phrase"</span>,w);</td></tr>
+<tr><td class="num" id="LN663">663</td><td class="line">	<span class='keyword'>if</span> (phrase_type_tree != <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>)</td></tr>
+<tr><td class="num" id="LN664">664</td><td class="line">	{</td></tr>
+<tr><td class="num" id="LN665">665</td><td class="line">	    EST_Val npbreak = wagon_predict(w,phrase_type_tree);</td></tr>
+<tr><td class="num" id="LN666">666</td><td class="line">	    w-&gt;set(<span class='string_literal'>"pbreak"</span>,npbreak.string());  <span class='comment'>// may reset to BB</span></td></tr>
+<tr><td class="num" id="LN667">667</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN668">668</td><td class="line">	pbreak = (EST_String)w-&gt;f(<span class='string_literal'>"pbreak"</span>);</td></tr>
+<tr><td class="num" id="LN669">669</td><td class="line">	<span class='keyword'>if</span> (pbreak == <span class='string_literal'>"B"</span>)</td></tr>
+<tr><td class="num" id="LN670">670</td><td class="line">	    w-&gt;set(<span class='string_literal'>"blevel"</span>,3);</td></tr>
+<tr><td class="num" id="LN671">671</td><td class="line">	<span class='keyword'>else</span> <span class='keyword'>if</span> (pbreak == <span class='string_literal'>"mB"</span>)</td></tr>
+<tr><td class="num" id="LN672">672</td><td class="line">	    w-&gt;set(<span class='string_literal'>"blevel"</span>,2);</td></tr>
+<tr><td class="num" id="LN673">673</td><td class="line">	<span class='keyword'>if</span> ((pbreak == <span class='string_literal'>"B"</span>) || (pbreak == <span class='string_literal'>"BB"</span>) || (pbreak == <span class='string_literal'>"mB"</span>))</td></tr>
+<tr><td class="num" id="LN674">674</td><td class="line">	{</td></tr>
+<tr><td class="num" id="LN675">675</td><td class="line">	    phr-&gt;set_name((EST_String)pbreak);</td></tr>
+<tr><td class="num" id="LN676">676</td><td class="line">	    phr = 0;</td></tr>
+<tr><td class="num" id="LN677">677</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN678">678</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN679">679</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN680">680</td><td class="line">    gc_unprotect(&amp;bb_tags);</td></tr>
+<tr><td class="num" id="LN681">681</td><td class="line">    bb_tags = <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>;</td></tr>
+<tr><td class="num" id="LN682">682</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN683">683</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN684">684</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN685">685</td><td class="line">EST_Item *add_phrase(EST_Utterance *u)</td></tr>
+<tr><td class="num" id="LN686">686</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN687">687</td><td class="line">    EST_Item *item = u-&gt;relation(<span class='string_literal'>"Phrase"</span>)-&gt;append();</td></tr>
+<tr><td class="num" id="LN688">688</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN689">689</td><td class="line">    item-&gt;set_name(<span class='string_literal'>"phrase"</span>);</td></tr>
+<tr><td class="num" id="LN690">690</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN691">691</td><td class="line">    <span class='keyword'>return</span> item;</td></tr>
+<tr><td class="num" id="LN692">692</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN693">693</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN694">694</td><td class="line"> </td></tr>
+</table></body></html>

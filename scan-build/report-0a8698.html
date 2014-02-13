@@ -1,0 +1,460 @@
+<!doctype html>
+<html>
+<head>
+<title>UniSyn.cc</title>
+<style type="text/css">
+ body { color:#000000; background-color:#ffffff }
+ body { font-family:Helvetica, sans-serif; font-size:10pt }
+ h1 { font-size:14pt }
+ .code { border-collapse:collapse; width:100%; }
+ .code { font-family: "Monospace", monospace; font-size:10pt }
+ .code { line-height: 1.2em }
+ .comment { color: green; font-style: oblique }
+ .keyword { color: blue }
+ .string_literal { color: red }
+ .directive { color: darkmagenta }
+ .expansion { display: none; }
+ .macro:hover .expansion { display: block; border: 2px solid #FF0000; padding: 2px; background-color:#FFF0F0; font-weight: normal;   -webkit-border-radius:5px;  -webkit-box-shadow:1px 1px 7px #000; position: absolute; top: -1em; left:10em; z-index: 1 } 
+ .macro { color: darkmagenta; background-color:LemonChiffon; position: relative }
+ .num { width:2.5em; padding-right:2ex; background-color:#eeeeee }
+ .num { text-align:right; font-size:8pt }
+ .num { color:#444444 }
+ .line { padding-left: 1ex; border-left: 3px solid #ccc }
+ .line { white-space: pre }
+ .msg { -webkit-box-shadow:1px 1px 7px #000 }
+ .msg { -webkit-border-radius:5px }
+ .msg { font-family:Helvetica, sans-serif; font-size:8pt }
+ .msg { float:left }
+ .msg { padding:0.25em 1ex 0.25em 1ex }
+ .msg { margin-top:10px; margin-bottom:10px }
+ .msg { font-weight:bold }
+ .msg { max-width:60em; word-wrap: break-word; white-space: pre-wrap }
+ .msgT { padding:0x; spacing:0x }
+ .msgEvent { background-color:#fff8b4; color:#000000 }
+ .msgControl { background-color:#bbbbbb; color:#000000 }
+ .mrange { background-color:#dfddf3 }
+ .mrange { border-bottom:1px solid #6F9DBE }
+ .PathIndex { font-weight: bold; padding:0px 5px; margin-right:5px; }
+ .PathIndex { -webkit-border-radius:8px }
+ .PathIndexEvent { background-color:#bfba87 }
+ .PathIndexControl { background-color:#8c8c8c }
+ .PathNav a { text-decoration:none; font-size: larger }
+ .CodeInsertionHint { font-weight: bold; background-color: #10dd10 }
+ .CodeRemovalHint { background-color:#de1010 }
+ .CodeRemovalHint { border-bottom:1px solid #6F9DBE }
+ table.simpletable {
+   padding: 5px;
+   font-size:12pt;
+   margin:20px;
+   border-collapse: collapse; border-spacing: 0px;
+ }
+ td.rowname {
+   text-align:right; font-weight:bold; color:#444444;
+   padding-right:2ex; }
+</style>
+</head>
+<body>
+<!-- BUGDESC Value stored to 'a' is never read -->
+
+<!-- BUGTYPE Dead assignment -->
+
+<!-- BUGCATEGORY Dead store -->
+
+<!-- BUGFILE /media/dades/src/festival-2013/festival/src/modules/UniSyn/UniSyn.cc -->
+
+<!-- BUGLINE 196 -->
+
+<!-- BUGPATHLENGTH 1 -->
+
+<!-- BUGMETAEND -->
+<!-- REPORTHEADER -->
+<h3>Bug Summary</h3>
+<table class="simpletable">
+<tr><td class="rowname">File:</td><td>modules/UniSyn/UniSyn.cc</td></tr>
+<tr><td class="rowname">Location:</td><td><a href="#EndPath">line 196, column 5</a></td></tr>
+<tr><td class="rowname">Description:</td><td>Value stored to 'a' is never read</td></tr>
+</table>
+<!-- REPORTSUMMARYEXTRA -->
+<h3>Annotated Source Code</h3>
+<table class="code">
+<tr><td class="num" id="LN1">1</td><td class="line"><span class='comment'>/*************************************************************************/</span></td></tr>
+<tr><td class="num" id="LN2">2</td><td class="line"><span class='comment'>/*                                                                       */</span></td></tr>
+<tr><td class="num" id="LN3">3</td><td class="line"><span class='comment'>/*                Centre for Speech Technology Research                  */</span></td></tr>
+<tr><td class="num" id="LN4">4</td><td class="line"><span class='comment'>/*                     University of Edinburgh, UK                       */</span></td></tr>
+<tr><td class="num" id="LN5">5</td><td class="line"><span class='comment'>/*                       Copyright (c) 1996,1997                         */</span></td></tr>
+<tr><td class="num" id="LN6">6</td><td class="line"><span class='comment'>/*                        All Rights Reserved.                           */</span></td></tr>
+<tr><td class="num" id="LN7">7</td><td class="line"><span class='comment'>/*                                                                       */</span></td></tr>
+<tr><td class="num" id="LN8">8</td><td class="line"><span class='comment'>/*  Permission is hereby granted, free of charge, to use and distribute  */</span></td></tr>
+<tr><td class="num" id="LN9">9</td><td class="line"><span class='comment'>/*  this software and its documentation without restriction, including   */</span></td></tr>
+<tr><td class="num" id="LN10">10</td><td class="line"><span class='comment'>/*  without limitation the rights to use, copy, modify, merge, publish,  */</span></td></tr>
+<tr><td class="num" id="LN11">11</td><td class="line"><span class='comment'>/*  distribute, sublicense, and/or sell copies of this work, and to      */</span></td></tr>
+<tr><td class="num" id="LN12">12</td><td class="line"><span class='comment'>/*  permit persons to whom this work is furnished to do so, subject to   */</span></td></tr>
+<tr><td class="num" id="LN13">13</td><td class="line"><span class='comment'>/*  the following conditions:                                            */</span></td></tr>
+<tr><td class="num" id="LN14">14</td><td class="line"><span class='comment'>/*   1. The code must retain the above copyright notice, this list of    */</span></td></tr>
+<tr><td class="num" id="LN15">15</td><td class="line"><span class='comment'>/*      conditions and the following disclaimer.                         */</span></td></tr>
+<tr><td class="num" id="LN16">16</td><td class="line"><span class='comment'>/*   2. Any modifications must be clearly marked as such.                */</span></td></tr>
+<tr><td class="num" id="LN17">17</td><td class="line"><span class='comment'>/*   3. Original authors' names are not deleted.                         */</span></td></tr>
+<tr><td class="num" id="LN18">18</td><td class="line"><span class='comment'>/*   4. The authors' names are not used to endorse or promote products   */</span></td></tr>
+<tr><td class="num" id="LN19">19</td><td class="line"><span class='comment'>/*      derived from this software without specific prior written        */</span></td></tr>
+<tr><td class="num" id="LN20">20</td><td class="line"><span class='comment'>/*      permission.                                                      */</span></td></tr>
+<tr><td class="num" id="LN21">21</td><td class="line"><span class='comment'>/*                                                                       */</span></td></tr>
+<tr><td class="num" id="LN22">22</td><td class="line"><span class='comment'>/*  THE UNIVERSITY OF EDINBURGH AND THE CONTRIBUTORS TO THIS WORK        */</span></td></tr>
+<tr><td class="num" id="LN23">23</td><td class="line"><span class='comment'>/*  DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING      */</span></td></tr>
+<tr><td class="num" id="LN24">24</td><td class="line"><span class='comment'>/*  ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT   */</span></td></tr>
+<tr><td class="num" id="LN25">25</td><td class="line"><span class='comment'>/*  SHALL THE UNIVERSITY OF EDINBURGH NOR THE CONTRIBUTORS BE LIABLE     */</span></td></tr>
+<tr><td class="num" id="LN26">26</td><td class="line"><span class='comment'>/*  FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES    */</span></td></tr>
+<tr><td class="num" id="LN27">27</td><td class="line"><span class='comment'>/*  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN   */</span></td></tr>
+<tr><td class="num" id="LN28">28</td><td class="line"><span class='comment'>/*  AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,          */</span></td></tr>
+<tr><td class="num" id="LN29">29</td><td class="line"><span class='comment'>/*  ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF       */</span></td></tr>
+<tr><td class="num" id="LN30">30</td><td class="line"><span class='comment'>/*  THIS SOFTWARE.                                                       */</span></td></tr>
+<tr><td class="num" id="LN31">31</td><td class="line"><span class='comment'>/*                                                                       */</span></td></tr>
+<tr><td class="num" id="LN32">32</td><td class="line"><span class='comment'>/*************************************************************************/</span></td></tr>
+<tr><td class="num" id="LN33">33</td><td class="line"><span class='comment'>/*                                                                       */</span></td></tr>
+<tr><td class="num" id="LN34">34</td><td class="line"><span class='comment'>/*                 Author: Paul Taylor                                   */</span></td></tr>
+<tr><td class="num" id="LN35">35</td><td class="line"><span class='comment'>/*                   Date: February 1998                                 */</span></td></tr>
+<tr><td class="num" id="LN36">36</td><td class="line"><span class='comment'>/* --------------------------------------------------------------------- */</span></td></tr>
+<tr><td class="num" id="LN37">37</td><td class="line"><span class='comment'>/*             Waveform Generation Scheme Interface File                 */</span></td></tr>
+<tr><td class="num" id="LN38">38</td><td class="line"><span class='comment'>/*                                                                       */</span></td></tr>
+<tr><td class="num" id="LN39">39</td><td class="line"><span class='comment'>/*************************************************************************/</span></td></tr>
+<tr><td class="num" id="LN40">40</td><td class="line"><span class='directive'>#include "siod.h"</span></td></tr>
+<tr><td class="num" id="LN41">41</td><td class="line"><span class='directive'>#include "EST.h"</span></td></tr>
+<tr><td class="num" id="LN42">42</td><td class="line"><span class='directive'>#include "UniSyn.h"</span></td></tr>
+<tr><td class="num" id="LN43">43</td><td class="line"><span class='directive'>#include "us_synthesis.h"</span></td></tr>
+<tr><td class="num" id="LN44">44</td><td class="line"><span class='directive'>#include "Phone.h"</span></td></tr>
+<tr><td class="num" id="LN45">45</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN46">46</td><td class="line"><span class='macro'>VAL_REGISTER_TYPE(ivector,EST_IVector)<span class='expansion'>val_type val_type_ivector="ivector"; EST_IVector *ivector(const<br> EST_Val &amp;v) { if (v.type() == val_type_ivector) return (<br>EST_IVector *)v.internal_ptr(); else (EST_error_where = __null<br>), (*EST_error_func)("val not of type val_type_""ivector"); return<br> __null; } static void val_delete_ivector(void *v) { delete (<br>EST_IVector *)v; } EST_Val est_val(const EST_IVector *v) { return<br> EST_Val(val_type_ivector, (void *)v,val_delete_ivector); }</span></span></td></tr>
+<tr><td class="num" id="LN47">47</td><td class="line"><span class='macro'>VAL_REGISTER_TYPE(wavevector,EST_WaveVector)<span class='expansion'>val_type val_type_wavevector="wavevector"; EST_WaveVector *wavevector<br>(const EST_Val &amp;v) { if (v.type() == val_type_wavevector)<br> return (EST_WaveVector *)v.internal_ptr(); else (EST_error_where<br> = __null), (*EST_error_func)("val not of type val_type_""wavevector"<br>); return __null; } static void val_delete_wavevector(void *v<br>) { delete (EST_WaveVector *)v; } EST_Val est_val(const EST_WaveVector<br> *v) { return EST_Val(val_type_wavevector, (void *)v,val_delete_wavevector<br>); }</span></span>;</td></tr>
+<tr><td class="num" id="LN48">48</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN49">49</td><td class="line"><span class='macro'>SIOD_REGISTER_TYPE(wavevector, EST_WaveVector)<span class='expansion'>EST_WaveVector *wavevector(LISP x) { return wavevector(val(x)<br>); } int wavevector_p(LISP x) { if (val_p(x) &amp;&amp; (val_type_wavevector<br> == val(x).type())) return (1==1); else return (1==0); } LISP<br> siod(const EST_WaveVector *v) { if (v == 0) return ((struct obj<br> *) 0); else return siod(est_val(v)); }</span></span>;</td></tr>
+<tr><td class="num" id="LN50">50</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN51">51</td><td class="line"><span class='keyword'>void</span> map_to_relation(EST_IVector &amp;map, EST_Relation &amp;r, </td></tr>
+<tr><td class="num" id="LN52">52</td><td class="line">		     <span class='keyword'>const</span> EST_Track &amp;source_pm, </td></tr>
+<tr><td class="num" id="LN53">53</td><td class="line">		     <span class='keyword'>const</span> EST_Track &amp;target_pm);</td></tr>
+<tr><td class="num" id="LN54">54</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN55">55</td><td class="line">EST_Features *scheme_param(<span class='keyword'>const</span> EST_String&amp; param, <span class='keyword'>const</span> EST_String &amp;path)</td></tr>
+<tr><td class="num" id="LN56">56</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN57">57</td><td class="line">    EST_Features *f, *p;</td></tr>
+<tr><td class="num" id="LN58">58</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN59">59</td><td class="line">    f = feats(siod_get_lval(param, <span class='string_literal'>"Couldn't find scheme paramete named: "</span> </td></tr>
+<tr><td class="num" id="LN60">60</td><td class="line">			    + param));</td></tr>
+<tr><td class="num" id="LN61">61</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN62">62</td><td class="line">    p = (path == <span class='string_literal'>""</span>) ? f : &amp;f-&gt;A(path);</td></tr>
+<tr><td class="num" id="LN63">63</td><td class="line">    <span class='keyword'>return</span> p;</td></tr>
+<tr><td class="num" id="LN64">64</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN65">65</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN66">66</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN67">67</td><td class="line">LISP FT_us_linear_smooth_amplitude( LISP lutt )</td></tr>
+<tr><td class="num" id="LN68">68</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN69">69</td><td class="line">  EST_Utterance *utt = <span class='macro'>get_c_utt( lutt )<span class='expansion'>(utterance(lutt))</span></span>;</td></tr>
+<tr><td class="num" id="LN70">70</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN71">71</td><td class="line">  us_linear_smooth_amplitude( utt );</td></tr>
+<tr><td class="num" id="LN72">72</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN73">73</td><td class="line">  <span class='keyword'>return</span> lutt;</td></tr>
+<tr><td class="num" id="LN74">74</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN75">75</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN76">76</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN77">77</td><td class="line"><span class='keyword'>static</span> LISP FT_wavevector_get_wave( LISP l_wavevector, LISP l_framenum )</td></tr>
+<tr><td class="num" id="LN78">78</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN79">79</td><td class="line">  EST_WaveVector *wv = wavevector( l_wavevector );</td></tr>
+<tr><td class="num" id="LN80">80</td><td class="line">  <span class='keyword'>int</span> i = get_c_int( l_framenum );</td></tr>
+<tr><td class="num" id="LN81">81</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN82">82</td><td class="line">  <span class='keyword'>if</span>( i&lt;0 || i&gt;wv-&gt;length() )</td></tr>
+<tr><td class="num" id="LN83">83</td><td class="line">    <span class='macro'>EST_error<span class='expansion'>(EST_error_where = __null), (*EST_error_func)</span></span>( <span class='string_literal'>"index out of bounds"</span> );</td></tr>
+<tr><td class="num" id="LN84">84</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN85">85</td><td class="line">  <span class='keyword'>return</span> siod( &amp;((*wv)[i]) );</td></tr>
+<tr><td class="num" id="LN86">86</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN87">87</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN88">88</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN89">89</td><td class="line">LISP FT_us_unit_concat(LISP lutt)</td></tr>
+<tr><td class="num" id="LN90">90</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN91">91</td><td class="line">    EST_String window_name;</td></tr>
+<tr><td class="num" id="LN92">92</td><td class="line">    <span class='keyword'>float</span> window_factor;</td></tr>
+<tr><td class="num" id="LN93">93</td><td class="line">    <span class='keyword'>bool</span> window_symmetric;</td></tr>
+<tr><td class="num" id="LN94">94</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN95">95</td><td class="line">    EST_Features *f = scheme_param(<span class='string_literal'>"Param"</span>, <span class='string_literal'>"unisyn"</span>);</td></tr>
+<tr><td class="num" id="LN96">96</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN97">97</td><td class="line">    window_name = f-&gt;S(<span class='string_literal'>"window_name"</span>);</td></tr>
+<tr><td class="num" id="LN98">98</td><td class="line">    window_factor = f-&gt;F(<span class='string_literal'>"window_factor"</span>);</td></tr>
+<tr><td class="num" id="LN99">99</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN100">100</td><td class="line">    window_symmetric = (f-&gt;I(<span class='string_literal'>"window_symmetric"</span>,1) == 0) ? <span class='keyword'>false</span> : <span class='keyword'>true</span>;</td></tr>
+<tr><td class="num" id="LN101">101</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN102">102</td><td class="line">    us_unit_concat(*<span class='macro'>get_c_utt(lutt)<span class='expansion'>(utterance(lutt))</span></span>, window_factor, window_name, <span class='keyword'>false</span>, window_symmetric);</td></tr>
+<tr><td class="num" id="LN103">103</td><td class="line">    <span class='keyword'>return</span> lutt;</td></tr>
+<tr><td class="num" id="LN104">104</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN105">105</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN106">106</td><td class="line">LISP FT_us_unit_raw_concat(LISP lutt)</td></tr>
+<tr><td class="num" id="LN107">107</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN108">108</td><td class="line">    us_unit_raw_concat(*<span class='macro'>get_c_utt(lutt)<span class='expansion'>(utterance(lutt))</span></span>);</td></tr>
+<tr><td class="num" id="LN109">109</td><td class="line">    <span class='keyword'>return</span> lutt;</td></tr>
+<tr><td class="num" id="LN110">110</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN111">111</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN112">112</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN113">113</td><td class="line">LISP FT_us_energy_normalise(LISP lutt, LISP lrname)</td></tr>
+<tr><td class="num" id="LN114">114</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN115">115</td><td class="line">    EST_Utterance *utt = <span class='macro'>get_c_utt(lutt)<span class='expansion'>(utterance(lutt))</span></span>;</td></tr>
+<tr><td class="num" id="LN116">116</td><td class="line">    EST_String rname = get_c_string(lrname);</td></tr>
+<tr><td class="num" id="LN117">117</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN118">118</td><td class="line">    us_energy_normalise(*utt-&gt;relation(rname));</td></tr>
+<tr><td class="num" id="LN119">119</td><td class="line">    <span class='keyword'>return</span> lutt;</td></tr>
+<tr><td class="num" id="LN120">120</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN121">121</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN122">122</td><td class="line">LISP FT_us_generate_wave(LISP lutt, LISP l_f_method, LISP l_o_method)</td></tr>
+<tr><td class="num" id="LN123">123</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN124">124</td><td class="line">    EST_String filter_method = get_c_string(l_f_method);</td></tr>
+<tr><td class="num" id="LN125">125</td><td class="line">    EST_String ola_method = get_c_string(l_o_method);</td></tr>
+<tr><td class="num" id="LN126">126</td><td class="line">    EST_Utterance *utt = <span class='macro'>get_c_utt(lutt)<span class='expansion'>(utterance(lutt))</span></span>;</td></tr>
+<tr><td class="num" id="LN127">127</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN128">128</td><td class="line">    EST_Features *f = scheme_param(<span class='string_literal'>"Param"</span>, <span class='string_literal'>"unisyn"</span>);</td></tr>
+<tr><td class="num" id="LN129">129</td><td class="line">    <span class='keyword'>if</span>(f-&gt;I(<span class='string_literal'>"window_symmetric"</span>,1) == 0){</td></tr>
+<tr><td class="num" id="LN130">130</td><td class="line">      ola_method = <span class='string_literal'>"asymmetric_window"</span>;</td></tr>
+<tr><td class="num" id="LN131">131</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN132">132</td><td class="line">    us_generate_wave(*utt, filter_method, ola_method);</td></tr>
+<tr><td class="num" id="LN133">133</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN134">134</td><td class="line">    <span class='keyword'>return</span> lutt;</td></tr>
+<tr><td class="num" id="LN135">135</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN136">136</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN137">137</td><td class="line">LISP FT_us_mapping(LISP lutt, LISP method)</td></tr>
+<tr><td class="num" id="LN138">138</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN139">139</td><td class="line">    us_mapping(*<span class='macro'>get_c_utt(lutt)<span class='expansion'>(utterance(lutt))</span></span>, get_c_string(method));</td></tr>
+<tr><td class="num" id="LN140">140</td><td class="line">    <span class='keyword'>return</span> lutt;</td></tr>
+<tr><td class="num" id="LN141">141</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN142">142</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN143">143</td><td class="line">LISP FT_us_get_copy_wave(LISP lutt, LISP l_sig_file,  LISP l_pm_file, </td></tr>
+<tr><td class="num" id="LN144">144</td><td class="line">			  LISP l_seg_file)</td></tr>
+<tr><td class="num" id="LN145">145</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN146">146</td><td class="line">    EST_Utterance *utt = <span class='macro'>get_c_utt(lutt)<span class='expansion'>(utterance(lutt))</span></span>;</td></tr>
+<tr><td class="num" id="LN147">147</td><td class="line">    EST_Relation seg;</td></tr>
+<tr><td class="num" id="LN148">148</td><td class="line">    EST_String sig_file = get_c_string(l_sig_file);</td></tr>
+<tr><td class="num" id="LN149">149</td><td class="line">    EST_String seg_file = get_c_string(l_seg_file);</td></tr>
+<tr><td class="num" id="LN150">150</td><td class="line">    EST_String pm_file = get_c_string(l_pm_file);</td></tr>
+<tr><td class="num" id="LN151">151</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN152">152</td><td class="line">    EST_Track *pm = <span class='keyword'>new</span> EST_Track;</td></tr>
+<tr><td class="num" id="LN153">153</td><td class="line">    EST_Wave *sig = <span class='keyword'>new</span> EST_Wave;</td></tr>
+<tr><td class="num" id="LN154">154</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN155">155</td><td class="line">    <span class='keyword'>if</span> (pm-&gt;load(pm_file) != <span class='macro'>format_ok<span class='expansion'>read_ok</span></span>)</td></tr>
+<tr><td class="num" id="LN156">156</td><td class="line">	<span class='keyword'>return</span> <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>;</td></tr>
+<tr><td class="num" id="LN157">157</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN158">158</td><td class="line">    <span class='keyword'>if</span> (sig-&gt;load(sig_file) != <span class='macro'>format_ok<span class='expansion'>read_ok</span></span>)</td></tr>
+<tr><td class="num" id="LN159">159</td><td class="line">	<span class='keyword'>return</span> <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>;</td></tr>
+<tr><td class="num" id="LN160">160</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN161">161</td><td class="line">    <span class='keyword'>if</span> (seg.load(seg_file) != <span class='macro'>format_ok<span class='expansion'>read_ok</span></span>)</td></tr>
+<tr><td class="num" id="LN162">162</td><td class="line">	<span class='keyword'>return</span> <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>;</td></tr>
+<tr><td class="num" id="LN163">163</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN164">164</td><td class="line">    <span class='keyword'>if</span> (!ph_is_silence(seg.tail()-&gt;f(<span class='string_literal'>"name"</span>)))</td></tr>
+<tr><td class="num" id="LN165">165</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN166">166</td><td class="line">	EST_Item *n = seg.tail()-&gt;insert_after();</td></tr>
+<tr><td class="num" id="LN167">167</td><td class="line">	n-&gt;set(<span class='string_literal'>"name"</span>, ph_silence());</td></tr>
+<tr><td class="num" id="LN168">168</td><td class="line">	n-&gt;set(<span class='string_literal'>"end"</span>, seg.tail()-&gt;prev()-&gt;F(<span class='string_literal'>"end"</span>) + 0.1);</td></tr>
+<tr><td class="num" id="LN169">169</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN170">170</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN171">171</td><td class="line">    us_get_copy_wave(*utt, *sig, *pm, seg);</td></tr>
+<tr><td class="num" id="LN172">172</td><td class="line">    <span class='keyword'>return</span> lutt;</td></tr>
+<tr><td class="num" id="LN173">173</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN174">174</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN175">175</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN176">176</td><td class="line">LISP FT_f0_to_pitchmarks(LISP lutt, LISP l_f0_name, LISP l_pm_name, </td></tr>
+<tr><td class="num" id="LN177">177</td><td class="line">			 LISP l_end_time)</td></tr>
+<tr><td class="num" id="LN178">178</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN179">179</td><td class="line">    EST_Utterance *utt = <span class='macro'>get_c_utt(lutt)<span class='expansion'>(utterance(lutt))</span></span>;</td></tr>
+<tr><td class="num" id="LN180">180</td><td class="line">    <span class='keyword'>int</span> num_channels=0;</td></tr>
+<tr><td class="num" id="LN181">181</td><td class="line">    <span class='keyword'>const</span> <span class='keyword'>float</span> default_f0 = 100.0;</td></tr>
+<tr><td class="num" id="LN182">182</td><td class="line">    EST_Relation *f0_rel=0, *pm_rel=0;</td></tr>
+<tr><td class="num" id="LN183">183</td><td class="line">    EST_Track *f0=0, *pm=0;</td></tr>
+<tr><td class="num" id="LN184">184</td><td class="line">    EST_Item *a;</td></tr>
+<tr><td class="num" id="LN185">185</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN186">186</td><td class="line">    <span class='keyword'>float</span> end_time = (l_end_time == <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>) ? -1 : get_c_float(l_end_time);</td></tr>
+<tr><td class="num" id="LN187">187</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN188">188</td><td class="line">    f0_rel = utt-&gt;relation(get_c_string(l_f0_name), 1);</td></tr>
+<tr><td class="num" id="LN189">189</td><td class="line">    pm_rel = utt-&gt;create_relation(get_c_string(l_pm_name));</td></tr>
+<tr><td class="num" id="LN190">190</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN191">191</td><td class="line">    f0 = track(f0_rel-&gt;head()-&gt;f(<span class='string_literal'>"f0"</span>));</td></tr>
+<tr><td class="num" id="LN192">192</td><td class="line">    pm = <span class='keyword'>new</span> EST_Track;</td></tr>
+<tr><td class="num" id="LN193">193</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN194">194</td><td class="line">    a = pm_rel-&gt;append();</td></tr>
+<tr><td class="num" id="LN195">195</td><td class="line">    a-&gt;set_val(<span class='string_literal'>"coefs"</span>, est_val(pm));</td></tr>
+<tr><td class="num" id="LN196">196</td><td class="line">    a = <span class="mrange">pm_rel-&gt;append()</span>;</td></tr>
+<tr><td class="num"></td><td class="line"><div id="EndPath" class="msg msgEvent" style="margin-left:5ex">Value stored to 'a' is never read</div></td></tr>
+<tr><td class="num" id="LN197">197</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN198">198</td><td class="line">    <span class='keyword'>if</span> (utt-&gt;relation_present(<span class='string_literal'>"SourceCoef"</span>))</td></tr>
+<tr><td class="num" id="LN199">199</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN200">200</td><td class="line">	EST_Track *source_coef = </td></tr>
+<tr><td class="num" id="LN201">201</td><td class="line">	    track(utt-&gt;relation(<span class='string_literal'>"SourceCoef"</span>)-&gt;head()-&gt;f(<span class='string_literal'>"coefs"</span>));</td></tr>
+<tr><td class="num" id="LN202">202</td><td class="line">	num_channels = source_coef-&gt;num_channels();</td></tr>
+<tr><td class="num" id="LN203">203</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN204">204</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN205">205</td><td class="line">    f0_to_pitchmarks(*f0, *pm, num_channels, default_f0, end_time);</td></tr>
+<tr><td class="num" id="LN206">206</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN207">207</td><td class="line">    <span class='keyword'>return</span> lutt;</td></tr>
+<tr><td class="num" id="LN208">208</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN209">209</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN210">210</td><td class="line">LISP FT_map_to_relation(LISP lutt, LISP lsource_name, LISP ltarget_name,</td></tr>
+<tr><td class="num" id="LN211">211</td><td class="line">			LISP lrel_name)</td></tr>
+<tr><td class="num" id="LN212">212</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN213">213</td><td class="line">    EST_Utterance *utt = <span class='macro'>get_c_utt(lutt)<span class='expansion'>(utterance(lutt))</span></span>;</td></tr>
+<tr><td class="num" id="LN214">214</td><td class="line">    EST_Track *source_pm = 0;</td></tr>
+<tr><td class="num" id="LN215">215</td><td class="line">    EST_Track *target_pm = 0;</td></tr>
+<tr><td class="num" id="LN216">216</td><td class="line">    EST_IVector *map = 0;</td></tr>
+<tr><td class="num" id="LN217">217</td><td class="line">    target_pm = </td></tr>
+<tr><td class="num" id="LN218">218</td><td class="line">	track(utt-&gt;relation(get_c_string(ltarget_name))-&gt;head()-&gt;f(<span class='string_literal'>"coefs"</span>));</td></tr>
+<tr><td class="num" id="LN219">219</td><td class="line">    source_pm = </td></tr>
+<tr><td class="num" id="LN220">220</td><td class="line">	track(utt-&gt;relation(get_c_string(lsource_name))-&gt;head()-&gt;f(<span class='string_literal'>"coefs"</span>));</td></tr>
+<tr><td class="num" id="LN221">221</td><td class="line">    map = ivector(utt-&gt;relation(<span class='string_literal'>"US_map"</span>)-&gt;head()-&gt;f(<span class='string_literal'>"map"</span>));</td></tr>
+<tr><td class="num" id="LN222">222</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN223">223</td><td class="line">    utt-&gt;create_relation(get_c_string(lrel_name));</td></tr>
+<tr><td class="num" id="LN224">224</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN225">225</td><td class="line">    map_to_relation(*map, *utt-&gt;relation(get_c_string(lrel_name)), </td></tr>
+<tr><td class="num" id="LN226">226</td><td class="line">		    *source_pm, *target_pm);</td></tr>
+<tr><td class="num" id="LN227">227</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN228">228</td><td class="line">    <span class='keyword'>return</span> <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>;</td></tr>
+<tr><td class="num" id="LN229">229</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN230">230</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN231">231</td><td class="line"><span class='keyword'>void</span> festival_UniSyn_init(<span class='keyword'>void</span>)</td></tr>
+<tr><td class="num" id="LN232">232</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN233">233</td><td class="line">    proclaim_module(<span class='string_literal'>"UniSyn"</span>);</td></tr>
+<tr><td class="num" id="LN234">234</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN235">235</td><td class="line">    register_unisyn_features();</td></tr>
+<tr><td class="num" id="LN236">236</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN237">237</td><td class="line">    init_subr_2( <span class='string_literal'>"wavevector.getwave"</span>, FT_wavevector_get_wave,</td></tr>
+<tr><td class="num" id="LN238">238</td><td class="line">    <span class='string_literal'>"(wavevector.getwave WAVEVECTOR FRAMENUM)\n\</span></td></tr>
+<tr><td class="num" id="LN239">239</td><td class="line">    <span class='string_literal'>retrieves an EST_Wave frame (int FRAMENUM) from a wavevector."</span>); </td></tr>
+<tr><td class="num" id="LN240">240</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN241">241</td><td class="line">    init_subr_1(<span class='string_literal'>"us_linear_smooth_amplitude"</span>, FT_us_linear_smooth_amplitude,</td></tr>
+<tr><td class="num" id="LN242">242</td><td class="line">    <span class='string_literal'>"(us_linear_smooth_amplitude UTT)\n\</span></td></tr>
+<tr><td class="num" id="LN243">243</td><td class="line">     <span class='string_literal'>Perform linear amplitute smoothing on diphone joins."</span>);</td></tr>
+<tr><td class="num" id="LN244">244</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN245">245</td><td class="line">    init_subr_1(<span class='string_literal'>"us_unit_raw_concat"</span>, FT_us_unit_raw_concat,</td></tr>
+<tr><td class="num" id="LN246">246</td><td class="line">    <span class='string_literal'>"(us_init_raw_concat UTT)."</span>);</td></tr>
+<tr><td class="num" id="LN247">247</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN248">248</td><td class="line">    init_subr_2(<span class='string_literal'>"us_energy_normalise"</span>, FT_us_energy_normalise,</td></tr>
+<tr><td class="num" id="LN249">249</td><td class="line">    <span class='string_literal'>"(us_ps_synthesis UTT SIGPR)\n\</span></td></tr>
+<tr><td class="num" id="LN250">250</td><td class="line">    <span class='string_literal'>Synthesize utterance UTT using signal processing technique SIGPR \n\</span></td></tr>
+<tr><td class="num" id="LN251">251</td><td class="line">    <span class='string_literal'>for the UniSyn pitch-synchronous synthesizer."</span>);</td></tr>
+<tr><td class="num" id="LN252">252</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN253">253</td><td class="line">    init_subr_3(<span class='string_literal'>"us_generate_wave"</span>, FT_us_generate_wave,</td></tr>
+<tr><td class="num" id="LN254">254</td><td class="line">    <span class='string_literal'>"(us_td_synthesis UTT FILTER_METHOD OLA_METHOD)\n\</span></td></tr>
+<tr><td class="num" id="LN255">255</td><td class="line">    <span class='string_literal'>Synthesize utterance UTT using signal processing technique SIGPR \n\</span></td></tr>
+<tr><td class="num" id="LN256">256</td><td class="line">    <span class='string_literal'>for the UniSyn pitch-synchronous synthesizer."</span>);</td></tr>
+<tr><td class="num" id="LN257">257</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN258">258</td><td class="line">    init_subr_2(<span class='string_literal'>"us_mapping"</span>, FT_us_mapping,</td></tr>
+<tr><td class="num" id="LN259">259</td><td class="line">    <span class='string_literal'>"(us_mapping UTT method)\n\</span></td></tr>
+<tr><td class="num" id="LN260">260</td><td class="line">    <span class='string_literal'>Synthesize utterance UTT using signal processing technique SIGPR \n\</span></td></tr>
+<tr><td class="num" id="LN261">261</td><td class="line">    <span class='string_literal'>for the UniSyn pitch-synchronous synthesizer."</span>);</td></tr>
+<tr><td class="num" id="LN262">262</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN263">263</td><td class="line">    init_subr_1(<span class='string_literal'>"us_unit_concat"</span>, FT_us_unit_concat,</td></tr>
+<tr><td class="num" id="LN264">264</td><td class="line">    <span class='string_literal'>"(us_unit_concat UTT)\n\</span></td></tr>
+<tr><td class="num" id="LN265">265</td><td class="line">     <span class='string_literal'>Concat coef and wave information in unit stream into a single \n\</span></td></tr>
+<tr><td class="num" id="LN266">266</td><td class="line">     <span class='string_literal'>Frames structure storing the result in the Frame relation"</span>);</td></tr>
+<tr><td class="num" id="LN267">267</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN268">268</td><td class="line">    init_subr_4(<span class='string_literal'>"us_f0_to_pitchmarks"</span>, FT_f0_to_pitchmarks,</td></tr>
+<tr><td class="num" id="LN269">269</td><td class="line">    <span class='string_literal'>"(us_f0_to_pitchmarks UTT F0_relation PM_relation END_TIME)\n\</span></td></tr>
+<tr><td class="num" id="LN270">270</td><td class="line">    <span class='string_literal'>From the F0 contour in F0_relation, create a set of pitchmarks\n\</span></td></tr>
+<tr><td class="num" id="LN271">271</td><td class="line">    <span class='string_literal'>in PM_relation. If END_TIME is not nil, Extra pitchmarks will be \n\</span></td></tr>
+<tr><td class="num" id="LN272">272</td><td class="line">    <span class='string_literal'>created at the default interval up to this point"</span>);</td></tr>
+<tr><td class="num" id="LN273">273</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN274">274</td><td class="line">    init_subr_4(<span class='string_literal'>"map_to_relation"</span>, FT_map_to_relation,</td></tr>
+<tr><td class="num" id="LN275">275</td><td class="line">    <span class='string_literal'>"(map_to_relation UTT Source_relation Target_relation new_relation)\n\</span></td></tr>
+<tr><td class="num" id="LN276">276</td><td class="line">    <span class='string_literal'>From the F0 contour in F0_relation, create a set of pitchmarks\n\</span></td></tr>
+<tr><td class="num" id="LN277">277</td><td class="line">    <span class='string_literal'>in PM_relation. If END_TIME is not nil, Extra pitchmarks will be \n\</span></td></tr>
+<tr><td class="num" id="LN278">278</td><td class="line">    <span class='string_literal'>created at the default interval up to this point"</span>);</td></tr>
+<tr><td class="num" id="LN279">279</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN280">280</td><td class="line">    init_subr_4(<span class='string_literal'>"us_get_copy_wave"</span>, FT_us_get_copy_wave,</td></tr>
+<tr><td class="num" id="LN281">281</td><td class="line">    <span class='string_literal'>"(warp_utterance UTT (Wavefile Pitchmark_file))\n\</span></td></tr>
+<tr><td class="num" id="LN282">282</td><td class="line">    <span class='string_literal'>Change waveform to match prosodic specification of utterance."</span>);</td></tr>
+<tr><td class="num" id="LN283">283</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN284">284</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN285">285</td><td class="line"><span class='directive'>#ifdef HAVE_US_TDPSOLA_TM</span></td></tr>
+<tr><td class="num" id="LN286">286</td><td class="line">    us_init_tdpsola();</td></tr>
+<tr><td class="num" id="LN287">287</td><td class="line"><span class='directive'>#endif</span></td></tr>
+<tr><td class="num" id="LN288">288</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN289">289</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN290">290</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN291">291</td><td class="line"><span class='comment'>/*</span></td></tr>
+<tr><td class="num" id="LN292">292</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN293">293</td><td class="line">    <span class='comment'>init_subr_2("us_F0targets_to_pitchmarks", FT_us_F0targets_to_pitchmarks,</span></td></tr>
+<tr><td class="num" id="LN294">294</td><td class="line">    <span class='comment'>"(us_F0targets_to_pitchmarks UTT Segment_Relation)\n\</span></td></tr>
+<tr><td class="num" id="LN295">295</td><td class="line">     <span class='comment'>Make set of pitchmarks according to F0 target specification");</span></td></tr>
+<tr><td class="num" id="LN296">296</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN297">297</td><td class="line"><span class='comment'>LISP FT_merge_pitchmarks(LISP lutt, LISP l_pm1, LISP l_pm2,</span> </td></tr>
+<tr><td class="num" id="LN298">298</td><td class="line">			 <span class='comment'>LISP l_guide_name)</span></td></tr>
+<tr><td class="num" id="LN299">299</td><td class="line"><span class='comment'>{</span></td></tr>
+<tr><td class="num" id="LN300">300</td><td class="line">    <span class='comment'>EST_Utterance *utt = get_c_utt(lutt);</span></td></tr>
+<tr><td class="num" id="LN301">301</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN302">302</td><td class="line">    <span class='comment'>EST_Track *pm1 =</span> </td></tr>
+<tr><td class="num" id="LN303">303</td><td class="line">	<span class='comment'>track(utt-&gt;relation(get_c_string(l_pm1), 1)-&gt;head()-&gt;f("coefs", 1));</span></td></tr>
+<tr><td class="num" id="LN304">304</td><td class="line">    <span class='comment'>EST_Track *pm2 =</span> </td></tr>
+<tr><td class="num" id="LN305">305</td><td class="line">	<span class='comment'>track(utt-&gt;relation(get_c_string(l_pm2), 1)-&gt;head()-&gt;f("coefs", 1));</span></td></tr>
+<tr><td class="num" id="LN306">306</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN307">307</td><td class="line">    <span class='comment'>EST_Relation *guide = utt-&gt;relation(get_c_string(l_guide_name), 1);</span></td></tr>
+<tr><td class="num" id="LN308">308</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN309">309</td><td class="line">    <span class='comment'>EST_Relation *pm_rel = utt-&gt;create_relation("TargetCoefs");</span></td></tr>
+<tr><td class="num" id="LN310">310</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN311">311</td><td class="line">    <span class='comment'>EST_Track *target_pm = new EST_Track;</span></td></tr>
+<tr><td class="num" id="LN312">312</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN313">313</td><td class="line">    <span class='comment'>EST_Item *a = pm_rel-&gt;append();</span></td></tr>
+<tr><td class="num" id="LN314">314</td><td class="line">    <span class='comment'>a-&gt;fset_val("coefs", est_val(target_pm));</span></td></tr>
+<tr><td class="num" id="LN315">315</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN316">316</td><td class="line">    <span class='comment'>merge_pitchmarks(*get_c_utt(lutt), *pm1, *pm2, *target_pm, *guide);</span></td></tr>
+<tr><td class="num" id="LN317">317</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN318">318</td><td class="line">    <span class='comment'>return lutt;</span></td></tr>
+<tr><td class="num" id="LN319">319</td><td class="line"><span class='comment'>}</span></td></tr>
+<tr><td class="num" id="LN320">320</td><td class="line"><span class='comment'>LISP FT_warp_pitchmarks(LISP lutt, LISP l_pm_file, LISP l_seg_file)</span></td></tr>
+<tr><td class="num" id="LN321">321</td><td class="line"><span class='comment'>{</span></td></tr>
+<tr><td class="num" id="LN322">322</td><td class="line">    <span class='comment'>EST_Utterance *utt = get_c_utt(lutt);</span></td></tr>
+<tr><td class="num" id="LN323">323</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN324">324</td><td class="line">    <span class='comment'>EST_String pm_file = get_c_string(l_pm_file);</span></td></tr>
+<tr><td class="num" id="LN325">325</td><td class="line">    <span class='comment'>EST_String seg_file = get_c_string(l_seg_file);</span></td></tr>
+<tr><td class="num" id="LN326">326</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN327">327</td><td class="line">    <span class='comment'>EST_Track *pm = new EST_Track;</span></td></tr>
+<tr><td class="num" id="LN328">328</td><td class="line">    <span class='comment'>EST_Relation seg;</span></td></tr>
+<tr><td class="num" id="LN329">329</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN330">330</td><td class="line">    <span class='comment'>if (pm-&gt;load(pm_file) != format_ok)</span></td></tr>
+<tr><td class="num" id="LN331">331</td><td class="line">	<span class='comment'>return NIL;</span></td></tr>
+<tr><td class="num" id="LN332">332</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN333">333</td><td class="line">    <span class='comment'>if (seg.load(seg_file) != format_ok)</span></td></tr>
+<tr><td class="num" id="LN334">334</td><td class="line">	<span class='comment'>return NIL;</span></td></tr>
+<tr><td class="num" id="LN335">335</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN336">336</td><td class="line">    <span class='comment'>warp_pitchmarks(*utt, pm, seg, *utt-&gt;relation("Segment"));</span></td></tr>
+<tr><td class="num" id="LN337">337</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN338">338</td><td class="line">    <span class='comment'>return lutt;</span></td></tr>
+<tr><td class="num" id="LN339">339</td><td class="line"><span class='comment'>}</span></td></tr>
+<tr><td class="num" id="LN340">340</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN341">341</td><td class="line">    <span class='comment'>init_subr_3("us_warp_pitchmarks", FT_warp_pitchmarks,</span></td></tr>
+<tr><td class="num" id="LN342">342</td><td class="line">    <span class='comment'>"(warp_utterance UTT (Wavefile Pitchmark_file))\n\</span></td></tr>
+<tr><td class="num" id="LN343">343</td><td class="line">    <span class='comment'>Change waveform to match prosodic specification of utterance.");</span></td></tr>
+<tr><td class="num" id="LN344">344</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN345">345</td><td class="line"><span class='comment'>LISP FT_us_load_utt_segments(LISP l_utt, LISP l_filename)</span></td></tr>
+<tr><td class="num" id="LN346">346</td><td class="line"><span class='comment'>{</span></td></tr>
+<tr><td class="num" id="LN347">347</td><td class="line">    <span class='comment'>EST_String filename = get_c_string(l_filename);</span></td></tr>
+<tr><td class="num" id="LN348">348</td><td class="line">    <span class='comment'>EST_Utterance tu;</span></td></tr>
+<tr><td class="num" id="LN349">349</td><td class="line">    <span class='comment'>EST_Utterance *u = get_c_utt(l_utt);</span></td></tr>
+<tr><td class="num" id="LN350">350</td><td class="line">    <span class='comment'>EST_Item *s, *t;</span></td></tr>
+<tr><td class="num" id="LN351">351</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN352">352</td><td class="line">    <span class='comment'>if (tu.load(filename) != format_ok)</span></td></tr>
+<tr><td class="num" id="LN353">353</td><td class="line">      <span class='comment'>festival_error();</span></td></tr>
+<tr><td class="num" id="LN354">354</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN355">355</td><td class="line">    <span class='comment'>u-&gt;relation("Segment")-&gt;clear();</span></td></tr>
+<tr><td class="num" id="LN356">356</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN357">357</td><td class="line">    <span class='comment'>for (s = tu.relation("Segment")-&gt;head(); s; s = s-&gt;next())</span></td></tr>
+<tr><td class="num" id="LN358">358</td><td class="line">      <span class='comment'>{</span></td></tr>
+<tr><td class="num" id="LN359">359</td><td class="line">	<span class='comment'>t = u-&gt;relation("Segment")-&gt;append();</span></td></tr>
+<tr><td class="num" id="LN360">360</td><td class="line">	<span class='comment'>t-&gt;fset("name", s-&gt;fS("name"));</span></td></tr>
+<tr><td class="num" id="LN361">361</td><td class="line">	<span class='comment'>t-&gt;fset("end", s-&gt;fS("end"));</span></td></tr>
+<tr><td class="num" id="LN362">362</td><td class="line">      <span class='comment'>}</span></td></tr>
+<tr><td class="num" id="LN363">363</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN364">364</td><td class="line">    <span class='comment'>return l_utt;</span></td></tr>
+<tr><td class="num" id="LN365">365</td><td class="line"><span class='comment'>}</span></td></tr>
+<tr><td class="num" id="LN366">366</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN367">367</td><td class="line"><span class='comment'>void us_F0targets_to_pitchmarks(EST_Utterance &amp;utt,</span> </td></tr>
+<tr><td class="num" id="LN368">368</td><td class="line">				<span class='comment'>const EST_String &amp;seg_relation);</span></td></tr>
+<tr><td class="num" id="LN369">369</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN370">370</td><td class="line"><span class='comment'>LISP FT_us_F0targets_to_pitchmarks(LISP lutt, LISP lseg)</span></td></tr>
+<tr><td class="num" id="LN371">371</td><td class="line"><span class='comment'>{</span></td></tr>
+<tr><td class="num" id="LN372">372</td><td class="line">    <span class='comment'>EST_String s = (lseg == NIL) ? "" :  get_c_string(lseg);</span></td></tr>
+<tr><td class="num" id="LN373">373</td><td class="line">    <span class='comment'>us_F0targets_to_pitchmarks(*get_c_utt(lutt), s);</span></td></tr>
+<tr><td class="num" id="LN374">374</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN375">375</td><td class="line">    <span class='comment'>return lutt;</span></td></tr>
+<tr><td class="num" id="LN376">376</td><td class="line"><span class='comment'>}</span></td></tr>
+<tr><td class="num" id="LN377">377</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN378">378</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN379">379</td><td class="line"><span class='comment'>*/</span></td></tr>
+</table></body></html>

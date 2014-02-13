@@ -1,119 +1,56 @@
-<html lang="en">
-<head>
-<title>Festival Speech Synthesis System</title>
-<meta http-equiv="Content-Type" content="text/html">
-<meta name="description" content="Festival Speech Synthesis System">
-<meta name="generator" content="makeinfo 4.13">
-<link title="Top" rel="start" href="#Top">
-<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
-<meta http-equiv="Content-Style-Type" content="text/css">
-<style type="text/css"><!--
-  pre.display { font-family:inherit }
-  pre.format  { font-family:inherit }
-  pre.smalldisplay { font-family:inherit; font-size:smaller }
-  pre.smallformat  { font-family:inherit; font-size:smaller }
-  pre.smallexample { font-size:smaller }
-  pre.smalllisp    { font-size:smaller }
-  span.sc    { font-variant:small-caps }
-  span.roman { font-family:serif; font-weight:normal; } 
-  span.sansserif { font-family:sans-serif; font-weight:normal; } 
---></style>
-</head>
-<body>
-This file documents the <code>Festival</code> Speech Synthesis System a general
-text to speech system for making your computer talk and developing
-new synthesis techniques.
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Festival Speech Synthesis (zeehio github repository)</title>
 
-   <p>Copyright (C) 1996-2004 University of Edinburgh
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+<h1>The Festival Speech Synthesis</h1>
+        <h3>
+<a name="disclaimer" class="anchor" href="#disclaimer"><span class="octicon octicon-link"></span></a>Disclaimer</h3>
 
-   <p>Permission is granted to make and distribute verbatim copies of
-this manual provided the copyright notice and this permission notice
-are preserved on all copies.
+<p>The official web pages for the Festival Speech Synthesis system are:</p>
 
-   <p>Permission is granted to copy and distribute modified versions of this
-manual under the conditions for verbatim copying, provided that the entire
-resulting derived work is distributed under the terms of a permission
-notice identical to this one.
-
-   <p>Permission is granted to copy and distribute translations of this manual
-into another language, under the above conditions for modified versions,
-except that this permission notice may be stated in a translation approved
-by the authors.
-
-<div class="node">
-<a name="Top"></a>
-<p>
-Up:&nbsp;<a rel="up" accesskey="u" href="../index.html#dir">(dir)</a>
-<hr>
-</div>
-
-   <p>This file documents the <em>Festival Speech Synthesis System</em>
-1.4.3.  This document contains many gaps and is still in the
-process of being written.
-
-<ul class="menu">
-<li><a accesskey="1" href="Abstract.html#Abstract">Abstract</a>:             initial comments
-<li><a accesskey="2" href="Copying.html#Copying">Copying</a>:              How you can copy and share the code
-<li><a accesskey="3" href="Acknowledgements.html#Acknowledgements">Acknowledgements</a>:     List of contributors
-<li><a accesskey="4" href="What-is-new.html#What-is-new">What is new</a>:           Enhancements since last public release
-
-<li><a accesskey="5" href="Overview.html#Overview">Overview</a>:             Generalities and Philosophy
-<li><a accesskey="6" href="Installation.html#Installation">Installation</a>:         Compilation and Installation
-<li><a accesskey="7" href="Quick-start.html#Quick-start">Quick start</a>:          Just tell me what to type
-<li><a accesskey="8" href="Scheme.html#Scheme">Scheme</a>:               A quick introduction to Festival's scripting language
-
-</li></ul>
-<p>Text methods for interfacing to Festival
-</p>
-<ul class="menu">
-<li><a accesskey="9" href="TTS.html#TTS">TTS</a>:                  Text to speech modes
-<li><a href="XML_002fSGML-mark_002dup.html#XML_002fSGML-mark_002dup">XML/SGML mark-up</a>:     XML/SGML mark-up Language
-<li><a href="Emacs-interface.html#Emacs-interface">Emacs interface</a>:      Using Festival within Emacs
-
-</li></ul>
-<p>Internal functions
-</p>
-<ul class="menu">
-<li><a href="Phonesets.html#Phonesets">Phonesets</a>:            Defining and using phonesets
-<li><a href="Lexicons.html#Lexicons">Lexicons</a>:             Building and compiling Lexicons
-<li><a href="Utterances.html#Utterances">Utterances</a>:           Existing and defining new utterance types
-
-</li></ul>
-<p>Modules
-</p>
-<ul class="menu">
-<li><a href="Text-analysis.html#Text-analysis">Text analysis</a>:        Tokenizing text
-<li><a href="POS-tagging.html#POS-tagging">POS tagging</a>:          Part of speech tagging
-<li><a href="Phrase-breaks.html#Phrase-breaks">Phrase breaks</a>:        Finding phrase breaks
-<li><a href="Intonation.html#Intonation">Intonation</a>:           Intonations modules
-<li><a href="Duration.html#Duration">Duration</a>:             Duration modules
-<li><a href="UniSyn-synthesizer.html#UniSyn-synthesizer">UniSyn synthesizer</a>:   The UniSyn waveform synthesizer
-<li><a href="Diphone-synthesizer.html#Diphone-synthesizer">Diphone synthesizer</a>:  Building and using diphone synthesizers
-<li><a href="Other-synthesis-methods.html#Other-synthesis-methods">Other synthesis methods</a>:   other waveform synthesis methods
-<li><a href="Audio-output.html#Audio-output">Audio output</a>:         Getting sound from Festival
-
-<li><a href="Voices.html#Voices">Voices</a>:               Adding new voices (and languages)
-
-<li><a href="Tools.html#Tools">Tools</a>:                CART, Ngrams etc
-
-<li><a href="Building-models-from-databases.html#Building-models-from-databases">Building models from databases</a>
-
-</li></ul>
-<p>Adding new modules and writing C++ code
-</p>
-<ul class="menu">
-<li><a href="Programming.html#Programming">Programming</a>:          Programming in Festival (Lisp/C/C++)
-<li><a href="API.html#API">API</a>:                  Using Festival in other programs
-
-<li><a href="Examples.html#Examples">Examples</a>:             Some simple (and not so simple) examples
-
-<li><a href="Problems.html#Problems">Problems</a>:             Reporting bugs. 
-<li><a href="References.html#References">References</a>:           Other sources of information
-<li><a href="Feature-functions.html#Feature-functions">Feature functions</a>:    List of builtin feature functions. 
-<li><a href="Variable-list.html#Variable-list">Variable list</a>:        Short descriptions of all variables
-<li><a href="Function-list.html#Function-list">Function list</a>:        Short descriptions of all functions
-<li><a href="Index.html#Index">Index</a>:                Index of concepts. 
+<ul>
+<li><a href="http://www.cstr.ed.ac.uk/projects/speech_tools/">http://www.cstr.ed.ac.uk/projects/speech_tools/</a></li>
+<li><a href="http://festvox.org/festival/index.html">http://festvox.org/festival/index.html</a></li>
 </ul>
 
-   </body></html>
+<p>This github repository distributes a modified version of festival. Hopefully, these modifications will be merged in the next festival version. If you find a bug using a downloaded festival from this repository, do not contact upstream authors asking for help and open an issue <a href="https://github.com/zeehio/festival/issues">here</a> instead. Bug/patch will be forwarded upstream if required.</p>
 
+<p>Some of the modifications are taken from the Debian TTS group, from the Debian festival package maintainers, from Fedora package maintainers, etc. Other changes are fixes or features implemented by myself. If you are an author of any of these modifications and you notice that your name is missing, please open an issue.</p>
+
+<h3>
+<a name="pages-available" class="anchor" href="#pages-available"><span class="octicon octicon-link"></span></a>Available documentation:</h3>
+
+<ul>
+<li>
+<a href="http://zeehio.github.io/festival/doc">Documentation</a></li>
+<li>
+<a href="http://zeehio.github.io/festival/scan-build">Static Analyzer results</a> (generated with <a href="http://clang-analyzer.llvm.org/">clang</a>) (pull requests to fix them are welcome. There may be false positives)</li>
+<li><a href="https://github.com/zeehio/festival">Code (browse)</a></li>
+</ul>
+
+<h3>
+<a name="changes-with-respect-to-festival-21-release" class="anchor" href="#changes-with-respect-to-festival-21-release"><span class="octicon octicon-link"></span></a>Changes with respect to festival-2.1-release:</h3>
+
+<ul>
+<li>Dropped ESD Audio</li>
+<li>Added PulseAudio support [Original implementation by Matthias Clasen, Michal Schmidt]</li>
+<li>Tenths of bugs fixed [Peter Drysdale, Samuel Thibault...]</li>
+<li>Add alaw support [Debian maintainers]</li>
+<li>Honor CFLAGS, CXXFLAGS, LDFLAGS [Sergio Oller]</li>
+<li>Huge performance improvements in text2wave. [Sergio Oller]</li>
+</ul>
+<p>This modification of Festival is maintained by <a href="https://github.com/zeehio">zeehio</a></p>
+<p><small>Hosted on GitHub Pages</small></p>
+  </body>
+</html>

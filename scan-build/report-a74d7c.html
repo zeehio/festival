@@ -1,0 +1,965 @@
+<!doctype html>
+<html>
+<head>
+<title>wave.cc</title>
+<style type="text/css">
+ body { color:#000000; background-color:#ffffff }
+ body { font-family:Helvetica, sans-serif; font-size:10pt }
+ h1 { font-size:14pt }
+ .code { border-collapse:collapse; width:100%; }
+ .code { font-family: "Monospace", monospace; font-size:10pt }
+ .code { line-height: 1.2em }
+ .comment { color: green; font-style: oblique }
+ .keyword { color: blue }
+ .string_literal { color: red }
+ .directive { color: darkmagenta }
+ .expansion { display: none; }
+ .macro:hover .expansion { display: block; border: 2px solid #FF0000; padding: 2px; background-color:#FFF0F0; font-weight: normal;   -webkit-border-radius:5px;  -webkit-box-shadow:1px 1px 7px #000; position: absolute; top: -1em; left:10em; z-index: 1 } 
+ .macro { color: darkmagenta; background-color:LemonChiffon; position: relative }
+ .num { width:2.5em; padding-right:2ex; background-color:#eeeeee }
+ .num { text-align:right; font-size:8pt }
+ .num { color:#444444 }
+ .line { padding-left: 1ex; border-left: 3px solid #ccc }
+ .line { white-space: pre }
+ .msg { -webkit-box-shadow:1px 1px 7px #000 }
+ .msg { -webkit-border-radius:5px }
+ .msg { font-family:Helvetica, sans-serif; font-size:8pt }
+ .msg { float:left }
+ .msg { padding:0.25em 1ex 0.25em 1ex }
+ .msg { margin-top:10px; margin-bottom:10px }
+ .msg { font-weight:bold }
+ .msg { max-width:60em; word-wrap: break-word; white-space: pre-wrap }
+ .msgT { padding:0x; spacing:0x }
+ .msgEvent { background-color:#fff8b4; color:#000000 }
+ .msgControl { background-color:#bbbbbb; color:#000000 }
+ .mrange { background-color:#dfddf3 }
+ .mrange { border-bottom:1px solid #6F9DBE }
+ .PathIndex { font-weight: bold; padding:0px 5px; margin-right:5px; }
+ .PathIndex { -webkit-border-radius:8px }
+ .PathIndexEvent { background-color:#bfba87 }
+ .PathIndexControl { background-color:#8c8c8c }
+ .PathNav a { text-decoration:none; font-size: larger }
+ .CodeInsertionHint { font-weight: bold; background-color: #10dd10 }
+ .CodeRemovalHint { background-color:#de1010 }
+ .CodeRemovalHint { border-bottom:1px solid #6F9DBE }
+ table.simpletable {
+   padding: 5px;
+   font-size:12pt;
+   margin:20px;
+   border-collapse: collapse; border-spacing: 0px;
+ }
+ td.rowname {
+   text-align:right; font-weight:bold; color:#444444;
+   padding-right:2ex; }
+</style>
+</head>
+<body>
+<!-- BUGDESC Value stored to 'd0' is never read -->
+
+<!-- BUGTYPE Dead assignment -->
+
+<!-- BUGCATEGORY Dead store -->
+
+<!-- BUGFILE /media/dades/src/festival-2013/festival/src/arch/festival/wave.cc -->
+
+<!-- BUGLINE 615 -->
+
+<!-- BUGPATHLENGTH 1 -->
+
+<!-- BUGMETAEND -->
+<!-- REPORTHEADER -->
+<h3>Bug Summary</h3>
+<table class="simpletable">
+<tr><td class="rowname">File:</td><td>arch/festival/wave.cc</td></tr>
+<tr><td class="rowname">Location:</td><td><a href="#EndPath">line 615, column 5</a></td></tr>
+<tr><td class="rowname">Description:</td><td>Value stored to 'd0' is never read</td></tr>
+</table>
+<!-- REPORTSUMMARYEXTRA -->
+<h3>Annotated Source Code</h3>
+<table class="code">
+<tr><td class="num" id="LN1">1</td><td class="line"><span class='comment'>/*************************************************************************/</span></td></tr>
+<tr><td class="num" id="LN2">2</td><td class="line"><span class='comment'>/*                                                                       */</span></td></tr>
+<tr><td class="num" id="LN3">3</td><td class="line"><span class='comment'>/*                Centre for Speech Technology Research                  */</span></td></tr>
+<tr><td class="num" id="LN4">4</td><td class="line"><span class='comment'>/*                     University of Edinburgh, UK                       */</span></td></tr>
+<tr><td class="num" id="LN5">5</td><td class="line"><span class='comment'>/*                       Copyright (c) 1996,1997                         */</span></td></tr>
+<tr><td class="num" id="LN6">6</td><td class="line"><span class='comment'>/*                        All Rights Reserved.                           */</span></td></tr>
+<tr><td class="num" id="LN7">7</td><td class="line"><span class='comment'>/*                                                                       */</span></td></tr>
+<tr><td class="num" id="LN8">8</td><td class="line"><span class='comment'>/*  Permission is hereby granted, free of charge, to use and distribute  */</span></td></tr>
+<tr><td class="num" id="LN9">9</td><td class="line"><span class='comment'>/*  this software and its documentation without restriction, including   */</span></td></tr>
+<tr><td class="num" id="LN10">10</td><td class="line"><span class='comment'>/*  without limitation the rights to use, copy, modify, merge, publish,  */</span></td></tr>
+<tr><td class="num" id="LN11">11</td><td class="line"><span class='comment'>/*  distribute, sublicense, and/or sell copies of this work, and to      */</span></td></tr>
+<tr><td class="num" id="LN12">12</td><td class="line"><span class='comment'>/*  permit persons to whom this work is furnished to do so, subject to   */</span></td></tr>
+<tr><td class="num" id="LN13">13</td><td class="line"><span class='comment'>/*  the following conditions:                                            */</span></td></tr>
+<tr><td class="num" id="LN14">14</td><td class="line"><span class='comment'>/*   1. The code must retain the above copyright notice, this list of    */</span></td></tr>
+<tr><td class="num" id="LN15">15</td><td class="line"><span class='comment'>/*      conditions and the following disclaimer.                         */</span></td></tr>
+<tr><td class="num" id="LN16">16</td><td class="line"><span class='comment'>/*   2. Any modifications must be clearly marked as such.                */</span></td></tr>
+<tr><td class="num" id="LN17">17</td><td class="line"><span class='comment'>/*   3. Original authors' names are not deleted.                         */</span></td></tr>
+<tr><td class="num" id="LN18">18</td><td class="line"><span class='comment'>/*   4. The authors' names are not used to endorse or promote products   */</span></td></tr>
+<tr><td class="num" id="LN19">19</td><td class="line"><span class='comment'>/*      derived from this software without specific prior written        */</span></td></tr>
+<tr><td class="num" id="LN20">20</td><td class="line"><span class='comment'>/*      permission.                                                      */</span></td></tr>
+<tr><td class="num" id="LN21">21</td><td class="line"><span class='comment'>/*                                                                       */</span></td></tr>
+<tr><td class="num" id="LN22">22</td><td class="line"><span class='comment'>/*  THE UNIVERSITY OF EDINBURGH AND THE CONTRIBUTORS TO THIS WORK        */</span></td></tr>
+<tr><td class="num" id="LN23">23</td><td class="line"><span class='comment'>/*  DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING      */</span></td></tr>
+<tr><td class="num" id="LN24">24</td><td class="line"><span class='comment'>/*  ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT   */</span></td></tr>
+<tr><td class="num" id="LN25">25</td><td class="line"><span class='comment'>/*  SHALL THE UNIVERSITY OF EDINBURGH NOR THE CONTRIBUTORS BE LIABLE     */</span></td></tr>
+<tr><td class="num" id="LN26">26</td><td class="line"><span class='comment'>/*  FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES    */</span></td></tr>
+<tr><td class="num" id="LN27">27</td><td class="line"><span class='comment'>/*  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN   */</span></td></tr>
+<tr><td class="num" id="LN28">28</td><td class="line"><span class='comment'>/*  AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,          */</span></td></tr>
+<tr><td class="num" id="LN29">29</td><td class="line"><span class='comment'>/*  ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF       */</span></td></tr>
+<tr><td class="num" id="LN30">30</td><td class="line"><span class='comment'>/*  THIS SOFTWARE.                                                       */</span></td></tr>
+<tr><td class="num" id="LN31">31</td><td class="line"><span class='comment'>/*                                                                       */</span></td></tr>
+<tr><td class="num" id="LN32">32</td><td class="line"><span class='comment'>/*************************************************************************/</span></td></tr>
+<tr><td class="num" id="LN33">33</td><td class="line"><span class='comment'>/*                     Author :  Alan W Black                            */</span></td></tr>
+<tr><td class="num" id="LN34">34</td><td class="line"><span class='comment'>/*                     Date   :  October 1996                            */</span></td></tr>
+<tr><td class="num" id="LN35">35</td><td class="line"><span class='comment'>/*-----------------------------------------------------------------------*/</span></td></tr>
+<tr><td class="num" id="LN36">36</td><td class="line"><span class='comment'>/*                                                                       */</span></td></tr>
+<tr><td class="num" id="LN37">37</td><td class="line"><span class='comment'>/*   Interface to various low level waveform functions from Lisp         */</span></td></tr>
+<tr><td class="num" id="LN38">38</td><td class="line"><span class='comment'>/*                                                                       */</span></td></tr>
+<tr><td class="num" id="LN39">39</td><td class="line"><span class='comment'>/*=======================================================================*/</span></td></tr>
+<tr><td class="num" id="LN40">40</td><td class="line"><span class='directive'>#include &lt;cstdio&gt;</span></td></tr>
+<tr><td class="num" id="LN41">41</td><td class="line"><span class='directive'>#include "EST_unix.h"</span></td></tr>
+<tr><td class="num" id="LN42">42</td><td class="line"><span class='directive'>#include &lt;cstdlib&gt;</span></td></tr>
+<tr><td class="num" id="LN43">43</td><td class="line"><span class='directive'>#include "festival.h"</span></td></tr>
+<tr><td class="num" id="LN44">44</td><td class="line"><span class='directive'>#include "festivalP.h"</span></td></tr>
+<tr><td class="num" id="LN45">45</td><td class="line"><span class='directive'>#include "EST_Wave.h"</span></td></tr>
+<tr><td class="num" id="LN46">46</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN47">47</td><td class="line"><span class='directive'>#ifdef WIN32</span></td></tr>
+<tr><td class="num" id="LN48">48</td><td class="line"><span class='directive'>#include "winsock2.h"</span></td></tr>
+<tr><td class="num" id="LN49">49</td><td class="line"><span class='directive'>#endif</span></td></tr>
+<tr><td class="num" id="LN50">50</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN51">51</td><td class="line"><span class='keyword'>using</span> <span class='keyword'>namespace</span> std;</td></tr>
+<tr><td class="num" id="LN52">52</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN53">53</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>void</span> utt_save_f0_from_targets(EST_Utterance *u,EST_String &amp;filename);</td></tr>
+<tr><td class="num" id="LN54">54</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>float</span> f0_interpolate(EST_Item *ptval, EST_Item *tval, <span class='keyword'>float</span> time);</td></tr>
+<tr><td class="num" id="LN55">55</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN56">56</td><td class="line">EST_Wave *get_utt_wave(EST_Utterance *u)</td></tr>
+<tr><td class="num" id="LN57">57</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN58">58</td><td class="line">    EST_Relation *r;</td></tr>
+<tr><td class="num" id="LN59">59</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN60">60</td><td class="line">    <span class='keyword'>if</span> (((r = u-&gt;relation(<span class='string_literal'>"Wave"</span>)) == 0) || (r-&gt;head() == 0))</td></tr>
+<tr><td class="num" id="LN61">61</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN62">62</td><td class="line">	cerr &lt;&lt; <span class='string_literal'>"no waveform in utterance"</span> &lt;&lt; endl;</td></tr>
+<tr><td class="num" id="LN63">63</td><td class="line">	<span class='macro'>festival_error()<span class='expansion'>(errjmp_ok ? longjmp(*est_errjmp,1) : festival_tidy_up(),exit<br>(-1))</span></span>;</td></tr>
+<tr><td class="num" id="LN64">64</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN65">65</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN66">66</td><td class="line">    <span class='keyword'>return</span> wave(r-&gt;head()-&gt;f(<span class='string_literal'>"wave"</span>));</td></tr>
+<tr><td class="num" id="LN67">67</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN68">68</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN69">69</td><td class="line"><span class='keyword'>static</span> LISP wave_save(LISP lwave,LISP fname,LISP ftype,LISP stype)</td></tr>
+<tr><td class="num" id="LN70">70</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN71">71</td><td class="line">    EST_Wave *w = wave(lwave);</td></tr>
+<tr><td class="num" id="LN72">72</td><td class="line">    EST_String filename,filetype,sampletype;</td></tr>
+<tr><td class="num" id="LN73">73</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN74">74</td><td class="line">    <span class='keyword'>if</span> (fname == <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>)</td></tr>
+<tr><td class="num" id="LN75">75</td><td class="line">	filename = <span class='string_literal'>"save.wav"</span>;</td></tr>
+<tr><td class="num" id="LN76">76</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN77">77</td><td class="line">	filename = get_c_string(fname);</td></tr>
+<tr><td class="num" id="LN78">78</td><td class="line">    <span class='keyword'>if</span> (ftype == <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>)</td></tr>
+<tr><td class="num" id="LN79">79</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN80">80</td><td class="line">	<span class='keyword'>if</span> (ft_get_param(<span class='string_literal'>"Wavefiletype"</span>))</td></tr>
+<tr><td class="num" id="LN81">81</td><td class="line">	    filetype = get_c_string(ft_get_param(<span class='string_literal'>"Wavefiletype"</span>));</td></tr>
+<tr><td class="num" id="LN82">82</td><td class="line">	<span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN83">83</td><td class="line">	    filetype = <span class='string_literal'>"nist"</span>;</td></tr>
+<tr><td class="num" id="LN84">84</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN85">85</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN86">86</td><td class="line">	filetype = get_c_string(ftype);</td></tr>
+<tr><td class="num" id="LN87">87</td><td class="line">    <span class='keyword'>if</span> (stype == <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>)</td></tr>
+<tr><td class="num" id="LN88">88</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN89">89</td><td class="line">	<span class='keyword'>if</span> (ft_get_param(<span class='string_literal'>"Wavesampletype"</span>))</td></tr>
+<tr><td class="num" id="LN90">90</td><td class="line">	    sampletype = get_c_string(ft_get_param(<span class='string_literal'>"Wavesampletype"</span>));</td></tr>
+<tr><td class="num" id="LN91">91</td><td class="line">	<span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN92">92</td><td class="line">	    sampletype = <span class='string_literal'>"short"</span>;</td></tr>
+<tr><td class="num" id="LN93">93</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN94">94</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN95">95</td><td class="line">	sampletype = get_c_string(stype);</td></tr>
+<tr><td class="num" id="LN96">96</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN97">97</td><td class="line">    <span class='keyword'>if</span> (w-&gt;save_file(filename,filetype,sampletype,<span class='macro'>EST_NATIVE_BO<span class='expansion'>((((char *)&amp;est_endian_loc)[0] == 0) ? bo_big : bo_little<br>)</span></span>) != write_ok)</td></tr>
+<tr><td class="num" id="LN98">98</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN99">99</td><td class="line">	cerr &lt;&lt; <span class='string_literal'>"utt.save.wave: failed to write wave to \""</span> &lt;&lt; filename </td></tr>
+<tr><td class="num" id="LN100">100</td><td class="line">	    &lt;&lt; <span class='string_literal'>"\""</span> &lt;&lt; endl;</td></tr>
+<tr><td class="num" id="LN101">101</td><td class="line">	<span class='macro'>festival_error()<span class='expansion'>(errjmp_ok ? longjmp(*est_errjmp,1) : festival_tidy_up(),exit<br>(-1))</span></span>;</td></tr>
+<tr><td class="num" id="LN102">102</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN103">103</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN104">104</td><td class="line">    <span class='keyword'>return</span> truth;</td></tr>
+<tr><td class="num" id="LN105">105</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN106">106</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN107">107</td><td class="line"><span class='keyword'>static</span> LISP wave_save_data_fp(LISP lwave, LISP lfp, LISP ftype, LISP stype)</td></tr>
+<tr><td class="num" id="LN108">108</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN109">109</td><td class="line">    EST_Wave *w = wave(lwave);</td></tr>
+<tr><td class="num" id="LN110">110</td><td class="line">    EST_String filetype,sampletype;</td></tr>
+<tr><td class="num" id="LN111">111</td><td class="line">    FILE * fp;</td></tr>
+<tr><td class="num" id="LN112">112</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN113">113</td><td class="line">    fp = get_c_file(lfp, <span class='macro'>stdout<span class='expansion'>stdout</span></span>);</td></tr>
+<tr><td class="num" id="LN114">114</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN115">115</td><td class="line">    <span class='keyword'>if</span> (ftype == <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>)</td></tr>
+<tr><td class="num" id="LN116">116</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN117">117</td><td class="line">	<span class='keyword'>if</span> (ft_get_param(<span class='string_literal'>"Wavefiletype"</span>))</td></tr>
+<tr><td class="num" id="LN118">118</td><td class="line">	    filetype = get_c_string(ft_get_param(<span class='string_literal'>"Wavefiletype"</span>));</td></tr>
+<tr><td class="num" id="LN119">119</td><td class="line">	<span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN120">120</td><td class="line">	    filetype = <span class='string_literal'>"nist"</span>;</td></tr>
+<tr><td class="num" id="LN121">121</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN122">122</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN123">123</td><td class="line">	filetype = get_c_string(ftype);</td></tr>
+<tr><td class="num" id="LN124">124</td><td class="line">    <span class='keyword'>if</span> (stype == <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>)</td></tr>
+<tr><td class="num" id="LN125">125</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN126">126</td><td class="line">	<span class='keyword'>if</span> (ft_get_param(<span class='string_literal'>"Wavesampletype"</span>))</td></tr>
+<tr><td class="num" id="LN127">127</td><td class="line">	    sampletype = get_c_string(ft_get_param(<span class='string_literal'>"Wavesampletype"</span>));</td></tr>
+<tr><td class="num" id="LN128">128</td><td class="line">	<span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN129">129</td><td class="line">	    sampletype = <span class='string_literal'>"short"</span>;</td></tr>
+<tr><td class="num" id="LN130">130</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN131">131</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN132">132</td><td class="line">	sampletype = get_c_string(stype);</td></tr>
+<tr><td class="num" id="LN133">133</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN134">134</td><td class="line">    <span class='keyword'>if</span> (w-&gt;save_file_data(fp,filetype,sampletype,<span class='macro'>EST_NATIVE_BO<span class='expansion'>((((char *)&amp;est_endian_loc)[0] == 0) ? bo_big : bo_little<br>)</span></span>) != write_ok)</td></tr>
+<tr><td class="num" id="LN135">135</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN136">136</td><td class="line">	cerr &lt;&lt; <span class='string_literal'>"utt.save.wave.fp: failed to write wave"</span> &lt;&lt; endl;</td></tr>
+<tr><td class="num" id="LN137">137</td><td class="line">	<span class='macro'>festival_error()<span class='expansion'>(errjmp_ok ? longjmp(*est_errjmp,1) : festival_tidy_up(),exit<br>(-1))</span></span>;</td></tr>
+<tr><td class="num" id="LN138">138</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN139">139</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN140">140</td><td class="line">    <span class='keyword'>return</span> truth;</td></tr>
+<tr><td class="num" id="LN141">141</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN142">142</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN143">143</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN144">144</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN145">145</td><td class="line"><span class='keyword'>static</span> LISP wave_save_fp(LISP lwave, LISP lfp, LISP ftype, LISP stype)</td></tr>
+<tr><td class="num" id="LN146">146</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN147">147</td><td class="line">    EST_Wave *w = wave(lwave);</td></tr>
+<tr><td class="num" id="LN148">148</td><td class="line">    EST_String filetype,sampletype;</td></tr>
+<tr><td class="num" id="LN149">149</td><td class="line">    FILE * fp;</td></tr>
+<tr><td class="num" id="LN150">150</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN151">151</td><td class="line">    fp = get_c_file(lfp, <span class='macro'>stdout<span class='expansion'>stdout</span></span>);</td></tr>
+<tr><td class="num" id="LN152">152</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN153">153</td><td class="line">    <span class='keyword'>if</span> (ftype == <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>)</td></tr>
+<tr><td class="num" id="LN154">154</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN155">155</td><td class="line">	<span class='keyword'>if</span> (ft_get_param(<span class='string_literal'>"Wavefiletype"</span>))</td></tr>
+<tr><td class="num" id="LN156">156</td><td class="line">	    filetype = get_c_string(ft_get_param(<span class='string_literal'>"Wavefiletype"</span>));</td></tr>
+<tr><td class="num" id="LN157">157</td><td class="line">	<span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN158">158</td><td class="line">	    filetype = <span class='string_literal'>"nist"</span>;</td></tr>
+<tr><td class="num" id="LN159">159</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN160">160</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN161">161</td><td class="line">	filetype = get_c_string(ftype);</td></tr>
+<tr><td class="num" id="LN162">162</td><td class="line">    <span class='keyword'>if</span> (stype == <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>)</td></tr>
+<tr><td class="num" id="LN163">163</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN164">164</td><td class="line">	<span class='keyword'>if</span> (ft_get_param(<span class='string_literal'>"Wavesampletype"</span>))</td></tr>
+<tr><td class="num" id="LN165">165</td><td class="line">	    sampletype = get_c_string(ft_get_param(<span class='string_literal'>"Wavesampletype"</span>));</td></tr>
+<tr><td class="num" id="LN166">166</td><td class="line">	<span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN167">167</td><td class="line">	    sampletype = <span class='string_literal'>"short"</span>;</td></tr>
+<tr><td class="num" id="LN168">168</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN169">169</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN170">170</td><td class="line">	sampletype = get_c_string(stype);</td></tr>
+<tr><td class="num" id="LN171">171</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN172">172</td><td class="line">    <span class='keyword'>if</span> (w-&gt;save_file(fp,filetype,sampletype,<span class='macro'>EST_NATIVE_BO<span class='expansion'>((((char *)&amp;est_endian_loc)[0] == 0) ? bo_big : bo_little<br>)</span></span>) != write_ok)</td></tr>
+<tr><td class="num" id="LN173">173</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN174">174</td><td class="line">	cerr &lt;&lt; <span class='string_literal'>"utt.save.wave.data.fp: failed to write wave"</span> &lt;&lt; endl;</td></tr>
+<tr><td class="num" id="LN175">175</td><td class="line">	<span class='macro'>festival_error()<span class='expansion'>(errjmp_ok ? longjmp(*est_errjmp,1) : festival_tidy_up(),exit<br>(-1))</span></span>;</td></tr>
+<tr><td class="num" id="LN176">176</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN177">177</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN178">178</td><td class="line">    <span class='keyword'>return</span> truth;</td></tr>
+<tr><td class="num" id="LN179">179</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN180">180</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN181">181</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN182">182</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN183">183</td><td class="line"><span class='keyword'>static</span> LISP wave_save_header_fp(LISP arglist)</td></tr>
+<tr><td class="num" id="LN184">184</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN185">185</td><td class="line">    LISP lfp = car(arglist);</td></tr>
+<tr><td class="num" id="LN186">186</td><td class="line">    arglist = cdr(arglist);</td></tr>
+<tr><td class="num" id="LN187">187</td><td class="line">    LISP lwave = car(arglist);</td></tr>
+<tr><td class="num" id="LN188">188</td><td class="line">    arglist = cdr(arglist);</td></tr>
+<tr><td class="num" id="LN189">189</td><td class="line">    LISP lftype = car(arglist);</td></tr>
+<tr><td class="num" id="LN190">190</td><td class="line">    arglist = cdr(arglist);</td></tr>
+<tr><td class="num" id="LN191">191</td><td class="line">    LISP lstype = car(arglist);</td></tr>
+<tr><td class="num" id="LN192">192</td><td class="line">    arglist = cdr(arglist);</td></tr>
+<tr><td class="num" id="LN193">193</td><td class="line">    LISP force_values = car(arglist);</td></tr>
+<tr><td class="num" id="LN194">194</td><td class="line">    arglist = cdr(arglist);</td></tr>
+<tr><td class="num" id="LN195">195</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN196">196</td><td class="line">    FILE *fp;</td></tr>
+<tr><td class="num" id="LN197">197</td><td class="line">    fp = get_c_file(lfp, <span class='macro'>NULL<span class='expansion'>__null</span></span>);</td></tr>
+<tr><td class="num" id="LN198">198</td><td class="line">    EST_String ftype, stype;</td></tr>
+<tr><td class="num" id="LN199">199</td><td class="line">    EST_Wave *w = wave(lwave);</td></tr>
+<tr><td class="num" id="LN200">200</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN201">201</td><td class="line">    <span class='keyword'>int</span> num_samples = w-&gt;num_samples();</td></tr>
+<tr><td class="num" id="LN202">202</td><td class="line">    <span class='keyword'>int</span> num_channels = w-&gt;num_channels();</td></tr>
+<tr><td class="num" id="LN203">203</td><td class="line">    <span class='keyword'>int</span> sample_rate = w-&gt;sample_rate();</td></tr>
+<tr><td class="num" id="LN204">204</td><td class="line">    <span class='keyword'>int</span> bo = <span class='macro'>EST_NATIVE_BO<span class='expansion'>((((char *)&amp;est_endian_loc)[0] == 0) ? bo_big : bo_little<br>)</span></span>;</td></tr>
+<tr><td class="num" id="LN205">205</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN206">206</td><td class="line">    num_samples = (<span class='keyword'>int</span>) get_param_float(<span class='string_literal'>"numsamples"</span>, force_values, (<span class='keyword'>float</span>) num_samples);</td></tr>
+<tr><td class="num" id="LN207">207</td><td class="line">    num_channels = (<span class='keyword'>int</span>) get_param_float(<span class='string_literal'>"numchannels"</span>, force_values, (<span class='keyword'>float</span>) num_channels);</td></tr>
+<tr><td class="num" id="LN208">208</td><td class="line">    sample_rate = (<span class='keyword'>int</span>) get_param_float(<span class='string_literal'>"samplerate"</span>, force_values, (<span class='keyword'>float</span>) sample_rate);</td></tr>
+<tr><td class="num" id="LN209">209</td><td class="line">    bo = (<span class='keyword'>int</span>) get_param_float(<span class='string_literal'>"bo"</span>, force_values, (<span class='keyword'>float</span>) bo);</td></tr>
+<tr><td class="num" id="LN210">210</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN211">211</td><td class="line">    <span class='keyword'>if</span> (lftype == <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>)</td></tr>
+<tr><td class="num" id="LN212">212</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN213">213</td><td class="line">	    <span class='keyword'>if</span> (ft_get_param(<span class='string_literal'>"Wavefiletype"</span>))</td></tr>
+<tr><td class="num" id="LN214">214</td><td class="line">	        ftype = get_c_string(ft_get_param(<span class='string_literal'>"Wavefiletype"</span>));</td></tr>
+<tr><td class="num" id="LN215">215</td><td class="line">	    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN216">216</td><td class="line">	        ftype = <span class='string_literal'>"nist"</span>;</td></tr>
+<tr><td class="num" id="LN217">217</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN218">218</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN219">219</td><td class="line">	    ftype = get_c_string(lftype);</td></tr>
+<tr><td class="num" id="LN220">220</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN221">221</td><td class="line">    <span class='keyword'>if</span> (lstype == <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>)</td></tr>
+<tr><td class="num" id="LN222">222</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN223">223</td><td class="line">        <span class='keyword'>if</span> (ft_get_param(<span class='string_literal'>"Wavesampletype"</span>))</td></tr>
+<tr><td class="num" id="LN224">224</td><td class="line">            stype = get_c_string(ft_get_param(<span class='string_literal'>"Wavesampletype"</span>));</td></tr>
+<tr><td class="num" id="LN225">225</td><td class="line">        <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN226">226</td><td class="line">            stype = <span class='string_literal'>"short"</span>;</td></tr>
+<tr><td class="num" id="LN227">227</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN228">228</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN229">229</td><td class="line">        stype = get_c_string(lstype);</td></tr>
+<tr><td class="num" id="LN230">230</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN231">231</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN232">232</td><td class="line">    <span class='keyword'>if</span> (wave_io_save_header(fp, num_samples, num_channels,</td></tr>
+<tr><td class="num" id="LN233">233</td><td class="line">                        sample_rate, stype, bo, ftype) != write_ok)</td></tr>
+<tr><td class="num" id="LN234">234</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN235">235</td><td class="line">        cerr &lt;&lt; <span class='string_literal'>"utt.save.wave.header: failed"</span> &lt;&lt; endl;</td></tr>
+<tr><td class="num" id="LN236">236</td><td class="line">	    <span class='macro'>festival_error()<span class='expansion'>(errjmp_ok ? longjmp(*est_errjmp,1) : festival_tidy_up(),exit<br>(-1))</span></span>;</td></tr>
+<tr><td class="num" id="LN237">237</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN238">238</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN239">239</td><td class="line">    <span class='keyword'>return</span> truth;</td></tr>
+<tr><td class="num" id="LN240">240</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN241">241</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN242">242</td><td class="line"><span class='keyword'>static</span> LISP wave_load(LISP fname,LISP ftype,LISP stype,LISP srate)</td></tr>
+<tr><td class="num" id="LN243">243</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN244">244</td><td class="line">    EST_Wave *w = <span class='keyword'>new</span> EST_Wave;</td></tr>
+<tr><td class="num" id="LN245">245</td><td class="line">    EST_read_status r;</td></tr>
+<tr><td class="num" id="LN246">246</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN247">247</td><td class="line">    <span class='keyword'>if</span> (ftype == <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>)</td></tr>
+<tr><td class="num" id="LN248">248</td><td class="line">	r = w-&gt;load(get_c_string(fname));</td></tr>
+<tr><td class="num" id="LN249">249</td><td class="line">    <span class='keyword'>else</span> <span class='keyword'>if</span> (<span class='macro'>streq(<span class='string_literal'>"raw"</span>,get_c_string(ftype))<span class='expansion'>(strcmp("raw",get_c_string(ftype))==0)</span></span>)</td></tr>
+<tr><td class="num" id="LN250">250</td><td class="line">	r = w-&gt;load_file(get_c_string(fname),</td></tr>
+<tr><td class="num" id="LN251">251</td><td class="line">			 get_c_string(ftype),</td></tr>
+<tr><td class="num" id="LN252">252</td><td class="line">			 get_c_int(srate),</td></tr>
+<tr><td class="num" id="LN253">253</td><td class="line">			 get_c_string(stype),</td></tr>
+<tr><td class="num" id="LN254">254</td><td class="line">			 <span class='macro'>EST_NATIVE_BO<span class='expansion'>((((char *)&amp;est_endian_loc)[0] == 0) ? bo_big : bo_little<br>)</span></span>,</td></tr>
+<tr><td class="num" id="LN255">255</td><td class="line">			 1);</td></tr>
+<tr><td class="num" id="LN256">256</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN257">257</td><td class="line">	r = w-&gt;load(get_c_string(fname),get_c_string(ftype));</td></tr>
+<tr><td class="num" id="LN258">258</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN259">259</td><td class="line">    <span class='keyword'>if</span> (r != <span class='macro'>format_ok<span class='expansion'>read_ok</span></span>)</td></tr>
+<tr><td class="num" id="LN260">260</td><td class="line">	cerr &lt;&lt; <span class='string_literal'>"Cannot load wavefile: "</span> &lt;&lt; get_c_string(fname) &lt;&lt; endl;</td></tr>
+<tr><td class="num" id="LN261">261</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN262">262</td><td class="line">    <span class='keyword'>return</span> siod(w);</td></tr>
+<tr><td class="num" id="LN263">263</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN264">264</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN265">265</td><td class="line"><span class='keyword'>static</span> LISP wave_copy(LISP w)</td></tr>
+<tr><td class="num" id="LN266">266</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN267">267</td><td class="line">    <span class='keyword'>return</span> siod(<span class='keyword'>new</span> EST_Wave(*wave(w)));</td></tr>
+<tr><td class="num" id="LN268">268</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN269">269</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN270">270</td><td class="line"><span class='keyword'>static</span> LISP wave_append(LISP w1,LISP w2)</td></tr>
+<tr><td class="num" id="LN271">271</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN272">272</td><td class="line">    EST_Wave *wave1 = wave(w1);</td></tr>
+<tr><td class="num" id="LN273">273</td><td class="line">    EST_Wave *wave2 = wave(w2);</td></tr>
+<tr><td class="num" id="LN274">274</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN275">275</td><td class="line">    *wave1 += *wave2;</td></tr>
+<tr><td class="num" id="LN276">276</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN277">277</td><td class="line">    <span class='keyword'>return</span> w1;</td></tr>
+<tr><td class="num" id="LN278">278</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN279">279</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN280">280</td><td class="line"><span class='keyword'>static</span> LISP wave_info(LISP w1)</td></tr>
+<tr><td class="num" id="LN281">281</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN282">282</td><td class="line">    EST_Wave *w = wave(w1);</td></tr>
+<tr><td class="num" id="LN283">283</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN284">284</td><td class="line">    <span class='keyword'>return</span> cons(make_param_float(<span class='string_literal'>"num_samples"</span>,</td></tr>
+<tr><td class="num" id="LN285">285</td><td class="line">				w-&gt;num_samples()),</td></tr>
+<tr><td class="num" id="LN286">286</td><td class="line">		cons(make_param_float(<span class='string_literal'>"sample_rate"</span>,</td></tr>
+<tr><td class="num" id="LN287">287</td><td class="line">				     w-&gt;sample_rate()),</td></tr>
+<tr><td class="num" id="LN288">288</td><td class="line">		     cons(make_param_float(<span class='string_literal'>"num_channels"</span>,</td></tr>
+<tr><td class="num" id="LN289">289</td><td class="line">					  w-&gt;num_channels()),</td></tr>
+<tr><td class="num" id="LN290">290</td><td class="line">			  cons(make_param_str(<span class='string_literal'>"file_type"</span>,</td></tr>
+<tr><td class="num" id="LN291">291</td><td class="line">					      w-&gt;file_type()),</td></tr>
+<tr><td class="num" id="LN292">292</td><td class="line">			       <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>))));</td></tr>
+<tr><td class="num" id="LN293">293</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN294">294</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN295">295</td><td class="line"><span class='keyword'>static</span> LISP wave_set(LISP lwave,LISP lx, LISP ly, LISP lv)</td></tr>
+<tr><td class="num" id="LN296">296</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN297">297</td><td class="line">    EST_Wave *t = wave(lwave);</td></tr>
+<tr><td class="num" id="LN298">298</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN299">299</td><td class="line">    t-&gt;a(get_c_int(lx),get_c_int(ly)) = (<span class='keyword'>short</span>)get_c_float(lv);</td></tr>
+<tr><td class="num" id="LN300">300</td><td class="line">    <span class='keyword'>return</span> lv;</td></tr>
+<tr><td class="num" id="LN301">301</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN302">302</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN303">303</td><td class="line"><span class='keyword'>static</span> LISP wave_set_sample_rate(LISP lwave,LISP lsr)</td></tr>
+<tr><td class="num" id="LN304">304</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN305">305</td><td class="line">    EST_Wave *t = wave(lwave);</td></tr>
+<tr><td class="num" id="LN306">306</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN307">307</td><td class="line">    t-&gt;set_sample_rate(get_c_int(lsr));</td></tr>
+<tr><td class="num" id="LN308">308</td><td class="line">    <span class='keyword'>return</span> lsr;</td></tr>
+<tr><td class="num" id="LN309">309</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN310">310</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN311">311</td><td class="line"><span class='keyword'>static</span> LISP wave_get(LISP lwave,LISP lx, LISP ly)</td></tr>
+<tr><td class="num" id="LN312">312</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN313">313</td><td class="line">    EST_Wave *t = wave(lwave);</td></tr>
+<tr><td class="num" id="LN314">314</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN315">315</td><td class="line">    <span class='keyword'>return</span> flocons(t-&gt;a(get_c_int(lx),get_c_int(ly)));</td></tr>
+<tr><td class="num" id="LN316">316</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN317">317</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN318">318</td><td class="line"><span class='keyword'>static</span> LISP wave_resize(LISP lwave,LISP lsamples, LISP lchannels)</td></tr>
+<tr><td class="num" id="LN319">319</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN320">320</td><td class="line">    EST_Wave *t;</td></tr>
+<tr><td class="num" id="LN321">321</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN322">322</td><td class="line">    <span class='keyword'>if</span> (lwave)</td></tr>
+<tr><td class="num" id="LN323">323</td><td class="line">	t = wave(lwave);</td></tr>
+<tr><td class="num" id="LN324">324</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN325">325</td><td class="line">	t = <span class='keyword'>new</span> EST_Wave;</td></tr>
+<tr><td class="num" id="LN326">326</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN327">327</td><td class="line">    t-&gt;resize(get_c_int(lsamples),get_c_int(lchannels));</td></tr>
+<tr><td class="num" id="LN328">328</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN329">329</td><td class="line">    <span class='keyword'>return</span> siod(t);</td></tr>
+<tr><td class="num" id="LN330">330</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN331">331</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN332">332</td><td class="line"><span class='keyword'>static</span> LISP wave_resample(LISP w1,LISP newrate)</td></tr>
+<tr><td class="num" id="LN333">333</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN334">334</td><td class="line">    EST_Wave *w = wave(w1);</td></tr>
+<tr><td class="num" id="LN335">335</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN336">336</td><td class="line">    w-&gt;resample(get_c_int(newrate));</td></tr>
+<tr><td class="num" id="LN337">337</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN338">338</td><td class="line">    <span class='keyword'>return</span> w1;</td></tr>
+<tr><td class="num" id="LN339">339</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN340">340</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN341">341</td><td class="line"><span class='keyword'>static</span> LISP wave_rescale(LISP lw,LISP lgain,LISP normalize)</td></tr>
+<tr><td class="num" id="LN342">342</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN343">343</td><td class="line">    EST_Wave *w = wave(lw);</td></tr>
+<tr><td class="num" id="LN344">344</td><td class="line">    <span class='keyword'>float</span> gain = get_c_float(lgain);</td></tr>
+<tr><td class="num" id="LN345">345</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN346">346</td><td class="line">    <span class='keyword'>if</span> (normalize)</td></tr>
+<tr><td class="num" id="LN347">347</td><td class="line">	w-&gt;rescale(gain,<span class='macro'>TRUE<span class='expansion'>(1==1)</span></span>);</td></tr>
+<tr><td class="num" id="LN348">348</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN349">349</td><td class="line">	w-&gt;rescale(gain);</td></tr>
+<tr><td class="num" id="LN350">350</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN351">351</td><td class="line">    <span class='keyword'>return</span> lw;</td></tr>
+<tr><td class="num" id="LN352">352</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN353">353</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN354">354</td><td class="line"><span class='keyword'>void</span> play_wave(EST_Wave *w)</td></tr>
+<tr><td class="num" id="LN355">355</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN356">356</td><td class="line">    EST_Option al;</td></tr>
+<tr><td class="num" id="LN357">357</td><td class="line">    LISP audio;</td></tr>
+<tr><td class="num" id="LN358">358</td><td class="line">	</td></tr>
+<tr><td class="num" id="LN359">359</td><td class="line">    <span class='keyword'>if</span> (audsp_mode)  <span class='comment'>// asynchronous mode</span></td></tr>
+<tr><td class="num" id="LN360">360</td><td class="line">	audsp_play_wave(w);</td></tr>
+<tr><td class="num" id="LN361">361</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN362">362</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN363">363</td><td class="line">	<span class='keyword'>if</span> ((audio = ft_get_param(<span class='string_literal'>"Audio_Method"</span>)) != <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>)</td></tr>
+<tr><td class="num" id="LN364">364</td><td class="line">	    al.add_item(<span class='string_literal'>"-p"</span>,get_c_string(audio));</td></tr>
+<tr><td class="num" id="LN365">365</td><td class="line">	<span class='keyword'>if</span> ((audio = ft_get_param(<span class='string_literal'>"Audio_Device"</span>)) != <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>)</td></tr>
+<tr><td class="num" id="LN366">366</td><td class="line">	    al.add_item(<span class='string_literal'>"-audiodevice"</span>,get_c_string(audio));</td></tr>
+<tr><td class="num" id="LN367">367</td><td class="line">	<span class='keyword'>if</span> ((audio = ft_get_param(<span class='string_literal'>"Audio_Command"</span>)) != <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>)</td></tr>
+<tr><td class="num" id="LN368">368</td><td class="line">	    al.add_item(<span class='string_literal'>"-command"</span>,quote_string(get_c_string(audio)));</td></tr>
+<tr><td class="num" id="LN369">369</td><td class="line">	<span class='keyword'>if</span> ((audio = ft_get_param(<span class='string_literal'>"Audio_Required_Rate"</span>)) != <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>)</td></tr>
+<tr><td class="num" id="LN370">370</td><td class="line">	    al.add_item(<span class='string_literal'>"-rate"</span>,get_c_string(audio));</td></tr>
+<tr><td class="num" id="LN371">371</td><td class="line">	<span class='keyword'>if</span> ((audio = ft_get_param(<span class='string_literal'>"Audio_Required_Format"</span>)) != <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>)</td></tr>
+<tr><td class="num" id="LN372">372</td><td class="line">	    al.add_item(<span class='string_literal'>"-otype"</span>,get_c_string(audio));</td></tr>
+<tr><td class="num" id="LN373">373</td><td class="line">	al.add_item(<span class='string_literal'>"-quality"</span>,<span class='string_literal'>"HIGH"</span>);</td></tr>
+<tr><td class="num" id="LN374">374</td><td class="line">	play_wave(*w,al);</td></tr>
+<tr><td class="num" id="LN375">375</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN376">376</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN377">377</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN378">378</td><td class="line"><span class='keyword'>static</span> LISP wave_play(LISP lw)</td></tr>
+<tr><td class="num" id="LN379">379</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN380">380</td><td class="line">    play_wave(wave(lw));</td></tr>
+<tr><td class="num" id="LN381">381</td><td class="line">    <span class='keyword'>return</span> truth;</td></tr>
+<tr><td class="num" id="LN382">382</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN383">383</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN384">384</td><td class="line"><span class='keyword'>static</span> LISP track_save(LISP ltrack,LISP fname,LISP ftype)</td></tr>
+<tr><td class="num" id="LN385">385</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN386">386</td><td class="line">    EST_Track *t = track(ltrack);</td></tr>
+<tr><td class="num" id="LN387">387</td><td class="line">    EST_String filename,filetype;</td></tr>
+<tr><td class="num" id="LN388">388</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN389">389</td><td class="line">    filename = (fname == <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>) ? <span class='string_literal'>"save.track"</span> : get_c_string(fname);</td></tr>
+<tr><td class="num" id="LN390">390</td><td class="line">    filetype = (ftype == <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>) ? <span class='string_literal'>"est"</span> : get_c_string(ftype);</td></tr>
+<tr><td class="num" id="LN391">391</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN392">392</td><td class="line">    <span class='keyword'>if</span> (t-&gt;save(filename, filetype) != write_ok)</td></tr>
+<tr><td class="num" id="LN393">393</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN394">394</td><td class="line">	cerr &lt;&lt; <span class='string_literal'>"track.save: failed to write track to \""</span> &lt;&lt; filename </td></tr>
+<tr><td class="num" id="LN395">395</td><td class="line">	    &lt;&lt; <span class='string_literal'>"\""</span> &lt;&lt; endl;</td></tr>
+<tr><td class="num" id="LN396">396</td><td class="line">	<span class='macro'>festival_error()<span class='expansion'>(errjmp_ok ? longjmp(*est_errjmp,1) : festival_tidy_up(),exit<br>(-1))</span></span>;</td></tr>
+<tr><td class="num" id="LN397">397</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN398">398</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN399">399</td><td class="line">    <span class='keyword'>return</span> truth;</td></tr>
+<tr><td class="num" id="LN400">400</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN401">401</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN402">402</td><td class="line"><span class='keyword'>static</span> LISP track_load(LISP fname,LISP ftype,LISP ishift)</td></tr>
+<tr><td class="num" id="LN403">403</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN404">404</td><td class="line">    EST_Track *t = <span class='keyword'>new</span> EST_Track;</td></tr>
+<tr><td class="num" id="LN405">405</td><td class="line">    EST_read_status r;</td></tr>
+<tr><td class="num" id="LN406">406</td><td class="line">    <span class='keyword'>float</span> is = 0.0;</td></tr>
+<tr><td class="num" id="LN407">407</td><td class="line">    <span class='keyword'>if</span> (ishift)</td></tr>
+<tr><td class="num" id="LN408">408</td><td class="line">	is = get_c_float(ishift);</td></tr>
+<tr><td class="num" id="LN409">409</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN410">410</td><td class="line">    <span class='keyword'>if</span> (ftype == <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>)</td></tr>
+<tr><td class="num" id="LN411">411</td><td class="line">	r = t-&gt;load(get_c_string(fname),is);</td></tr>
+<tr><td class="num" id="LN412">412</td><td class="line">    <span class='keyword'>else</span> </td></tr>
+<tr><td class="num" id="LN413">413</td><td class="line">	r = t-&gt;load(get_c_string(fname),</td></tr>
+<tr><td class="num" id="LN414">414</td><td class="line">		    get_c_string(ftype),</td></tr>
+<tr><td class="num" id="LN415">415</td><td class="line">		    is);</td></tr>
+<tr><td class="num" id="LN416">416</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN417">417</td><td class="line">    <span class='keyword'>if</span> (r != <span class='macro'>format_ok<span class='expansion'>read_ok</span></span>)</td></tr>
+<tr><td class="num" id="LN418">418</td><td class="line">	cerr &lt;&lt; <span class='string_literal'>"Cannot load track: "</span> &lt;&lt; get_c_string(fname) &lt;&lt; endl;</td></tr>
+<tr><td class="num" id="LN419">419</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN420">420</td><td class="line">    <span class='keyword'>return</span> siod(t);</td></tr>
+<tr><td class="num" id="LN421">421</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN422">422</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN423">423</td><td class="line"><span class='keyword'>static</span> LISP track_index_below(LISP ltrack, LISP ltime)</td></tr>
+<tr><td class="num" id="LN424">424</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN425">425</td><td class="line">  EST_Track *t = track(ltrack);</td></tr>
+<tr><td class="num" id="LN426">426</td><td class="line">  <span class='keyword'>int</span> index = -1;</td></tr>
+<tr><td class="num" id="LN427">427</td><td class="line">  </td></tr>
+<tr><td class="num" id="LN428">428</td><td class="line">  <span class='keyword'>if</span>(ltime)</td></tr>
+<tr><td class="num" id="LN429">429</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN430">430</td><td class="line">      index = t-&gt;index_below(get_c_float(ltime));</td></tr>
+<tr><td class="num" id="LN431">431</td><td class="line">      <span class='keyword'>return</span> flocons(index); </td></tr>
+<tr><td class="num" id="LN432">432</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN433">433</td><td class="line">  </td></tr>
+<tr><td class="num" id="LN434">434</td><td class="line">  <span class='keyword'>return</span> <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>;</td></tr>
+<tr><td class="num" id="LN435">435</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN436">436</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN437">437</td><td class="line"><span class='keyword'>static</span> LISP track_resize(LISP ltrack,LISP lframes, LISP lchannels)</td></tr>
+<tr><td class="num" id="LN438">438</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN439">439</td><td class="line">    EST_Track *t;</td></tr>
+<tr><td class="num" id="LN440">440</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN441">441</td><td class="line">    <span class='keyword'>if</span> (ltrack)</td></tr>
+<tr><td class="num" id="LN442">442</td><td class="line">	t = track(ltrack);</td></tr>
+<tr><td class="num" id="LN443">443</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN444">444</td><td class="line">	t = <span class='keyword'>new</span> EST_Track;</td></tr>
+<tr><td class="num" id="LN445">445</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN446">446</td><td class="line">    t-&gt;resize(get_c_int(lframes),get_c_int(lchannels));</td></tr>
+<tr><td class="num" id="LN447">447</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN448">448</td><td class="line">    <span class='keyword'>return</span> siod(t);</td></tr>
+<tr><td class="num" id="LN449">449</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN450">450</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN451">451</td><td class="line"><span class='keyword'>static</span> LISP track_set(LISP ltrack,LISP lx, LISP ly, LISP lv)</td></tr>
+<tr><td class="num" id="LN452">452</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN453">453</td><td class="line">    EST_Track *t = track(ltrack);</td></tr>
+<tr><td class="num" id="LN454">454</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN455">455</td><td class="line">    t-&gt;a(get_c_int(lx),get_c_int(ly)) = get_c_float(lv);</td></tr>
+<tr><td class="num" id="LN456">456</td><td class="line">    <span class='keyword'>return</span> lv;</td></tr>
+<tr><td class="num" id="LN457">457</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN458">458</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN459">459</td><td class="line"><span class='keyword'>static</span> LISP track_set_time(LISP ltrack,LISP lx, LISP lt)</td></tr>
+<tr><td class="num" id="LN460">460</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN461">461</td><td class="line">    EST_Track *t = track(ltrack);</td></tr>
+<tr><td class="num" id="LN462">462</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN463">463</td><td class="line">    t-&gt;t(get_c_int(lx)) = get_c_float(lt);</td></tr>
+<tr><td class="num" id="LN464">464</td><td class="line">    <span class='keyword'>return</span> lt;</td></tr>
+<tr><td class="num" id="LN465">465</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN466">466</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN467">467</td><td class="line"><span class='keyword'>static</span> LISP track_get(LISP ltrack,LISP lx, LISP ly)</td></tr>
+<tr><td class="num" id="LN468">468</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN469">469</td><td class="line">    EST_Track *t = track(ltrack);</td></tr>
+<tr><td class="num" id="LN470">470</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN471">471</td><td class="line">    <span class='keyword'>return</span> flocons(t-&gt;a(get_c_int(lx),get_c_int(ly)));</td></tr>
+<tr><td class="num" id="LN472">472</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN473">473</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN474">474</td><td class="line"><span class='keyword'>static</span> LISP track_get_time(LISP ltrack,LISP lx)</td></tr>
+<tr><td class="num" id="LN475">475</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN476">476</td><td class="line">    EST_Track *t = track(ltrack);</td></tr>
+<tr><td class="num" id="LN477">477</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN478">478</td><td class="line">    <span class='keyword'>return</span> flocons(t-&gt;t(get_c_int(lx)));</td></tr>
+<tr><td class="num" id="LN479">479</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN480">480</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN481">481</td><td class="line"><span class='keyword'>static</span> LISP track_frames(LISP ltrack)</td></tr>
+<tr><td class="num" id="LN482">482</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN483">483</td><td class="line">    <span class='keyword'>return</span> flocons((<span class='keyword'>float</span>)track(ltrack)-&gt;num_frames());</td></tr>
+<tr><td class="num" id="LN484">484</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN485">485</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN486">486</td><td class="line"><span class='keyword'>static</span> LISP track_channels(LISP ltrack)</td></tr>
+<tr><td class="num" id="LN487">487</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN488">488</td><td class="line">    <span class='keyword'>return</span> flocons((<span class='keyword'>float</span>)track(ltrack)-&gt;num_channels());</td></tr>
+<tr><td class="num" id="LN489">489</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN490">490</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN491">491</td><td class="line"><span class='keyword'>static</span> LISP track_copy(LISP t)</td></tr>
+<tr><td class="num" id="LN492">492</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN493">493</td><td class="line">    <span class='keyword'>return</span> siod(<span class='keyword'>new</span> EST_Track(*track(t)));</td></tr>
+<tr><td class="num" id="LN494">494</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN495">495</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN496">496</td><td class="line"><span class='keyword'>static</span> LISP track_insert(LISP argv, LISP env)</td></tr>
+<tr><td class="num" id="LN497">497</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN498">498</td><td class="line">    <span class='keyword'>int</span> i,j;</td></tr>
+<tr><td class="num" id="LN499">499</td><td class="line">    <span class='comment'>/* TRACK1 X1 TRACK2 X2 COUNT */</span></td></tr>
+<tr><td class="num" id="LN500">500</td><td class="line">    EST_Track *t1 = track(leval(siod_nth(0,argv),env));</td></tr>
+<tr><td class="num" id="LN501">501</td><td class="line">    <span class='keyword'>int</span> x1 = get_c_int(leval(siod_nth(1,argv),env));</td></tr>
+<tr><td class="num" id="LN502">502</td><td class="line">    EST_Track *t2 = track(leval(siod_nth(2,argv),env));</td></tr>
+<tr><td class="num" id="LN503">503</td><td class="line">    <span class='keyword'>int</span> x2 = get_c_int(leval(siod_nth(3,argv),env));</td></tr>
+<tr><td class="num" id="LN504">504</td><td class="line">    <span class='keyword'>int</span> count = get_c_int(leval(siod_nth(4,argv),env));</td></tr>
+<tr><td class="num" id="LN505">505</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN506">506</td><td class="line">    <span class='keyword'>if</span> (t1-&gt;num_channels() != t2-&gt;num_channels())</td></tr>
+<tr><td class="num" id="LN507">507</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN508">508</td><td class="line">	cerr &lt;&lt; <span class='string_literal'>"track.insert: different number of channels"</span> &lt;&lt; </td></tr>
+<tr><td class="num" id="LN509">509</td><td class="line">	    t1-&gt;num_channels() &lt;&lt; <span class='string_literal'>" != "</span> &lt;&lt; t2-&gt;num_channels() &lt;&lt; endl;</td></tr>
+<tr><td class="num" id="LN510">510</td><td class="line">	<span class='macro'>festival_error()<span class='expansion'>(errjmp_ok ? longjmp(*est_errjmp,1) : festival_tidy_up(),exit<br>(-1))</span></span>;</td></tr>
+<tr><td class="num" id="LN511">511</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN512">512</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN513">513</td><td class="line">    <span class='keyword'>if</span> (x1 + count &gt;= t1-&gt;num_frames())</td></tr>
+<tr><td class="num" id="LN514">514</td><td class="line">	t1-&gt;resize(x1+count,t1-&gt;num_channels());</td></tr>
+<tr><td class="num" id="LN515">515</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN516">516</td><td class="line">    <span class='keyword'>for</span> (i=0; i&lt;count; i++)</td></tr>
+<tr><td class="num" id="LN517">517</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN518">518</td><td class="line">	<span class='keyword'>for</span> (j=0; j&lt;t1-&gt;num_channels(); j++)</td></tr>
+<tr><td class="num" id="LN519">519</td><td class="line">	    t1-&gt;a(x1+i,j) = t2-&gt;a(x2+i,j);</td></tr>
+<tr><td class="num" id="LN520">520</td><td class="line">	<span class='comment'>/* not sure this is right */</span></td></tr>
+<tr><td class="num" id="LN521">521</td><td class="line">	t1-&gt;t(x1+i) = </td></tr>
+<tr><td class="num" id="LN522">522</td><td class="line">	    (x1+i &gt; 0 ? t1-&gt;t(x1+i-1) : 0) +</td></tr>
+<tr><td class="num" id="LN523">523</td><td class="line">	    t2-&gt;t(x2+i) - (x2+i &gt; 0 ? t2-&gt;t(x2+i-1) : 0);</td></tr>
+<tr><td class="num" id="LN524">524</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN525">525</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN526">526</td><td class="line">    <span class='keyword'>return</span> siod_nth(1,argv);</td></tr>
+<tr><td class="num" id="LN527">527</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN528">528</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN529">529</td><td class="line"><span class='keyword'>static</span> LISP utt_save_f0(LISP utt, LISP fname)</td></tr>
+<tr><td class="num" id="LN530">530</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN531">531</td><td class="line">    <span class='comment'>// Save utt's F0 in fname as an ESPS file</span></td></tr>
+<tr><td class="num" id="LN532">532</td><td class="line">    EST_Utterance *u = utterance(utt);</td></tr>
+<tr><td class="num" id="LN533">533</td><td class="line">    EST_String filename = get_c_string(fname);</td></tr>
+<tr><td class="num" id="LN534">534</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN535">535</td><td class="line">    <span class='keyword'>if</span> ((u-&gt;relation_present(<span class='string_literal'>"F0"</span>)) &amp;&amp; (u-&gt;relation(<span class='string_literal'>"F0"</span>)-&gt;head() != 0))</td></tr>
+<tr><td class="num" id="LN536">536</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN537">537</td><td class="line">	EST_Track *f0 = track(u-&gt;relation(<span class='string_literal'>"F0"</span>)-&gt;head()-&gt;f(<span class='string_literal'>"f0"</span>));</td></tr>
+<tr><td class="num" id="LN538">538</td><td class="line">	<span class='keyword'>if</span> (f0-&gt;save(filename,<span class='string_literal'>"esps"</span>) != write_ok)</td></tr>
+<tr><td class="num" id="LN539">539</td><td class="line">	{</td></tr>
+<tr><td class="num" id="LN540">540</td><td class="line">	    cerr &lt;&lt; <span class='string_literal'>"utt.save.f0: failed to write f0 to \""</span> &lt;&lt; </td></tr>
+<tr><td class="num" id="LN541">541</td><td class="line">		filename &lt;&lt; <span class='string_literal'>"\""</span> &lt;&lt; endl;</td></tr>
+<tr><td class="num" id="LN542">542</td><td class="line">	    <span class='macro'>festival_error()<span class='expansion'>(errjmp_ok ? longjmp(*est_errjmp,1) : festival_tidy_up(),exit<br>(-1))</span></span>;</td></tr>
+<tr><td class="num" id="LN543">543</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN544">544</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN545">545</td><td class="line">    <span class='keyword'>else</span> <span class='keyword'>if</span> (u-&gt;relation(<span class='string_literal'>"Target"</span>) != 0)</td></tr>
+<tr><td class="num" id="LN546">546</td><td class="line">	utt_save_f0_from_targets(u,filename);</td></tr>
+<tr><td class="num" id="LN547">547</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN548">548</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN549">549</td><td class="line">	cerr &lt;&lt; <span class='string_literal'>"utt.save.f0: utterance doesn't contain F0 or Target stream"</span></td></tr>
+<tr><td class="num" id="LN550">550</td><td class="line">	    &lt;&lt; endl;</td></tr>
+<tr><td class="num" id="LN551">551</td><td class="line">	<span class='macro'>festival_error()<span class='expansion'>(errjmp_ok ? longjmp(*est_errjmp,1) : festival_tidy_up(),exit<br>(-1))</span></span>;</td></tr>
+<tr><td class="num" id="LN552">552</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN553">553</td><td class="line">    <span class='keyword'>return</span> utt;</td></tr>
+<tr><td class="num" id="LN554">554</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN555">555</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN556">556</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>void</span> utt_save_f0_from_targets(EST_Utterance *u,EST_String &amp;filename)</td></tr>
+<tr><td class="num" id="LN557">557</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN558">558</td><td class="line">    <span class='comment'>// Modifications by Gregor Moehler to do proper target tracing (GM)</span></td></tr>
+<tr><td class="num" id="LN559">559</td><td class="line">  EST_Item *s;</td></tr>
+<tr><td class="num" id="LN560">560</td><td class="line">    EST_Track f0;</td></tr>
+<tr><td class="num" id="LN561">561</td><td class="line">    <span class='keyword'>float</span> p = 0.0;</td></tr>
+<tr><td class="num" id="LN562">562</td><td class="line">    <span class='keyword'>float</span> length = u-&gt;relation(<span class='string_literal'>"Segment"</span>)-&gt;last()-&gt;f(<span class='string_literal'>"end"</span>);</td></tr>
+<tr><td class="num" id="LN563">563</td><td class="line">    <span class='keyword'>int</span> i,frames = (<span class='keyword'>int</span>)(length / 0.010);</td></tr>
+<tr><td class="num" id="LN564">564</td><td class="line">    f0.resize(frames,4);</td></tr>
+<tr><td class="num" id="LN565">565</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN566">566</td><td class="line">    EST_Item *ptval, *tval;</td></tr>
+<tr><td class="num" id="LN567">567</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN568">568</td><td class="line">    ptval = tval = u-&gt;relation(<span class='string_literal'>"Target"</span>)-&gt;first_leaf();</td></tr>
+<tr><td class="num" id="LN569">569</td><td class="line">    <span class='keyword'>for</span> (i=0,s=u-&gt;relation(<span class='string_literal'>"Segment"</span>)-&gt;first(); s != 0; s=s-&gt;next())</td></tr>
+<tr><td class="num" id="LN570">570</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN571">571</td><td class="line">	<span class='keyword'>if</span> (i &gt;= frames)</td></tr>
+<tr><td class="num" id="LN572">572</td><td class="line">	    <span class='keyword'>break</span>;  <span class='comment'>// may hit here one before end</span></td></tr>
+<tr><td class="num" id="LN573">573</td><td class="line">	<span class='keyword'>for</span> ( ; p &lt; s-&gt;F(<span class='string_literal'>"end"</span>,0); p+=0.010,i++)</td></tr>
+<tr><td class="num" id="LN574">574</td><td class="line">	{</td></tr>
+<tr><td class="num" id="LN575">575</td><td class="line">	    <span class='keyword'>if</span> (tval != 0 &amp;&amp; p &gt; (<span class='keyword'>float</span>)ffeature(tval,<span class='string_literal'>"pos"</span>))</td></tr>
+<tr><td class="num" id="LN576">576</td><td class="line">	    {</td></tr>
+<tr><td class="num" id="LN577">577</td><td class="line">		ptval = tval;</td></tr>
+<tr><td class="num" id="LN578">578</td><td class="line">		tval = next_leaf(tval);</td></tr>
+<tr><td class="num" id="LN579">579</td><td class="line">	    }</td></tr>
+<tr><td class="num" id="LN580">580</td><td class="line">	    <span class='keyword'>if</span> (i &gt;= frames)</td></tr>
+<tr><td class="num" id="LN581">581</td><td class="line">		<span class='keyword'>break</span>;  <span class='comment'>// may hit here one before end</span></td></tr>
+<tr><td class="num" id="LN582">582</td><td class="line">	    <span class='keyword'>if</span> ((ffeature(s,<span class='string_literal'>"ph_vc"</span>) == <span class='string_literal'>"+"</span>) ||</td></tr>
+<tr><td class="num" id="LN583">583</td><td class="line">		(ffeature(s,<span class='string_literal'>"ph_cvox"</span>) == <span class='string_literal'>"+"</span>))</td></tr>
+<tr><td class="num" id="LN584">584</td><td class="line">	    {</td></tr>
+<tr><td class="num" id="LN585">585</td><td class="line">		f0(i,0) = f0_interpolate(ptval,tval,p);</td></tr>
+<tr><td class="num" id="LN586">586</td><td class="line">		f0(i,1) = 1;</td></tr>
+<tr><td class="num" id="LN587">587</td><td class="line">	    }</td></tr>
+<tr><td class="num" id="LN588">588</td><td class="line">	    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN589">589</td><td class="line">	    {</td></tr>
+<tr><td class="num" id="LN590">590</td><td class="line">		f0(i,0) = 0;</td></tr>
+<tr><td class="num" id="LN591">591</td><td class="line">		f0(i,1) = 0.0; <span class='comment'>// unvoiced;</span></td></tr>
+<tr><td class="num" id="LN592">592</td><td class="line">	    }</td></tr>
+<tr><td class="num" id="LN593">593</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN594">594</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN595">595</td><td class="line">    f0.set_channel_name(<span class='string_literal'>"F0"</span>,0);</td></tr>
+<tr><td class="num" id="LN596">596</td><td class="line">    f0.set_channel_name(<span class='string_literal'>"prob_voice"</span>,1);</td></tr>
+<tr><td class="num" id="LN597">597</td><td class="line">    f0.fill_time(0.01);</td></tr>
+<tr><td class="num" id="LN598">598</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN599">599</td><td class="line">    <span class='keyword'>if</span> (f0.save(filename,<span class='string_literal'>"esps"</span>) != write_ok)</td></tr>
+<tr><td class="num" id="LN600">600</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN601">601</td><td class="line">	cerr &lt;&lt; <span class='string_literal'>"utt.save.f0: failed to write F0 to \""</span> &lt;&lt; </td></tr>
+<tr><td class="num" id="LN602">602</td><td class="line">	    filename &lt;&lt; <span class='string_literal'>"\""</span> &lt;&lt; endl;</td></tr>
+<tr><td class="num" id="LN603">603</td><td class="line">	<span class='macro'>festival_error()<span class='expansion'>(errjmp_ok ? longjmp(*est_errjmp,1) : festival_tidy_up(),exit<br>(-1))</span></span>;</td></tr>
+<tr><td class="num" id="LN604">604</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN605">605</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN606">606</td><td class="line">    <span class='keyword'>return</span>;</td></tr>
+<tr><td class="num" id="LN607">607</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN608">608</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN609">609</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>float</span> f0_interpolate(EST_Item *ptval, EST_Item *tval, <span class='keyword'>float</span> time)</td></tr>
+<tr><td class="num" id="LN610">610</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN611">611</td><td class="line">    <span class='comment'>// GM: changed, to use proper targets</span></td></tr>
+<tr><td class="num" id="LN612">612</td><td class="line">    <span class='comment'>// Return interpolated F0 at time t</span></td></tr>
+<tr><td class="num" id="LN613">613</td><td class="line">    <span class='keyword'>float</span> p1,p0,d1,d0;</td></tr>
+<tr><td class="num" id="LN614">614</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN615">615</td><td class="line">    d0=<span class="mrange">0</span>;</td></tr>
+<tr><td class="num"></td><td class="line"><div id="EndPath" class="msg msgEvent" style="margin-left:5ex">Value stored to 'd0' is never read</div></td></tr>
+<tr><td class="num" id="LN616">616</td><td class="line">    d1=0;</td></tr>
+<tr><td class="num" id="LN617">617</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN618">618</td><td class="line">    <span class='keyword'>if</span> (tval == 0)                 <span class='comment'>// after last target</span></td></tr>
+<tr><td class="num" id="LN619">619</td><td class="line"> 	<span class='keyword'>return</span> ffeature(ptval,<span class='string_literal'>"f0"</span>);</td></tr>
+<tr><td class="num" id="LN620">620</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN621">621</td><td class="line">    <span class='keyword'>else</span> <span class='keyword'>if</span> (time &lt; (<span class='keyword'>float</span>) ffeature(ptval,<span class='string_literal'>"pos"</span>))  <span class='comment'>// before 1st target</span></td></tr>
+<tr><td class="num" id="LN622">622</td><td class="line"> 	<span class='keyword'>return</span> ffeature(tval,<span class='string_literal'>"f0"</span>);</td></tr>
+<tr><td class="num" id="LN623">623</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN624">624</td><td class="line">    <span class='keyword'>else</span> {</td></tr>
+<tr><td class="num" id="LN625">625</td><td class="line"> 	p0 = ffeature(ptval,<span class='string_literal'>"f0"</span>);</td></tr>
+<tr><td class="num" id="LN626">626</td><td class="line">	p1 = ffeature(tval,<span class='string_literal'>"f0"</span>);</td></tr>
+<tr><td class="num" id="LN627">627</td><td class="line">	d0 = ffeature(ptval,<span class='string_literal'>"pos"</span>);</td></tr>
+<tr><td class="num" id="LN628">628</td><td class="line">	d1 = ffeature(tval,<span class='string_literal'>"pos"</span>);</td></tr>
+<tr><td class="num" id="LN629">629</td><td class="line">    }    </td></tr>
+<tr><td class="num" id="LN630">630</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN631">631</td><td class="line">    <span class='keyword'>if</span> (p0 == 0.0 || d1 == d0)</td></tr>
+<tr><td class="num" id="LN632">632</td><td class="line">	<span class='keyword'>return</span>  p1;       </td></tr>
+<tr><td class="num" id="LN633">633</td><td class="line">    <span class='keyword'>else</span> <span class='keyword'>if</span> (p1 == 0.0)</td></tr>
+<tr><td class="num" id="LN634">634</td><td class="line">	<span class='keyword'>return</span> p0;        </td></tr>
+<tr><td class="num" id="LN635">635</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN636">636</td><td class="line">	<span class='keyword'>return</span> p0 + (p1-p0)*(time-d0)/(d1-d0);</td></tr>
+<tr><td class="num" id="LN637">637</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN638">638</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN639">639</td><td class="line"><span class='keyword'>static</span> LISP utt_send_wave_client(LISP utt)</td></tr>
+<tr><td class="num" id="LN640">640</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN641">641</td><td class="line">    <span class='comment'>// Send the waveform to a client (must be acting as server)</span></td></tr>
+<tr><td class="num" id="LN642">642</td><td class="line">    EST_Utterance *u = utterance(utt);</td></tr>
+<tr><td class="num" id="LN643">643</td><td class="line">    EST_Wave *w;</td></tr>
+<tr><td class="num" id="LN644">644</td><td class="line">    EST_String tmpfile = make_tmp_filename();</td></tr>
+<tr><td class="num" id="LN645">645</td><td class="line">    LISP ltype;</td></tr>
+<tr><td class="num" id="LN646">646</td><td class="line">    EST_String type;</td></tr>
+<tr><td class="num" id="LN647">647</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN648">648</td><td class="line">    w = get_utt_wave(u);</td></tr>
+<tr><td class="num" id="LN649">649</td><td class="line">    <span class='keyword'>if</span> (ft_server_socket == -1)</td></tr>
+<tr><td class="num" id="LN650">650</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN651">651</td><td class="line">	cerr &lt;&lt; <span class='string_literal'>"utt_send_wave_client: not in server mode"</span> &lt;&lt; endl;</td></tr>
+<tr><td class="num" id="LN652">652</td><td class="line">	<span class='macro'>festival_error()<span class='expansion'>(errjmp_ok ? longjmp(*est_errjmp,1) : festival_tidy_up(),exit<br>(-1))</span></span>;</td></tr>
+<tr><td class="num" id="LN653">653</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN654">654</td><td class="line">	</td></tr>
+<tr><td class="num" id="LN655">655</td><td class="line">    ltype = ft_get_param(<span class='string_literal'>"Wavefiletype"</span>);</td></tr>
+<tr><td class="num" id="LN656">656</td><td class="line">    <span class='keyword'>if</span> (ltype == <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>)</td></tr>
+<tr><td class="num" id="LN657">657</td><td class="line">	type = <span class='string_literal'>"nist"</span>;</td></tr>
+<tr><td class="num" id="LN658">658</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN659">659</td><td class="line">	type = get_c_string(ltype);</td></tr>
+<tr><td class="num" id="LN660">660</td><td class="line">    w-&gt;save(tmpfile,type);</td></tr>
+<tr><td class="num" id="LN661">661</td><td class="line"><span class='directive'>#ifdef WIN32</span></td></tr>
+<tr><td class="num" id="LN662">662</td><td class="line">    <span class='keyword'>if</span> (send(ft_server_socket,<span class='string_literal'>"WV\n"</span>,3,0) != 3) {</td></tr>
+<tr><td class="num" id="LN663">663</td><td class="line">        std::cerr &lt;&lt; <span class='string_literal'>"Error sending wave to client"</span> &lt;&lt; std::endl;</td></tr>
+<tr><td class="num" id="LN664">664</td><td class="line">        <span class='keyword'>return</span> <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>;</td></tr>
+<tr><td class="num" id="LN665">665</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN666">666</td><td class="line"><span class='directive'>#else</span></td></tr>
+<tr><td class="num" id="LN667">667</td><td class="line">    <span class='keyword'>if</span> (write(ft_server_socket,<span class='string_literal'>"WV\n"</span>,3) != 3) {</td></tr>
+<tr><td class="num" id="LN668">668</td><td class="line">        std::cerr &lt;&lt; <span class='string_literal'>"Error sending wave to client"</span> &lt;&lt; std::endl;</td></tr>
+<tr><td class="num" id="LN669">669</td><td class="line">        <span class='keyword'>return</span> <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>;</td></tr>
+<tr><td class="num" id="LN670">670</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN671">671</td><td class="line"><span class='directive'>#endif</span></td></tr>
+<tr><td class="num" id="LN672">672</td><td class="line">    socket_send_file(ft_server_socket,tmpfile);</td></tr>
+<tr><td class="num" id="LN673">673</td><td class="line">    unlink(tmpfile);</td></tr>
+<tr><td class="num" id="LN674">674</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN675">675</td><td class="line">    <span class='keyword'>return</span> utt;</td></tr>
+<tr><td class="num" id="LN676">676</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN677">677</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN678">678</td><td class="line"><span class='comment'>/*  Asterisk support, see http://www.asterisk.org */</span></td></tr>
+<tr><td class="num" id="LN679">679</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN680">680</td><td class="line"><span class='keyword'>static</span> LISP utt_send_wave_asterisk(LISP utt)</td></tr>
+<tr><td class="num" id="LN681">681</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN682">682</td><td class="line">    <span class='comment'>// Send the waveform to a client (must be acting as server)</span></td></tr>
+<tr><td class="num" id="LN683">683</td><td class="line">    EST_Utterance *u = utterance(utt);</td></tr>
+<tr><td class="num" id="LN684">684</td><td class="line">    EST_Wave *w;</td></tr>
+<tr><td class="num" id="LN685">685</td><td class="line">    EST_String tmpfile = make_tmp_filename();</td></tr>
+<tr><td class="num" id="LN686">686</td><td class="line">    LISP ltype;</td></tr>
+<tr><td class="num" id="LN687">687</td><td class="line">    EST_String type;</td></tr>
+<tr><td class="num" id="LN688">688</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN689">689</td><td class="line">    w = get_utt_wave(u);</td></tr>
+<tr><td class="num" id="LN690">690</td><td class="line">    <span class='keyword'>if</span> (ft_server_socket == -1)</td></tr>
+<tr><td class="num" id="LN691">691</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN692">692</td><td class="line">       cerr &lt;&lt; <span class='string_literal'>"utt_send_wave_asterisk: not in server mode"</span> &lt;&lt; endl;</td></tr>
+<tr><td class="num" id="LN693">693</td><td class="line">       <span class='macro'>festival_error()<span class='expansion'>(errjmp_ok ? longjmp(*est_errjmp,1) : festival_tidy_up(),exit<br>(-1))</span></span>;</td></tr>
+<tr><td class="num" id="LN694">694</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN695">695</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN696">696</td><td class="line">    ltype = ft_get_param(<span class='string_literal'>"Wavefiletype"</span>);</td></tr>
+<tr><td class="num" id="LN697">697</td><td class="line">    <span class='keyword'>if</span> (ltype == <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>)</td></tr>
+<tr><td class="num" id="LN698">698</td><td class="line">       type = <span class='string_literal'>"nist"</span>;</td></tr>
+<tr><td class="num" id="LN699">699</td><td class="line">    <span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN700">700</td><td class="line">       type = get_c_string(ltype);</td></tr>
+<tr><td class="num" id="LN701">701</td><td class="line">    w-&gt;resample(8000);</td></tr>
+<tr><td class="num" id="LN702">702</td><td class="line">    w-&gt;rescale(5);</td></tr>
+<tr><td class="num" id="LN703">703</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN704">704</td><td class="line">    w-&gt;save(tmpfile,type);</td></tr>
+<tr><td class="num" id="LN705">705</td><td class="line"><span class='directive'>#ifdef WIN32</span></td></tr>
+<tr><td class="num" id="LN706">706</td><td class="line">    <span class='keyword'>if</span> (send(ft_server_socket,<span class='string_literal'>"WV\n"</span>,3,0) != 3) {</td></tr>
+<tr><td class="num" id="LN707">707</td><td class="line">        std::cerr &lt;&lt; <span class='string_literal'>"Error sending wave to asterisk"</span> &lt;&lt; std::endl;</td></tr>
+<tr><td class="num" id="LN708">708</td><td class="line">        <span class='keyword'>return</span> <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>;</td></tr>
+<tr><td class="num" id="LN709">709</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN710">710</td><td class="line"><span class='directive'>#else</span></td></tr>
+<tr><td class="num" id="LN711">711</td><td class="line">    <span class='keyword'>if</span> (write(ft_server_socket,<span class='string_literal'>"WV\n"</span>,3) != 3) {</td></tr>
+<tr><td class="num" id="LN712">712</td><td class="line">        std::cerr &lt;&lt; <span class='string_literal'>"Error sending wave to asterisk"</span> &lt;&lt; std::endl;</td></tr>
+<tr><td class="num" id="LN713">713</td><td class="line">        <span class='keyword'>return</span> <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>;</td></tr>
+<tr><td class="num" id="LN714">714</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN715">715</td><td class="line"><span class='directive'>#endif</span></td></tr>
+<tr><td class="num" id="LN716">716</td><td class="line">    socket_send_file(ft_server_socket,tmpfile);</td></tr>
+<tr><td class="num" id="LN717">717</td><td class="line">    unlink(tmpfile);</td></tr>
+<tr><td class="num" id="LN718">718</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN719">719</td><td class="line">    <span class='keyword'>return</span> utt;</td></tr>
+<tr><td class="num" id="LN720">720</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN721">721</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN722">722</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN723">723</td><td class="line"><span class='keyword'>static</span> LISP send_sexpr_to_client(LISP l)</td></tr>
+<tr><td class="num" id="LN724">724</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN725">725</td><td class="line">    EST_String tmpfile = make_tmp_filename();</td></tr>
+<tr><td class="num" id="LN726">726</td><td class="line">    FILE *fd;</td></tr>
+<tr><td class="num" id="LN727">727</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN728">728</td><td class="line">    fd = fopen(tmpfile,<span class='string_literal'>"w"</span>);</td></tr>
+<tr><td class="num" id="LN729">729</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN730">730</td><td class="line">    lprin1f(l,fd);</td></tr>
+<tr><td class="num" id="LN731">731</td><td class="line">    fprintf(fd,<span class='string_literal'>"\n"</span>);</td></tr>
+<tr><td class="num" id="LN732">732</td><td class="line">    fclose(fd);</td></tr>
+<tr><td class="num" id="LN733">733</td><td class="line"><span class='directive'>#ifdef WIN32</span></td></tr>
+<tr><td class="num" id="LN734">734</td><td class="line">    <span class='keyword'>if</span> (send(ft_server_socket,<span class='string_literal'>"LP\n"</span>,3,0) != 3) {</td></tr>
+<tr><td class="num" id="LN735">735</td><td class="line">        std::cerr &lt;&lt; <span class='string_literal'>"Error sending expression to client"</span> &lt;&lt; std::endl;</td></tr>
+<tr><td class="num" id="LN736">736</td><td class="line">        <span class='keyword'>return</span> <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>;</td></tr>
+<tr><td class="num" id="LN737">737</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN738">738</td><td class="line"><span class='directive'>#else</span></td></tr>
+<tr><td class="num" id="LN739">739</td><td class="line">    <span class='keyword'>if</span> (write(ft_server_socket,<span class='string_literal'>"LP\n"</span>,3) != 3) {</td></tr>
+<tr><td class="num" id="LN740">740</td><td class="line">        std::cerr &lt;&lt; <span class='string_literal'>"Error sending expression to client"</span> &lt;&lt; std::endl;</td></tr>
+<tr><td class="num" id="LN741">741</td><td class="line">        <span class='keyword'>return</span> <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>;</td></tr>
+<tr><td class="num" id="LN742">742</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN743">743</td><td class="line"><span class='directive'>#endif</span></td></tr>
+<tr><td class="num" id="LN744">744</td><td class="line">    socket_send_file(ft_server_socket,tmpfile);</td></tr>
+<tr><td class="num" id="LN745">745</td><td class="line">    unlink(tmpfile);</td></tr>
+<tr><td class="num" id="LN746">746</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN747">747</td><td class="line">    <span class='keyword'>return</span> l;</td></tr>
+<tr><td class="num" id="LN748">748</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN749">749</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN750">750</td><td class="line"><span class='keyword'>void</span> festival_wave_init(<span class='keyword'>void</span>)</td></tr>
+<tr><td class="num" id="LN751">751</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN752">752</td><td class="line">    <span class='comment'>// declare utterance (wave) specific Lisp functions </span></td></tr>
+<tr><td class="num" id="LN753">753</td><td class="line">    init_lsubr(<span class='string_literal'>"wave.save.header"</span>, wave_save_header_fp,</td></tr>
+<tr><td class="num" id="LN754">754</td><td class="line"> <span class='string_literal'>"(wave.save.header FILEPOINTER WAVE FILETYPE SAMPLETYPE OVERRIDEPARAMS)\n\</span></td></tr>
+<tr><td class="num" id="LN755">755</td><td class="line">  <span class='string_literal'>Write a wave header of format FILETYPE to FILEPOINTER.\n\</span></td></tr>
+<tr><td class="num" id="LN756">756</td><td class="line">  <span class='string_literal'>Header parameters are read first from WAVE and SAMPLETYPE,\n\</span></td></tr>
+<tr><td class="num" id="LN757">757</td><td class="line">  <span class='string_literal'>and can be overridden with OVERRIDEPARAMS\n\</span></td></tr>
+<tr><td class="num" id="LN758">758</td><td class="line">  <span class='string_literal'>OVERRIDEPARAMS = ( (\"numsamples\" 84000)\n\</span></td></tr>
+<tr><td class="num" id="LN759">759</td><td class="line">                     <span class='string_literal'>(\"numchannels\" 1)\n\</span></td></tr>
+<tr><td class="num" id="LN760">760</td><td class="line">                     <span class='string_literal'>(\"samplerate\" 16000)\n\</span></td></tr>
+<tr><td class="num" id="LN761">761</td><td class="line">                     <span class='string_literal'>(\"bo\" 10)\n\</span></td></tr>
+<tr><td class="num" id="LN762">762</td><td class="line">                     <span class='string_literal'>(\"numsamples\" 16000)\n\</span></td></tr>
+<tr><td class="num" id="LN763">763</td><td class="line">                    <span class='string_literal'>)"</span>);</td></tr>
+<tr><td class="num" id="LN764">764</td><td class="line">    init_subr_4(<span class='string_literal'>"wave.save.fp"</span>, wave_save_fp,</td></tr>
+<tr><td class="num" id="LN765">765</td><td class="line"> <span class='string_literal'>"(wave.save.fp WAVE FILEPOINTER FILETYPE SAMPLETYPE)\n\</span></td></tr>
+<tr><td class="num" id="LN766">766</td><td class="line">  <span class='string_literal'>Write WAVE to FILEPOINTER, respecting FILETYPE and SAMPLETYPE if specified\n\</span></td></tr>
+<tr><td class="num" id="LN767">767</td><td class="line">  <span class='string_literal'>if these last two arguments are unspecified the global parameters\n\</span></td></tr>
+<tr><td class="num" id="LN768">768</td><td class="line">  <span class='string_literal'>Wavefiletype and Wavesampletype are used.  Returns t is successful\n\</span></td></tr>
+<tr><td class="num" id="LN769">769</td><td class="line">  <span class='string_literal'>and throws an error if not."</span>);  </td></tr>
+<tr><td class="num" id="LN770">770</td><td class="line">    init_subr_4(<span class='string_literal'>"wave.save.data.fp"</span>, wave_save_data_fp,</td></tr>
+<tr><td class="num" id="LN771">771</td><td class="line"> <span class='string_literal'>"(wave.save.data.fp WAVE FILEPOINTER FILETYPE SAMPLETYPE)\n\</span></td></tr>
+<tr><td class="num" id="LN772">772</td><td class="line">  <span class='string_literal'>Write WAVE to FILEPOINTER, respecting FILETYPE and SAMPLETYPE if specified\n\</span></td></tr>
+<tr><td class="num" id="LN773">773</td><td class="line">  <span class='string_literal'>ignoring any file header.\n\</span></td></tr>
+<tr><td class="num" id="LN774">774</td><td class="line">  <span class='string_literal'>if these last two arguments are unspecified the global parameters\n\</span></td></tr>
+<tr><td class="num" id="LN775">775</td><td class="line">  <span class='string_literal'>Wavefiletype and Wavesampletype are used.  Returns t is successful\n\</span></td></tr>
+<tr><td class="num" id="LN776">776</td><td class="line">  <span class='string_literal'>and throws an error if not. It can be used with wave.save.header\n\</span></td></tr>
+<tr><td class="num" id="LN777">777</td><td class="line">  <span class='string_literal'>in order to concatenate several waves."</span>);  </td></tr>
+<tr><td class="num" id="LN778">778</td><td class="line">    init_subr_4(<span class='string_literal'>"wave.save"</span>,wave_save,</td></tr>
+<tr><td class="num" id="LN779">779</td><td class="line"> <span class='string_literal'>"(wave.save WAVE FILENAME FILETYPE SAMPLETYPE)\n\</span></td></tr>
+<tr><td class="num" id="LN780">780</td><td class="line">  <span class='string_literal'>Save WAVE in FILENAME, respecting FILETYPE and SAMPLETYPE if specified\n\</span></td></tr>
+<tr><td class="num" id="LN781">781</td><td class="line">  <span class='string_literal'>if these last two arguments are unspecified the global parameters\n\</span></td></tr>
+<tr><td class="num" id="LN782">782</td><td class="line">  <span class='string_literal'>Wavefiletype and Wavesampletype are used.  Returns t is successful\n\</span></td></tr>
+<tr><td class="num" id="LN783">783</td><td class="line">  <span class='string_literal'>and throws an error if not."</span>);  </td></tr>
+<tr><td class="num" id="LN784">784</td><td class="line">    init_subr_4(<span class='string_literal'>"wave.load"</span>,wave_load,</td></tr>
+<tr><td class="num" id="LN785">785</td><td class="line"> <span class='string_literal'>"(wave.load FILENAME FILETYPE SAMPLETYPE SAMPLERATE)\n\</span></td></tr>
+<tr><td class="num" id="LN786">786</td><td class="line"> <span class='string_literal'>Load and return a wave from FILENAME.  Respect FILETYPE is specified\n\</span></td></tr>
+<tr><td class="num" id="LN787">787</td><td class="line"> <span class='string_literal'>if not specified respect whatever header is on the file.  SAMPLETYPE\n\</span></td></tr>
+<tr><td class="num" id="LN788">788</td><td class="line"> <span class='string_literal'>and SAMPLERATE are only used if FILETYPE is raw."</span>);</td></tr>
+<tr><td class="num" id="LN789">789</td><td class="line">    init_subr_1(<span class='string_literal'>"wave.copy"</span>,wave_copy,</td></tr>
+<tr><td class="num" id="LN790">790</td><td class="line">  <span class='string_literal'>"(wave.copy WAVE)\n\</span></td></tr>
+<tr><td class="num" id="LN791">791</td><td class="line">  <span class='string_literal'>Return a copy of WAVE."</span>);</td></tr>
+<tr><td class="num" id="LN792">792</td><td class="line">    init_subr_2(<span class='string_literal'>"wave.append"</span>,wave_append,</td></tr>
+<tr><td class="num" id="LN793">793</td><td class="line">  <span class='string_literal'>"(wave.copy WAVE1 WAVE2)\n\</span></td></tr>
+<tr><td class="num" id="LN794">794</td><td class="line">  <span class='string_literal'>Destuctively append WAVE2 to WAVE1 and return WAVE1."</span>);</td></tr>
+<tr><td class="num" id="LN795">795</td><td class="line">    init_subr_1(<span class='string_literal'>"wave.info"</span>,wave_info,</td></tr>
+<tr><td class="num" id="LN796">796</td><td class="line">  <span class='string_literal'>"(wave.info WAVE)\n\</span></td></tr>
+<tr><td class="num" id="LN797">797</td><td class="line">  <span class='string_literal'>Returns assoc list of info about this wave."</span>);</td></tr>
+<tr><td class="num" id="LN798">798</td><td class="line">    init_subr_2(<span class='string_literal'>"wave.resample"</span>,wave_resample,</td></tr>
+<tr><td class="num" id="LN799">799</td><td class="line">  <span class='string_literal'>"(wave.resample WAVE NEWRATE)\n\</span></td></tr>
+<tr><td class="num" id="LN800">800</td><td class="line">  <span class='string_literal'>Resamples WAVE to NEWRATE."</span>);</td></tr>
+<tr><td class="num" id="LN801">801</td><td class="line">    init_subr_3(<span class='string_literal'>"wave.rescale"</span>,wave_rescale,</td></tr>
+<tr><td class="num" id="LN802">802</td><td class="line">  <span class='string_literal'>"(wave.rescale WAVE GAIN NORMALIZE)\n\</span></td></tr>
+<tr><td class="num" id="LN803">803</td><td class="line">  <span class='string_literal'>If NORMALIZE is specified and non-nil, maximizes the waveform first\n\</span></td></tr>
+<tr><td class="num" id="LN804">804</td><td class="line">  <span class='string_literal'>before applying the gain."</span>);</td></tr>
+<tr><td class="num" id="LN805">805</td><td class="line">    init_subr_1(<span class='string_literal'>"wave.play"</span>,wave_play,</td></tr>
+<tr><td class="num" id="LN806">806</td><td class="line">  <span class='string_literal'>"(wave.play WAVE)\n\</span></td></tr>
+<tr><td class="num" id="LN807">807</td><td class="line">  <span class='string_literal'>Play wave of selected audio"</span>);</td></tr>
+<tr><td class="num" id="LN808">808</td><td class="line">    init_subr_3(<span class='string_literal'>"wave.resize"</span>,wave_resize,</td></tr>
+<tr><td class="num" id="LN809">809</td><td class="line"> <span class='string_literal'>"(wave.resize WAVE NEWSAMPLES NEWCHANNELS)\n\</span></td></tr>
+<tr><td class="num" id="LN810">810</td><td class="line"> <span class='string_literal'>Resize WAVE to have NEWSAMPLES number of frames and NEWCHANNELS\n\</span></td></tr>
+<tr><td class="num" id="LN811">811</td><td class="line"> <span class='string_literal'>number of channels.  If WAVE is nil a new wave is made of the\n\</span></td></tr>
+<tr><td class="num" id="LN812">812</td><td class="line"> <span class='string_literal'>requested size."</span>);</td></tr>
+<tr><td class="num" id="LN813">813</td><td class="line">    init_subr_4(<span class='string_literal'>"wave.set"</span>,wave_set,</td></tr>
+<tr><td class="num" id="LN814">814</td><td class="line"> <span class='string_literal'>"(wave.set WAVE X Y V)\n\</span></td></tr>
+<tr><td class="num" id="LN815">815</td><td class="line"> <span class='string_literal'>Set position X Y to V in WAVE."</span>)</td></tr>
+<tr><td class="num" id="LN816">816</td><td class="line">;    init_subr_3(<span class='string_literal'>"wave.get"</span>,wave_get,</td></tr>
+<tr><td class="num" id="LN817">817</td><td class="line"> <span class='string_literal'>"(wave.get WAVE X Y)\n\</span></td></tr>
+<tr><td class="num" id="LN818">818</td><td class="line"> <span class='string_literal'>Get value of X Y in WAVE."</span>);</td></tr>
+<tr><td class="num" id="LN819">819</td><td class="line">    init_subr_2(<span class='string_literal'>"wave.set_sample_rate"</span>,wave_set_sample_rate,</td></tr>
+<tr><td class="num" id="LN820">820</td><td class="line"> <span class='string_literal'>"(wave.set_sample_rate WAVE SR)\n\</span></td></tr>
+<tr><td class="num" id="LN821">821</td><td class="line"><span class='string_literal'>set sample rate to SR."</span>);</td></tr>
+<tr><td class="num" id="LN822">822</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN823">823</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN824">824</td><td class="line">    init_subr_3(<span class='string_literal'>"track.save"</span>,track_save,</td></tr>
+<tr><td class="num" id="LN825">825</td><td class="line"> <span class='string_literal'>"(track.save TRACK FILENAME FILETYPE)\n\</span></td></tr>
+<tr><td class="num" id="LN826">826</td><td class="line">  <span class='string_literal'>Save TRACK in FILENAME, in format FILETYPE, est is used if FILETYPE\n\</span></td></tr>
+<tr><td class="num" id="LN827">827</td><td class="line">  <span class='string_literal'>is unspecified or nil."</span>);</td></tr>
+<tr><td class="num" id="LN828">828</td><td class="line">    init_subr_3(<span class='string_literal'>"track.load"</span>,track_load,</td></tr>
+<tr><td class="num" id="LN829">829</td><td class="line"> <span class='string_literal'>"(track.load FILENAME FILETYPE ISHIFT)\n\</span></td></tr>
+<tr><td class="num" id="LN830">830</td><td class="line"> <span class='string_literal'>Load and return a track from FILENAME.  Respect FILETYPE is specified\n\</span></td></tr>
+<tr><td class="num" id="LN831">831</td><td class="line"> <span class='string_literal'>and ISHIFT if specified."</span>);</td></tr>
+<tr><td class="num" id="LN832">832</td><td class="line">    init_subr_1(<span class='string_literal'>"track.copy"</span>,track_copy,</td></tr>
+<tr><td class="num" id="LN833">833</td><td class="line">  <span class='string_literal'>"(track.copy TRACK)\n\</span></td></tr>
+<tr><td class="num" id="LN834">834</td><td class="line">  <span class='string_literal'>Return a copy of TRACK."</span>);</td></tr>
+<tr><td class="num" id="LN835">835</td><td class="line">    init_subr_2(<span class='string_literal'>"track.index_below"</span>,track_index_below,</td></tr>
+<tr><td class="num" id="LN836">836</td><td class="line"> <span class='string_literal'>"(track.index_below TRACK TIME)\n\</span></td></tr>
+<tr><td class="num" id="LN837">837</td><td class="line"> <span class='string_literal'>Returns the first frame index before this time."</span>);</td></tr>
+<tr><td class="num" id="LN838">838</td><td class="line">    init_subr_3(<span class='string_literal'>"track.resize"</span>,track_resize,</td></tr>
+<tr><td class="num" id="LN839">839</td><td class="line"> <span class='string_literal'>"(track.resize TRACK NEWFRAMES NEWCHANNELS)\n\</span></td></tr>
+<tr><td class="num" id="LN840">840</td><td class="line"> <span class='string_literal'>Resize TRACK to have NEWFRAMES number of frames and NEWCHANNELS\n\</span></td></tr>
+<tr><td class="num" id="LN841">841</td><td class="line"> <span class='string_literal'>number of channels.  If TRACK is nil a new track is made of the\n\</span></td></tr>
+<tr><td class="num" id="LN842">842</td><td class="line"> <span class='string_literal'>requested size."</span>);</td></tr>
+<tr><td class="num" id="LN843">843</td><td class="line">    init_subr_1(<span class='string_literal'>"track.num_frames"</span>,track_frames,</td></tr>
+<tr><td class="num" id="LN844">844</td><td class="line">  <span class='string_literal'>"(track.num_frames TRACK)\n\</span></td></tr>
+<tr><td class="num" id="LN845">845</td><td class="line">  <span class='string_literal'>Returns number of frames in TRACK."</span>);</td></tr>
+<tr><td class="num" id="LN846">846</td><td class="line">    init_subr_1(<span class='string_literal'>"track.num_channels"</span>,track_channels,</td></tr>
+<tr><td class="num" id="LN847">847</td><td class="line">  <span class='string_literal'>"(track.num_channels TRACK)\n\</span></td></tr>
+<tr><td class="num" id="LN848">848</td><td class="line">  <span class='string_literal'>Returns number of channels in TRACK."</span>);</td></tr>
+<tr><td class="num" id="LN849">849</td><td class="line">    init_subr_4(<span class='string_literal'>"track.set"</span>,track_set,</td></tr>
+<tr><td class="num" id="LN850">850</td><td class="line"> <span class='string_literal'>"(track.set TRACK X Y V)\n\</span></td></tr>
+<tr><td class="num" id="LN851">851</td><td class="line"> <span class='string_literal'>Set position X Y to V in TRACK."</span>);</td></tr>
+<tr><td class="num" id="LN852">852</td><td class="line">    init_subr_3(<span class='string_literal'>"track.get"</span>,track_get,</td></tr>
+<tr><td class="num" id="LN853">853</td><td class="line"> <span class='string_literal'>"(track.get TRACK X Y)\n\</span></td></tr>
+<tr><td class="num" id="LN854">854</td><td class="line"> <span class='string_literal'>Get value of X Y in TRACK."</span>);</td></tr>
+<tr><td class="num" id="LN855">855</td><td class="line">    init_subr_3(<span class='string_literal'>"track.set_time"</span>,track_set_time,</td></tr>
+<tr><td class="num" id="LN856">856</td><td class="line"> <span class='string_literal'>"(track.set_time TRACK X TIME)\n\</span></td></tr>
+<tr><td class="num" id="LN857">857</td><td class="line"> <span class='string_literal'>Set time at X to TIME in TRACK."</span>);</td></tr>
+<tr><td class="num" id="LN858">858</td><td class="line">    init_subr_2(<span class='string_literal'>"track.get_time"</span>,track_get_time,</td></tr>
+<tr><td class="num" id="LN859">859</td><td class="line"> <span class='string_literal'>"(track.get_time TRACK X)\n\</span></td></tr>
+<tr><td class="num" id="LN860">860</td><td class="line"> <span class='string_literal'>Get time of X in TRACK."</span>);</td></tr>
+<tr><td class="num" id="LN861">861</td><td class="line">    init_fsubr(<span class='string_literal'>"track.insert"</span>,track_insert,</td></tr>
+<tr><td class="num" id="LN862">862</td><td class="line"> <span class='string_literal'>"(track.insert TRACK1 X1 TRACK2 X2 COUNT)\n\</span></td></tr>
+<tr><td class="num" id="LN863">863</td><td class="line"> <span class='string_literal'>Insert TRACK2 from X2 to X2+COUNT into TRACK1 at X1.  TRACK1 is resized\n\</span></td></tr>
+<tr><td class="num" id="LN864">864</td><td class="line"> <span class='string_literal'>as required."</span>);</td></tr>
+<tr><td class="num" id="LN865">865</td><td class="line">    init_subr_1(<span class='string_literal'>"utt.send.wave.client"</span>,utt_send_wave_client,</td></tr>
+<tr><td class="num" id="LN866">866</td><td class="line"> <span class='string_literal'>"(utt.send.wave.client UTT)\n\</span></td></tr>
+<tr><td class="num" id="LN867">867</td><td class="line">  <span class='string_literal'>Sends wave in UTT to client.  If not in server mode gives an error\n\</span></td></tr>
+<tr><td class="num" id="LN868">868</td><td class="line">  <span class='string_literal'>Note the client must be expecting to receive the waveform."</span>);</td></tr>
+<tr><td class="num" id="LN869">869</td><td class="line">    init_subr_1(<span class='string_literal'>"utt.send.wave.asterisk"</span>,utt_send_wave_asterisk,</td></tr>
+<tr><td class="num" id="LN870">870</td><td class="line"><span class='string_literal'>"(utt.send.wave.asterisk UTT)\n\</span></td></tr>
+<tr><td class="num" id="LN871">871</td><td class="line">  <span class='string_literal'>Sends wave in UTT to client.  If not in server mode gives an error\n\</span></td></tr>
+<tr><td class="num" id="LN872">872</td><td class="line">  <span class='string_literal'>Note the client must be expecting to receive the waveform. The waveform\n\</span></td></tr>
+<tr><td class="num" id="LN873">873</td><td class="line">  <span class='string_literal'>is rescaled and resampled according to what asterisk needs"</span>);</td></tr>
+<tr><td class="num" id="LN874">874</td><td class="line">    init_subr_1(<span class='string_literal'>"send_sexpr_to_client"</span>, send_sexpr_to_client,</td></tr>
+<tr><td class="num" id="LN875">875</td><td class="line"> <span class='string_literal'>"(send_sexpr_to_client SEXPR)\n\</span></td></tr>
+<tr><td class="num" id="LN876">876</td><td class="line"><span class='string_literal'>Sends given sexpression to currently connected client."</span>);</td></tr>
+<tr><td class="num" id="LN877">877</td><td class="line">    init_subr_2(<span class='string_literal'>"utt.save.f0"</span>,utt_save_f0,</td></tr>
+<tr><td class="num" id="LN878">878</td><td class="line"> <span class='string_literal'>"(utt.save.f0 UTT FILENAME)\n\</span></td></tr>
+<tr><td class="num" id="LN879">879</td><td class="line"> <span class='string_literal'>Save F0 of UTT as esps track file in FILENAME."</span>);</td></tr>
+<tr><td class="num" id="LN880">880</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN881">881</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN882">882</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN883">883</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN884">884</td><td class="line"> </td></tr>
+</table></body></html>
