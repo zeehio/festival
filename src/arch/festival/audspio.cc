@@ -214,7 +214,6 @@ static int start_sub_process(int *fds, int argc, char **argv)
     int pid;
     int in[2];
     int out[2];
-    (void)argc;
 
     if ((pipe(in) != 0) ||
 	(pipe(out) != 0))
@@ -230,7 +229,8 @@ static int start_sub_process(int *fds, int argc, char **argv)
 	dup2(in[0],0);         /* reassign stdin to the pipe */
 	close(out[0]);
 	dup2(out[1],1);        /* reassign stdout to the pipe */
-	execvp(argv[0],argv);
+    if (argc > 0)          /* If program name is given, use it */
+      execvp(argv[0],argv);
 	cerr << "pipe_open: failed to start " << argv[0] << endl;
 	exit(-1);      /* should only get here on failure */
       case -1:
