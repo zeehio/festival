@@ -137,7 +137,7 @@ LISP lexicon_compile(LISP finname, LISP foutname)
 	wfree(ent_list[i]->entry);
 	delete ent_list[i];
     }
-    delete ent_list;
+    delete[] ent_list;
     fclose(fout);
 
     cwarn << "Compiled lexicon \"" << get_c_string(finname) <<

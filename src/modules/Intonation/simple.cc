@@ -43,7 +43,7 @@
 
 using namespace std;
 
-static void add_targets(EST_Utterance *u,EST_Item *syl, 
+static void add_targets(EST_Utterance &u,EST_Item *syl, 
 			float baseline,float peak);
 
 LISP FT_Intonation_Simple_Utt(LISP utt)
@@ -65,7 +65,7 @@ LISP FT_Intonation_Simple_Utt(LISP utt)
     {	
 	paccent = wagon_predict(s,accent_tree);
 	if (paccent != "NONE")
-	    add_IntEvent(u,s,paccent.string());
+	    add_IntEvent(*u,s,paccent.string());
     }
 
     return utt;
@@ -102,19 +102,19 @@ LISP FT_Int_Targets_Simple_Utt(LISP utt)
 	end_syl = daughtern(daughtern(p),"SylStructure");
 
 	if (start_syl)
-	    add_target(u,daughter1(start_syl,"SylStructure"),
+	    add_target(*u,daughter1(start_syl,"SylStructure"),
 	       ffeature(start_syl,"R:SylStructure.daughter1.segment_start"),
 		       baseline);
 	for (s=start_syl->as_relation("Syllable"); s != end_syl->next(); 
 	     s = s->next())
 	{
 	    if (ffeature(s,"accented") == 1)
-		add_targets(u,s,baseline,f0_std);
+		add_targets(*u,s,baseline,f0_std);
 	    baseline -= decline*(ffeature(s,"syllable_duration").Float());
 	}
 
 	if (end_syl)
-	    add_target(u,daughtern(end_syl,"SylStructure"),
+	    add_target(*u,daughtern(end_syl,"SylStructure"),
 		   ffeature(end_syl,"R:SylStructure.daughtern.segment_end"),
 		   f0_mean-f0_std);
     }
@@ -122,7 +122,7 @@ LISP FT_Int_Targets_Simple_Utt(LISP utt)
     return utt;
 }
 
-static void add_targets(EST_Utterance *u,EST_Item *syl, 
+static void add_targets(EST_Utterance &u,EST_Item *syl, 
 			float baseline,float peak)
 {
     // Add a down stepped accent at this point 
