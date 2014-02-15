@@ -45,7 +45,7 @@ MANPAGES = festival.head festival.tail \
 #	introductory.sgml basics.sgml core.sgml advanced.sgml programming.sgml
 
 FILES=Makefile $(MANPAGES) festival.texi $(SGMLFILES) refcard.tex  $(DOCXXFILES)
-LOCAL_CLEAN = *.aux *.cp *.fn *.ky *.log *.pg *.toc *.tp *.vr
+LOCAL_CLEAN = *.aux *.cp *.fn *.ky *.log *.pg *.toc *.tp *.vr *.1
 
 ALL = festival.1 festival_client.1 text2wave.1
 
