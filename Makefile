@@ -80,7 +80,7 @@ test:
 config/config: config/config.in config.status
 	./config.status
 
-configure: configure.in
+configure: configure.ac
 	autoconf
 
 documentation:
