@@ -164,7 +164,7 @@
 <tr><td class="num" id="LN84">84</td><td class="line">	<span class='keyword'>for</span> (t=targets; t != <span class='macro'>NIL<span class='expansion'>((struct obj *) 0)</span></span>; t=cdr(t))</td></tr>
 <tr><td class="num" id="LN85">85</td><td class="line">	{</td></tr>
 <tr><td class="num" id="LN86">86</td><td class="line">	    seg = find_nearest_seg(u,get_c_float(car(car(t))));</td></tr>
-<tr><td class="num" id="LN87">87</td><td class="line">	    add_target(u,seg,get_c_float(car(car(t))),</td></tr>
+<tr><td class="num" id="LN87">87</td><td class="line">	    add_target(*u,seg,get_c_float(car(car(t))),</td></tr>
 <tr><td class="num" id="LN88">88</td><td class="line">		       get_c_float(car(cdr(car(t)))));</td></tr>
 <tr><td class="num" id="LN89">89</td><td class="line">	}</td></tr>
 <tr><td class="num" id="LN90">90</td><td class="line">    }</td></tr>
