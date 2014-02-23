@@ -69,19 +69,20 @@
 
     (apply_hooks hts_synth_pre_hooks utt)
 
-    (set! featstring (hts_dump_feats_string utt hts_feats_list))
+    (set! featstring_list (hts_dump_feats_string_list utt hts_feats_list))
+    ;(set! featstring (hts_dump_feats_string utt hts_feats_list))
     ;(hts_dump_feats utt hts_feats_list featfile)
     
     (set! hts_output_params
-	   (list
-      (list "-labelstring" featstring)
+      (list
+        (list "-labelstring" featstring_list)
 	    ;(list "-labelfile" featfile)
 	    ;(list "-om" mcepfile)
 	    ;(list "-of" f0file)
 	    ;(list "-or" wavfile)
 		;(list "-od" labfile)
-     )
-		)
+        )
+    )
 
     (HTS_Synthesize utt)
 
@@ -559,6 +560,16 @@
 
   output)
 )
+
+(define (hts_dump_feats_string_list utt feats)
+   (let ((output ()))
+    (mapcar
+     (lambda (s)
+       (set! output (append output (list (hts_feats_output_string s)))))
+     (utt.relation.items utt 'Segment))
+    output)
+)
+
 
 (define (hts_dump_feats_string utt feats)
    (let ((output ""))
