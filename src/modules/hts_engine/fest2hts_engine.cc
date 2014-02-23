@@ -126,7 +126,7 @@ static LISP HTS_Synthesize_Utt(LISP utt) {
 
   LISP label_string_list = NIL;
   const char **label_string_array = NULL;
-  size_t i, numlabels;
+  size_t i, numlabels = 0;
 
   char *labfn = NULL;
   FILE *rawfp = NULL, *durfp = NULL;
