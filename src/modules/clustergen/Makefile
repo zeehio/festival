@@ -49,14 +49,14 @@
 TOP=../../..
 DIRNAME=src/modules/clustergen
 
-H = mlsa_resynthesis.h vc.h simple_mlpg.h
-CPPSRCS = clustergen.cc mlsa_resynthesis.cc vc.cc simple_mlpg.cc me_mlsa.cc
+H = mlsa_resynthesis.h HTS_vocoder_me.h vc.h simple_mlpg.h
+CPPSRCS = clustergen.cc mlsa_resynthesis.cc vc.cc simple_mlpg.cc HTS_vocoder_me.cc
 SRCS = $(CPPSRCS)
 OBJS = $(CPPSRCS:.cc=.o) 
 
 FILES=Makefile $(SRCS) $(H)
 
-LOCAL_INCLUDES = -I../include -DFESTIVAL
+LOCAL_INCLUDES = -I../include -I ../hts_engine -DFESTIVAL
 
 INLIB = $(TOP)/src/lib/libFestival.a
 

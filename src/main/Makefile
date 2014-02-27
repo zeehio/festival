@@ -49,6 +49,10 @@ include $(EST)/config/rules/bin_process.mak
 
 ETCDIR=$(TOP)/lib/etc/$(SYSTEM_TYPE)
 
+ifeq (SIOD_PYTHON, $(findstring SIOD_PYTHON, $(INCLUDE_MODULES)))
+	LIBS += $(shell python3-config --ldflags) -ldl -lutil -lm
+endif
+
 festival: festival_main.o $(LIBDEPS)
 	$(LINK_COMMAND) -o festival festival_main.o $(LIBS)
 
