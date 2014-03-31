@@ -59,6 +59,8 @@
 #include "festival.h"
 #include "diphone.h"
 
+using namespace std;
+
 #ifdef SUPPORT_PSOLA_TM
 #include "di_psolaTM.cc"
 #else

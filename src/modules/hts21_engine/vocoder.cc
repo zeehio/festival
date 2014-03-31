@@ -176,6 +176,8 @@ double mlsafir (double x, double *b, int m, double a, double *d)
 
 double mlsadf1(double x, double *b, int m, double a, int pd, double *d, VocoderSetup *vs)
 {
+   (void) vs;
+   (void) m;
    double v, out = 0.0, *pt, aa;
    register int i;
 
@@ -199,10 +201,9 @@ double mlsadf1(double x, double *b, int m, double a, int pd, double *d, VocoderS
 
 double mlsadf2 (double x, double *b, int m, double a, int pd, double *d, VocoderSetup *vs)
 {
-   double v, out = 0.0, *pt, aa;
+   double v, out = 0.0, *pt;
    register int i;
     
-   aa = 1 - a*a;
    pt = &d[pd * (m+2)];
 	
    for (i=pd; i>=1; i--) {

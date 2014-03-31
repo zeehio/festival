@@ -88,7 +88,7 @@ static void audsp_send(const char *c)
 	festival_error();
     }
 	
-    if (write(audfds[0],c,strlen(c))!= strlen(c)) {
+    if (write(audfds[0],c,strlen(c))!= (int)strlen(c)) {
         cerr << "Could not write to audio spooler pipe" << endl;
     }
     if (write(audfds[0],"\n",1) != 1){

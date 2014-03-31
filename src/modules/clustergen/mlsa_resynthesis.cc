@@ -71,7 +71,7 @@ LISP mlsa_resynthesis(LISP ltrack, LISP strtrack, LISP filtrack) {
   DVECTOR f0v;
 
   int framerate = 16000;
-  int i, j;
+  ssize_t i, j;
   int shift;
   double ALPHA = 0.42;
   double BETA = 0.0;
@@ -109,7 +109,7 @@ LISP mlsa_resynthesis(LISP ltrack, LISP strtrack, LISP filtrack) {
   mcep = xdmalloc(t->num_frames(), t->num_channels()-1);
 
   for (i = 0; i < t->num_frames(); i++) {
-    f0v->data[i] = t->a(i, 0);
+    f0v->data[i] = t->a(i, 0L);
     for (j = 1; j < t->num_channels(); j++)
       mcep->data[i][j-1] = t->a(i, j);
   }
@@ -156,7 +156,7 @@ DVECTOR synthesis_body(DMATRIX mcep,      // input mel-cep sequence
                        int framem,     // FFT length
                        double alpha,
                        double beta) {
-  int64_t t, pos;
+  ssize_t t, pos;
   int framel;
   double f0;
   HTS_Vocoder v;
@@ -173,10 +173,10 @@ DVECTOR synthesis_body(DMATRIX mcep,      // input mel-cep sequence
   double volume = 1.0;
 
   // Mixed Excitation Stuff
-  LISP filters;
+  /*LISP filters;
   LISP f;
-  int fl;
-  int i, j;
+  int fl;*/
+  ssize_t i, j;
   int me_num_filters = 0;
   int me_filter_order = 0;
   double **me_filter = NULL;
@@ -199,7 +199,7 @@ DVECTOR synthesis_body(DMATRIX mcep,      // input mel-cep sequence
         nlpf = (filter_track->num_channels() - 1)/2;
         lpf = (double*) calloc(filter_track->num_channels(), sizeof(double));
         for (i = 0; i < filter_track->num_channels(); i++) {
-          lpf[i] = filter_track->a(0,i);
+          lpf[i] = filter_track->a(0L,i);
         }
         //        printf("aup_debug: Using LPF filter of nlpf %d\n", nlpf);
       }
@@ -272,7 +272,7 @@ DVECTOR synthesis_body(DMATRIX mcep,      // input mel-cep sequence
     } else {
       strengths =  (double*) calloc(me_filter_order, sizeof(double));
       for (i = 0; i < me_num_filters; i++) {
-        strengths[i] = str->a((int)t, i);
+        strengths[i] = str->a(t, i);
       }
       HTS_Vocoder_synthesize_me(&v_me, mcep->col - 1,
                                 f0, mcep->data[t],

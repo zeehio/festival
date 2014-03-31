@@ -93,15 +93,20 @@ static void window_frame(EST_Wave &frame, EST_Wave &whole, float scale,
   else
     send = whole.num_samples();
 
-  
+  #if defined(EST_DEBUGGING)
   int print_centre;
+  #endif
   if ( centre_index < 0 ){
     window_function( window_length, window, -1 );
+    #if defined(EST_DEBUGGING)
     print_centre = (window_length-1)/2+start;
+    #endif
   }
   else{
     window_function( window_length, window, (centre_index-start));
+    #if defined(EST_DEBUGGING)
     print_centre = centre_index;
+    #endif
   }
 
 
@@ -380,13 +385,10 @@ void us_unit_raw_concat(EST_Utterance &utt)
 {
     EST_Wave *sig, *unit_sig;
     EST_Track *unit_coefs=0;
-    float window_factor;
     int i, j, k;
     int first_pm, last_pm, last_length;
     float first_pos, last_pos;
 
-    window_factor = get_c_float(siod_get_lval("window_factor",
-					      "UniSyn: no window_factor"));
     sig = new EST_Wave;
 
     sig->resize(1000000);
@@ -437,7 +439,7 @@ void concatenate_unit_coefs(EST_Relation &unit_stream, EST_Track &source_lpc)
     int num_source_frames   = 0;
     int num_source_channels = 0;;
     float prev_time, abs_offset, rel_offset, period, offset;
-    int i, j, k, l;
+    ssize_t i, j, k;
     EST_Track *coefs;
 
     EST_Item *u = unit_stream.head();
@@ -461,7 +463,7 @@ void concatenate_unit_coefs(EST_Relation &unit_stream, EST_Track &source_lpc)
       
       prev_time = 0.0;
       // copy basic information
-      for (i = 0, l = 0, u = unit_stream.head(); u; u = u->next())
+      for (i = 0, u = unit_stream.head(); u; u = u->next())
 	{
 	  coefs = track(u->f("coefs"));
 	  
@@ -591,10 +593,10 @@ void us_linear_smooth_amplitude( EST_Utterance *utt )
       
       //      EST_Item *join_phone_right = item(diphone_right->f("ph1"));
 
-      int left_end_index = energy->index(diphone_left->F("end"));
-      int right_start_index = left_end_index + 1; 
-      float left_power  = energy->a(left_end_index,0);
-      float right_power = energy->a(right_start_index,0);
+      ssize_t left_end_index = energy->index(diphone_left->F("end"));
+      ssize_t right_start_index = left_end_index + 1; 
+      float left_power  = energy->a(left_end_index,0L);
+      float right_power = energy->a(right_start_index,0L);
 
       float mean_power = (left_power+right_power)/2.0;
       float left_factor  = left_power/mean_power;

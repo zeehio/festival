@@ -239,14 +239,14 @@ static void tidy_up(void)
 {
     // should wait for any remaining children if I've been
     // requested to.
-    int pid;
+    /*int pid;*/
     int statusp;
 
     if (pending_close == TRUE)
     {
 	while (kids > 0)
 	{
-	    pid = waitpid(0,&statusp,0);
+	    /*pid =*/ waitpid(0,&statusp,0);
 	    kids--;
 	}
 	fprintf(stdout,"OK\n");   // give an acknowledgement

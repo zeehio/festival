@@ -72,7 +72,7 @@ void LoadModelFiles(ModelSet *ms)
    /* read pdfs (mean & variance) */
    for (i=1; i<=ms->ndurpdf; i++) {
       ms->durpdf[i] = walloc(float,2*ms->nstate+2);
-      if (fread(ms->durpdf[i]+2, sizeof(float), 2*ms->nstate, ms->fp[DUR]) != 2*ms->nstate) {
+      if (fread(ms->durpdf[i]+2, sizeof(float), 2*ms->nstate, ms->fp[DUR]) != (unsigned int) 2*ms->nstate) {
          fprintf(stderr, "Error reading means and variances for durpdf\n");
          festival_error();
       }
@@ -90,7 +90,7 @@ void LoadModelFiles(ModelSet *ms)
    ms->nmceppdf = walloc(int,ms->nstate);
 
    /* read the number of pdfs for each state position */
-   if (fread(ms->nmceppdf, sizeof(int), ms->nstate, ms->fp[MCP]) != ms->nstate) {
+   if (fread(ms->nmceppdf, sizeof(int), ms->nstate, ms->fp[MCP]) != (unsigned int) ms->nstate) {
       fprintf(stderr, "Error reading number of pdfs for each mcep state position\n");
       festival_error();
    }
@@ -102,7 +102,7 @@ void LoadModelFiles(ModelSet *ms)
       ms->mceppdf[i] = walloc(float *,ms->nmceppdf[i-2]+2);
       for (j=1; j<=ms->nmceppdf[i-2]; j++) {
          ms->mceppdf[i][j] = walloc(float,ms->mcepvsize*2);
-         if (fread(ms->mceppdf[i][j], sizeof(float), ms->mcepvsize*2, ms->fp[MCP]) != ms->mcepvsize*2) {
+         if (fread(ms->mceppdf[i][j], sizeof(float), ms->mcepvsize*2, ms->fp[MCP]) != (unsigned int) ms->mcepvsize*2) {
             fprintf(stderr, "Error reading  mean and variance for mcep pdfs\n");
             festival_error();
          }
@@ -120,7 +120,7 @@ void LoadModelFiles(ModelSet *ms)
    if (EST_BIG_ENDIAN) ms->lf0stream = SWAPINT(ms->lf0stream);
    ms->nlf0pdf = walloc(int,ms->nstate+2);
    /* read the number of pdfs for each state position */
-   if (fread(ms->nlf0pdf, sizeof(int), ms->nstate, ms->fp[LF0]) != ms->nstate) {
+   if (fread(ms->nlf0pdf, sizeof(int), ms->nstate, ms->fp[LF0]) != (unsigned int) ms->nstate) {
       fprintf(stderr, "Error reading the number of pdfs for each f0 state position\n");
       festival_error();
    }

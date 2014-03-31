@@ -71,7 +71,7 @@ LISP hts21_mlsa_resynthesis(LISP ltrack)
     DMATRIX mcep;
     DVECTOR f0v;
     int sr = 16000;
-    int i,j;
+    ssize_t i,j;
     double shift;
 
     if ((ltrack == NULL) ||
@@ -86,7 +86,7 @@ LISP hts21_mlsa_resynthesis(LISP ltrack)
 
     for (i=0; i<t->num_frames(); i++)
     {
-        f0v->data[i] = t->a(i,0);
+        f0v->data[i] = t->a(i,0L);
         for (j=1; j<t->num_channels(); j++)
             mcep->data[i][j-1] = t->a(i,j);
     }
@@ -433,6 +433,7 @@ static double mlsadf(double x, double *b, int m, double a, int pd, double *d, Vo
 
 static double mlsadf1(double x, double *b, int m, double a, int pd, double *d, VocoderSetup *vs)
 {
+   (void) m;
    double v, out = 0.0, *pt, aa;
    register int i;
 
@@ -455,10 +456,9 @@ static double mlsadf1(double x, double *b, int m, double a, int pd, double *d, V
 
 static double mlsadf2 (double x, double *b, int m, double a, int pd, double *d, VocoderSetup *vs)
 {
-   double v, out = 0.0, *pt, aa;
+   double v, out = 0.0, *pt;
    register int i;
-    
-   aa = 1 - a*a;
+
    pt = &d[pd * (m+2)];
 
    for (i=pd; i>=1; i--) {

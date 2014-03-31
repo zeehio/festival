@@ -136,7 +136,7 @@ static size_t HTS_name2num(const char *buff)
 {
    size_t i;
 
-   for (i = strlen(buff) - 1; '0' <= buff[i] && buff[i] <= '9' && i >= 0; i--);
+   for (i = strlen(buff) - 1; '0' <= buff[i] && buff[i] <= '9'; i--);
    i++;
 
    return (size_t) atoi(&buff[i]);

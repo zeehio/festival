@@ -277,8 +277,8 @@ static void phrasing_by_probmodels(EST_Utterance& u)
 static void phrasing_by_cart_viterbi(EST_Utterance &u)
 {
   EST_Item *w, *phr = 0;
-  LISP tree;
-  LISP answer;
+  /*LISP tree;
+  LISP answer;*/
   int num_states;
   EST_String pbreak;
 
@@ -339,6 +339,7 @@ static void phrasing_by_cart_viterbi(EST_Utterance &u)
 
 static EST_VTCandidate *cart_bb_candlist(EST_Item *s, EST_Features &f)
 {
+  (void) f;
   double prob=1.0;
   double divisor = 1.0;
   EST_VTCandidate *all_c = 0;
@@ -655,7 +656,7 @@ static double find_b_prob(EST_VTPath *p,int n,int *state)
 static double find_b_faprob(EST_VTPath *p,int n,int *state)
 {
     int oldstate=0;
-    int i,j;
+    ssize_t i,j;
     EST_VTPath *d;
     double prob;
     double atime, wtime, wstddev=0, z=0.0;
@@ -679,7 +680,7 @@ static double find_b_faprob(EST_VTPath *p,int n,int *state)
     // Skip over break if we're at one
     for (i = oldstate; i < bb_track->num_frames(); i++)
     {
-	if (bb_track->a(i,0) == ATOTH_NBREAK)
+	if (bb_track->a(i,0L) == ATOTH_NBREAK)
 	    break;
     }
     
@@ -688,14 +689,14 @@ static double find_b_faprob(EST_VTPath *p,int n,int *state)
     {
 	wtime += ffeature(d->c->s,"word_duration").Float();
 	wstddev += ffeature(d->c->s,"lisp_word_stddev").Float();
-	if (bb_track->a(d->state,0) == ATOTH_BREAK)
+	if (bb_track->a((ssize_t)d->state,0L) == ATOTH_BREAK)
 	    break;
     }
 
     // time since last break in acoustics
     for (atime=0.01,j=i; j>0; j--)
     {
-	if (bb_track->a(j,0) == ATOTH_BREAK)
+	if (bb_track->a(j,0L) == ATOTH_BREAK)
 	    break;
 	atime += bb_track->t(j) - ( i == 0 ? 0 : bb_track->t(j-1));
     }
@@ -708,7 +709,7 @@ static double find_b_faprob(EST_VTPath *p,int n,int *state)
 	/* extend acoustics until next break */
 	for (; i < bb_track->num_frames(); i++)
 	{
-	    if (bb_track->a(i,0) == ATOTH_BREAK)
+	    if (bb_track->a(i,0L) == ATOTH_BREAK)
 		break;
 	    atime += bb_track->t(i) - ( i == 0 ? 0 : bb_track->t(i-1));
 	}
@@ -717,7 +718,7 @@ static double find_b_faprob(EST_VTPath *p,int n,int *state)
     else
     {   /* cost of having a non-break here */
 	for ( i++,z = fabs((atime-wtime)/wstddev); 
-	      (i < bb_track->num_frames()) && (bb_track->a(i,0) == ATOTH_NBREAK);
+	      (i < bb_track->num_frames()) && (bb_track->a(i,0L) == ATOTH_NBREAK);
 	      i++)
 	{
 	    atime += bb_track->t(i) - ( i == 0 ? 0 : bb_track->t(i-1));
@@ -751,7 +752,7 @@ static double find_b_faprob(EST_VTPath *p,int n,int *state)
 	prob = 0.999999;
 
     // prob of atime given (wtime,wstddev)
-    printf("%d %d %f %f %f %f %s %s %f\n",oldstate,i,atime,wtime,wstddev,z,
+    printf("%d %ld %f %f %f %f %s %s %f\n",oldstate,i,atime,wtime,wstddev,z,
 	   ( p && p->c && p->c->s ? (const char *)ffeature(p->c->s,"name").String() : "null"),
 	   ( n == B_word ? "B" : "NB"),
 	   prob

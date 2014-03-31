@@ -103,7 +103,7 @@ float **ffcalloc(int x, int y)
 int str2farray (char *c, float **x)
 {
    int i, size, sp;
-   char *p, *buf;
+   char *p/*, *buf*/;
    
    while (isspace(*c))
       c++;
@@ -127,7 +127,7 @@ int str2farray (char *c, float **x)
          sp = 1;
    }
 
-   buf = walloc(char,strlen(c));
+   /*buf = walloc(char,strlen(c));*/
 
    *x = walloc(float,size);
 
@@ -446,7 +446,7 @@ void InitDWin(PStream *pst)
          /* read coefficients */
          pst->dw.coef[i] = fcalloc (fsize);
          pst->dw.coefr[i] = pst->dw.coef[i];
-         if (fread(pst->dw.coef[i], sizeof(float), fsize, fp) != fsize) {
+         if (fread(pst->dw.coef[i], sizeof(float), fsize, fp) != (unsigned int)fsize) {
             fprintf(stderr, "Error reading window coefficients\n");
             festival_error();
          }

@@ -495,7 +495,7 @@ static LISP track_copy(LISP t)
 
 static LISP track_insert(LISP argv, LISP env)
 {
-    int i,j;
+    ssize_t i,j;
     /* TRACK1 X1 TRACK2 X2 COUNT */
     EST_Track *t1 = track(leval(siod_nth(0,argv),env));
     int x1 = get_c_int(leval(siod_nth(1,argv),env));
@@ -560,7 +560,7 @@ static void utt_save_f0_from_targets(EST_Utterance *u,EST_String &filename)
     EST_Track f0;
     float p = 0.0;
     float length = u->relation("Segment")->last()->f("end");
-    int i,frames = (int)(length / 0.010);
+    ssize_t i,frames = (ssize_t)(length / 0.010);
     f0.resize(frames,4);
     
     EST_Item *ptval, *tval;
@@ -582,13 +582,13 @@ static void utt_save_f0_from_targets(EST_Utterance *u,EST_String &filename)
 	    if ((ffeature(s,"ph_vc") == "+") ||
 		(ffeature(s,"ph_cvox") == "+"))
 	    {
-		f0(i,0) = f0_interpolate(ptval,tval,p);
-		f0(i,1) = 1;
+		f0(i,0L) = f0_interpolate(ptval,tval,p);
+		f0(i,1L) = 1;
 	    }
 	    else
 	    {
-		f0(i,0) = 0;
-		f0(i,1) = 0.0; // unvoiced;
+		f0(i,0L) = 0;
+		f0(i,1L) = 0.0; // unvoiced;
 	    }
 	}
     }

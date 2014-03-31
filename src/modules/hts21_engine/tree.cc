@@ -117,6 +117,7 @@ int SearchTree (char *str, Node *node)
 
 void LoadQuestions(FILE *fp, Question *q, Mtype type)
 {
+   (void) type;
    char buf[1024];
 
    GetToken(fp, buf);

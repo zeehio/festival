@@ -93,7 +93,7 @@ void targets_to_f0(EST_Relation &targ, EST_Track &f0, const float shift)
     float prev_f0=0.0;
     float prev_pos=0, m;
     EST_Item *s;
-    int i;
+    ssize_t i;
 
     f0.resize(int(ceil(targ.last_leaf()->F("pos",0) / shift)), 1);
     f0.fill_time(shift);

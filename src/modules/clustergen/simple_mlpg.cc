@@ -209,7 +209,8 @@ static double get_like_pdfseq_vit(int dim, int dim2, int dnum, int clsnum,
                                   EST_Track *model, 
                                   XBOOL dia_flag)
 {
-    long d, c, k, l, j;
+    (void) clsnum;
+    ssize_t d, c, k, l, j;
     double sumgauss;
     double like = 0.0;
 
@@ -217,7 +218,7 @@ static double get_like_pdfseq_vit(int dim, int dim2, int dnum, int clsnum,
 	// read weight and mean sequences
         param->wght->data[0][0] = 0.9; /* FIXME weights */
         for (j=0; j<dim; j++)
-            param->mean->data[0][j] = model->a((int)d,(int)((j+1)*2));
+            param->mean->data[0][j] = model->a(d,((j+1)*2));
 
 	// observation vector
 	for (k = 0; k < dim2; k++) {
@@ -362,6 +363,7 @@ static void get_dltmat(DMATRIX mat, MLPG_DWin *dw, int dno, DMATRIX dmat)
 
 static double *dcalloc(int x, int xoff)
 {
+    (void)xoff;
     double *ptr;
 
     ptr = mlpg_alloc(x,double);
@@ -371,6 +373,7 @@ static double *dcalloc(int x, int xoff)
 
 static double **ddcalloc(int x, int y, int xoff, int yoff)
 {
+    (void) xoff;
     double **ptr;
     register int i;
 
@@ -922,9 +925,9 @@ LISP mlpg(LISP ltrack)
     MLPGPARA param = NODATA;
     EST_Track *param_track, *out;
     int dim, dim_st;
-    float like;
-    int i,j;
-    int nframes;
+    /*float like;*/
+    ssize_t i,j;
+    ssize_t nframes;
     PStreamChol pst;
 
     if ((ltrack == NULL) ||
@@ -979,7 +982,7 @@ LISP mlpg(LISP ltrack)
     {
         get_dltmat(param->stm, &pst.dw, 1, param->dltm);
 
-        like = get_like_pdfseq_vit(dim, dim_st, nframes, nframes, param,
+        /*like = */get_like_pdfseq_vit(dim, dim_st, nframes, nframes, param,
                                    param_track, XTRUE);
 
         /* vlike = get_like_gv(dim2, dnum, param); */
@@ -991,7 +994,7 @@ LISP mlpg(LISP ltrack)
     for (i=0; i<nframes; i++)
     {
         out->t(i) = param_track->t(i);
-        out->a(i,0) = param_track->a(i,0); /* F0 */
+        out->a(i,0L) = param_track->a(i,0L); /* F0 */
         for (j=0; j<dim_st; j++)
         {
             out->a(i,j+1) = param->stm->data[i][j];

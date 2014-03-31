@@ -44,6 +44,8 @@
 #include "ModuleDescription.h"
 #include "diphone.h"
 
+using namespace std;
+
 static ModuleDescription di_description =
 {
   "diphone", 1.0,

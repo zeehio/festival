@@ -49,6 +49,8 @@
 #include "festival.h"
 #include "diphone.h"
 
+using namespace std;
+
 static void add_lpc_coeff(int nth,float *p_coeffs,EST_Track &lpc_coeff);
 static void add_residual(int insize, int outsize, int position,
 			 short *p_residual,
@@ -73,7 +75,7 @@ void reslpc_resynth(const EST_String &file,
     // This is not fully general, just for my testing
     EST_Track lpc_coeffs;
     EST_Wave residual;
-    int i,frame_len;
+    ssize_t i,frame_len;
 
     if (lpc_coeffs.load(EST_String(db->lpc_dir)+file+EST_String(db->lpc_ext))
 	!= format_ok)
@@ -96,7 +98,7 @@ void reslpc_resynth(const EST_String &file,
 	for (i=0; i<lpc_coeffs.num_frames(); i++)
 	{
 	    // first coeffs in time in samples
-	    frame_len = (int)lpc_coeffs(i,0);
+	    frame_len = (int)lpc_coeffs(i,0L);
 	    if (i==0)
 		frame_len = (int)(lpc_coeffs.t(i)*residual.sample_rate());
 	    else

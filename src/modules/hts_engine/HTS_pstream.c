@@ -79,7 +79,7 @@ static double HTS_finv(const double x)
 static void HTS_PStream_calc_wuw_and_wum(HTS_PStream * pst, size_t m)
 {
    size_t t, i, j;
-   int shift;
+   long int shift;
    double wu;
 
    for (t = 0; t < pst->length; t++) {
@@ -91,7 +91,7 @@ static void HTS_PStream_calc_wuw_and_wum(HTS_PStream * pst, size_t m)
       /* calc WUW & WUM */
       for (i = 0; i < pst->win_size; i++)
          for (shift = pst->win_l_width[i]; shift <= pst->win_r_width[i]; shift++)
-            if ((t + shift >= 0) && (t + shift < pst->length) && (pst->win_coefficient[i][-shift] != 0.0)) {
+            if ((((long int)t + shift) >= 0) && (t + shift < pst->length) && (pst->win_coefficient[i][-shift] != 0.0)) {
                wu = pst->win_coefficient[i][-shift] * pst->sm.ivar[t + shift][i * pst->vector_length + m];
                pst->sm.wum[t] += wu * pst->sm.mean[t + shift][i * pst->vector_length + m];
                for (j = 0; (j < pst->width) && (t + j < pst->length); j++)
@@ -375,7 +375,7 @@ HTS_Boolean HTS_PStreamSet_create(HTS_PStreamSet * pss, HTS_SStreamSet * sss, do
                   for (k = 0; k < pst->win_size; k++) {
                      not_bound = TRUE;
                      for (shift = pst->win_l_width[k]; shift <= pst->win_r_width[k]; shift++)
-                        if (frame + shift < 0 || pss->total_frame <= frame + shift || !pst->msd_flag[frame + shift]) {
+                        if ((long int)frame + shift < 0 || pss->total_frame <= frame + shift || !pst->msd_flag[frame + shift]) {
                            not_bound = FALSE;
                            break;
                         }
@@ -399,7 +399,7 @@ HTS_Boolean HTS_PStreamSet_create(HTS_PStreamSet * pss, HTS_SStreamSet * sss, do
                for (k = 0; k < pst->win_size; k++) {
                   not_bound = TRUE;
                   for (shift = pst->win_l_width[k]; shift <= pst->win_r_width[k]; shift++)
-                     if (frame + shift < 0 || pss->total_frame <= frame + shift) {
+                     if ((long int)frame + shift < 0 || pss->total_frame <= frame + shift) {
                         not_bound = FALSE;
                         break;
                      }
