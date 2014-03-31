@@ -75,13 +75,11 @@ typedef EST_THash<EST_Item*,TCData*> TCDataHash;
 class EST_FlatTargetCost : public EST_TargetCost {
 
  public:
-  EST_FlatTargetCost() : li(0){};
 
 
  private:
   mutable const TCData *t;
   mutable const TCData *c;
-  mutable const EST_Item *li; 
 
   inline void set_t_and_c(const TCData* targ, const TCData* cand) const
     { 

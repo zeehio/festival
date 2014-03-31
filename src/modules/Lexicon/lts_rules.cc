@@ -63,7 +63,6 @@ using namespace std;
 class LTS_Ruleset{
   private:
     EST_String p_name;
-    int num_rules;
     LISP p_rules;
     LISP p_alphabet;
     LISP p_sets;      // short hand for sets
