@@ -23,11 +23,5 @@ addons:
       name: "zeehio/festival"
       description: "Your project description here"
     notification_email: sergioller@gmail.com
-    build_command_prepend:
-      - cd ..
-      - git clone https://github.com/zeehio/speech-tools.git speech_tools
-      - cd speech_tools
-      - ./configure && make
-      - cd ../festival
     build_command: ./configure && make
     branch_pattern: coverity_scan
