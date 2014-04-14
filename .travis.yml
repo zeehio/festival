@@ -23,5 +23,6 @@ addons:
       name: "zeehio/festival"
       description: "Your project description here"
     notification_email: sergioller@gmail.com
-    build_command: ./configure && make
+    build_command_prepend: ./configure
+    build_command: make
     branch_pattern: coverity_scan
