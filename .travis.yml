@@ -10,3 +10,24 @@ before_script:
 script:
   - ./configure && make
 
+
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "M7yKdvVZ1GZor7aEfevjz7UEbbSN3VTmjZ8l94pqEqJibIXhx87vvnFR7fn3OO69QDUAyItMo6USolhG3G7kqZS3txODqtEJ7xx7aOua1dbrAJT5fgKHNosLwq/UnllwR3FSOFgJa9+9QNAsZvsg9+7b/gSSxrafV2AvjZUCmE8="
+
+addons:
+  coverity_scan:
+    project:
+      name: "zeehio/festival"
+      description: "Your project description here"
+    notification_email: sergioller@gmail.com
+    build_command_prepend:
+      - cd ..
+      - git clone https://github.com/zeehio/speech-tools.git speech_tools
+      - cd speech_tools
+      - ./configure && make
+      - cd ../festival
+    build_command: ./configure && make
+    branch_pattern: coverity_scan
