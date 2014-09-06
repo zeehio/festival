@@ -926,7 +926,6 @@ LISP mlpg(LISP ltrack)
     EST_Track *param_track, *out;
     int dim, dim_st;
     /*float like;*/
-    ssize_t i,j;
     ssize_t nframes;
     PStreamChol pst;
 
@@ -948,28 +947,28 @@ LISP mlpg(LISP ltrack)
 
     // mixture-index sequence
     param->clsidxv = xlvalloc(nframes);
-    for (i=0; i<nframes; i++)
+    for (ssize_t i=0; i<nframes; i++)
         param->clsidxv->data[i] = i;
 
     // initial static feature sequence
     param->stm = xdmalloc(nframes,dim_st);
-    for (i=0; i<nframes; i++)
+    for (ssize_t i=0; i<nframes; i++)
     {
-        for (j=0; j<dim_st; j++)
+        for (int j=0; j<dim_st; j++)
             param->stm->data[i][j] = param_track->a(i,(j+1)*2);
     }
 
     /* Load cluster means */
-    for (i=0; i<nframes; i++)
-        for (j=0; j<dim_st; j++)
+    for (ssize_t i=0; i<nframes; i++)
+        for (int j=0; j<dim_st; j++)
             param->mean->data[i][j] = param_track->a(i,(j+1)*2);
     
     /* GMM parameters diagonal covariance */
     InitPStreamChol(&pst, mlpg_dynwin, mlpg_dynwinsize, dim_st-1, nframes);
     param->pdf = xdmalloc(nframes,dim*2);
     param->cov = xdmalloc(nframes,dim);
-    for (i=0; i<nframes; i++)
-        for (j=0; j<dim; j++)
+    for (ssize_t i=0; i<nframes; i++)
+        for (int j=0; j<dim; j++)
             param->cov->data[i][j] = 
                 param_track->a(i,(j+1)*2+1) *
                 param_track->a(i,(j+1)*2+1);
@@ -991,11 +990,11 @@ LISP mlpg(LISP ltrack)
     }
 
     /* Put the answer back into the output track */
-    for (i=0; i<nframes; i++)
+    for (ssize_t i=0; i<nframes; i++)
     {
         out->t(i) = param_track->t(i);
-        out->a(i,0L) = param_track->a(i,0L); /* F0 */
-        for (j=0; j<dim_st; j++)
+        out->a(i,0) = param_track->a(i,0); /* F0 */
+        for (int j=0; j<dim_st; j++)
         {
             out->a(i,j+1) = param->stm->data[i][j];
         }

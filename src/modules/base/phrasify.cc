@@ -680,7 +680,7 @@ static double find_b_faprob(EST_VTPath *p,int n,int *state)
     // Skip over break if we're at one
     for (i = oldstate; i < bb_track->num_frames(); i++)
     {
-	if (bb_track->a(i,0L) == ATOTH_NBREAK)
+	if (bb_track->a(i,0) == ATOTH_NBREAK)
 	    break;
     }
     
@@ -689,14 +689,14 @@ static double find_b_faprob(EST_VTPath *p,int n,int *state)
     {
 	wtime += ffeature(d->c->s,"word_duration").Float();
 	wstddev += ffeature(d->c->s,"lisp_word_stddev").Float();
-	if (bb_track->a((ssize_t)d->state,0L) == ATOTH_BREAK)
+	if (bb_track->a((ssize_t)d->state,0) == ATOTH_BREAK)
 	    break;
     }
 
     // time since last break in acoustics
     for (atime=0.01,j=i; j>0; j--)
     {
-	if (bb_track->a(j,0L) == ATOTH_BREAK)
+	if (bb_track->a(j,0) == ATOTH_BREAK)
 	    break;
 	atime += bb_track->t(j) - ( i == 0 ? 0 : bb_track->t(j-1));
     }
@@ -709,7 +709,7 @@ static double find_b_faprob(EST_VTPath *p,int n,int *state)
 	/* extend acoustics until next break */
 	for (; i < bb_track->num_frames(); i++)
 	{
-	    if (bb_track->a(i,0L) == ATOTH_BREAK)
+	    if (bb_track->a(i,0) == ATOTH_BREAK)
 		break;
 	    atime += bb_track->t(i) - ( i == 0 ? 0 : bb_track->t(i-1));
 	}
@@ -718,7 +718,7 @@ static double find_b_faprob(EST_VTPath *p,int n,int *state)
     else
     {   /* cost of having a non-break here */
 	for ( i++,z = fabs((atime-wtime)/wstddev); 
-	      (i < bb_track->num_frames()) && (bb_track->a(i,0L) == ATOTH_NBREAK);
+	      (i < bb_track->num_frames()) && (bb_track->a(i,0) == ATOTH_NBREAK);
 	      i++)
 	{
 	    atime += bb_track->t(i) - ( i == 0 ? 0 : bb_track->t(i-1));

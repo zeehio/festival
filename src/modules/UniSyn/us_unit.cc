@@ -595,8 +595,8 @@ void us_linear_smooth_amplitude( EST_Utterance *utt )
 
       ssize_t left_end_index = energy->index(diphone_left->F("end"));
       ssize_t right_start_index = left_end_index + 1; 
-      float left_power  = energy->a(left_end_index,0L);
-      float right_power = energy->a(right_start_index,0L);
+      float left_power  = energy->a(left_end_index,0);
+      float right_power = energy->a(right_start_index,0);
 
       float mean_power = (left_power+right_power)/2.0;
       float left_factor  = left_power/mean_power;

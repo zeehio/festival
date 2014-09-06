@@ -261,7 +261,7 @@ static LISP builtin_word_it(EST_Item *token, EST_String tok)
     {
 	EST_String afterpoint = tok.after(".");
 	LISP ap = NIL;
-	int i;
+	size_t i;
 	for (i=0; i < afterpoint.length(); i++)
 	     ap = append(say_num_as_words(afterpoint.at(i,1)),ap);
 	return append(say_num_as_words(tok.before(".")),
@@ -402,7 +402,7 @@ static int only_punc(const EST_String &tok)
 {
     // If this token consists solely of punctuation chars
     // If this is true I'm probably suppose to say some of them
-    int i;
+    size_t i;
     EST_String np;
     const char *tokch = tok;
 
