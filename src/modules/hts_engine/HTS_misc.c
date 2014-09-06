@@ -517,7 +517,7 @@ void *HTS_calloc(const size_t num, const size_t size)
 {
    size_t n = num * size;
 #ifdef FESTIVAL
-   void *mem = (void *) safe_wcalloc(n);
+   void *mem = (void *) safe_walloc(n);
 #else
    void *mem = (void *) malloc(n);
 #endif                          /* FESTIVAL */
