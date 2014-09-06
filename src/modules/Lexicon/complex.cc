@@ -126,7 +126,6 @@ LISP lexicon_compile(LISP finname, LISP foutname)
     {
 	cerr << "Lexicon compile: unable to open " << get_c_string(foutname) 
 	    << " for writing\n";
-	fclose(fin);
 	festival_error();
     }
     fprintf(fout,"MNCL\n");
