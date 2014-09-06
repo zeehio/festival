@@ -71,7 +71,6 @@ LISP hts21_mlsa_resynthesis(LISP ltrack)
     DMATRIX mcep;
     DVECTOR f0v;
     int sr = 16000;
-    ssize_t i,j;
     double shift;
 
     if ((ltrack == NULL) ||
@@ -84,10 +83,10 @@ LISP hts21_mlsa_resynthesis(LISP ltrack)
     f0v = xdvalloc(t->num_frames());
     mcep = xdmalloc(t->num_frames(),t->num_channels()-1);
 
-    for (i=0; i<t->num_frames(); i++)
+    for (ssize_t i=0; i<t->num_frames(); i++)
     {
-        f0v->data[i] = t->a(i,0L);
-        for (j=1; j<t->num_channels(); j++)
+        f0v->data[i] = t->a(i,0);
+        for (int j=1; j<t->num_channels(); j++)
             mcep->data[i][j-1] = t->a(i,j);
     }
 
@@ -100,7 +99,7 @@ LISP hts21_mlsa_resynthesis(LISP ltrack)
 
     wave = new EST_Wave(w->length,1,sr);
     
-    for (i=0; i<w->length; i++)
+    for (ssize_t i=0; i<w->length; i++)
         wave->a(i) = (short)w->data[i];
 
     xdmfree(mcep);

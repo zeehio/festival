@@ -109,7 +109,7 @@ LISP mlsa_resynthesis(LISP ltrack, LISP strtrack, LISP filtrack) {
   mcep = xdmalloc(t->num_frames(), t->num_channels()-1);
 
   for (i = 0; i < t->num_frames(); i++) {
-    f0v->data[i] = t->a(i, 0L);
+    f0v->data[i] = t->a(i, 0);
     for (j = 1; j < t->num_channels(); j++)
       mcep->data[i][j-1] = t->a(i, j);
   }
@@ -176,7 +176,6 @@ DVECTOR synthesis_body(DMATRIX mcep,      // input mel-cep sequence
   /*LISP filters;
   LISP f;
   int fl;*/
-  ssize_t i, j;
   int me_num_filters = 0;
   int me_filter_order = 0;
   double **me_filter = NULL;
@@ -198,7 +197,7 @@ DVECTOR synthesis_body(DMATRIX mcep,      // input mel-cep sequence
       } else {
         nlpf = (filter_track->num_channels() - 1)/2;
         lpf = (double*) calloc(filter_track->num_channels(), sizeof(double));
-        for (i = 0; i < filter_track->num_channels(); i++) {
+        for (int i = 0; i < filter_track->num_channels(); i++) {
           lpf[i] = filter_track->a(0L,i);
         }
         //        printf("aup_debug: Using LPF filter of nlpf %d\n", nlpf);
@@ -222,9 +221,9 @@ DVECTOR synthesis_body(DMATRIX mcep,      // input mel-cep sequence
       me_filter_order = filter_track->num_channels();
       me_filter = walloc(double*, me_num_filters);
 
-      for (i = 0; i < me_num_filters; i++) {
+      for (ssize_t i = 0; i < me_num_filters; i++) {
         me_filter[i] = walloc(double, me_filter_order);
-        for (j = 0; j < me_filter_order; j++) {
+        for (int j = 0; j < me_filter_order; j++) {
           me_filter[i][j] = filter_track->a(i, j);
         }
       }
@@ -271,7 +270,7 @@ DVECTOR synthesis_body(DMATRIX mcep,      // input mel-cep sequence
                              &xd->data[pos], NULL);
     } else {
       strengths =  (double*) calloc(me_filter_order, sizeof(double));
-      for (i = 0; i < me_num_filters; i++) {
+      for (int i = 0; i < me_num_filters; i++) {
         strengths[i] = str->a(t, i);
       }
       HTS_Vocoder_synthesize_me(&v_me, mcep->col - 1,
