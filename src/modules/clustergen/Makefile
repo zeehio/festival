@@ -56,7 +56,7 @@ OBJS = $(CPPSRCS:.cc=.o)
 
 FILES=Makefile $(SRCS) $(H)
 
-LOCAL_INCLUDES = -I../include -I ../hts_engine -DFESTIVAL
+LOCAL_INCLUDES = -I../include -I../hts22_engine -DFESTIVAL
 
 INLIB = $(TOP)/src/lib/libFestival.a
 

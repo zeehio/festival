@@ -62,8 +62,8 @@ void GetToken (FILE *fp, char *buff)
 {
    char c;
    int i;
-   HTS_Boolean squote = 0;
-   HTS_Boolean dquote = 0;
+   HTS21_Boolean squote = 0;
+   HTS21_Boolean dquote = 0;
 
    c = fgetc (fp);
 
@@ -96,6 +96,47 @@ void GetToken (FILE *fp, char *buff)
    
    buff[i]=0;
 }
+
+void GetToken (std::istream &is, char *buff)
+{
+   char c;
+   int i;
+   HTS21_Boolean squote = 0;
+   HTS21_Boolean dquote = 0;
+
+   is.get(c);
+
+   while (isspace(c))
+      is.get(c);
+      
+   if (c=='\'') {  /* single quote case */
+      is.get(c);
+      squote = 1;
+   }
+   
+   if (c=='\"') {  /*double quote case */
+      is.get(c);
+      dquote = 1;
+   }
+   
+   if (c==',') {   /*special character ',' */
+      strcpy (buff, ",");
+      return; 
+   }
+   
+   i = 0;
+   while (1) {
+      buff[i++] = c;
+      is.get(c);
+      if (squote && c == '\'') break;
+      if (dquote && c == '\"') break;
+      if (!(squote || dquote || isgraph(c)) ) break;
+   }
+   
+   buff[i]=0;
+}
+
+
 
 void movem (double *a, double *b, int nitem)
 {

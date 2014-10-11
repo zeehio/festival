@@ -49,7 +49,7 @@
 #include "misc.h"
 #include "tree.h"
 
-HTS_Boolean DPMatch (char *str, char *pat, int pos, int max)
+HTS21_Boolean DPMatch (char *str, char *pat, int pos, int max)
 {
    if (pos > max) return 0;
    if (*str == '\0' && *pat == '\0') return 1;
@@ -72,7 +72,7 @@ HTS_Boolean DPMatch (char *str, char *pat, int pos, int max)
    return 0;
 }
 
-HTS_Boolean PMatch (char *str, char *pat)
+HTS21_Boolean PMatch (char *str, char *pat)
 {
    int i, max = 0;
    for(i=0; i < (int)strlen(pat); i++)
@@ -81,9 +81,9 @@ HTS_Boolean PMatch (char *str, char *pat)
    return DPMatch(str, pat, 0, strlen(str)-max);
 }
 
-HTS_Boolean QMatch (char *str, Question *q)
+HTS21_Boolean QMatch (char *str, Question *q)
 {
-   HTS_Boolean flag = 0;
+   HTS21_Boolean flag = 0;
    Pattern *p;
   
    for (p=q->phead; p!=q->ptail; p=p->next) {
@@ -97,7 +97,7 @@ HTS_Boolean QMatch (char *str, Question *q)
 
 int SearchTree (char *str, Node *node)
 {
-   HTS_Boolean answer = QMatch(str, node->quest);
+   HTS21_Boolean answer = QMatch(str, node->quest);
 
    if (answer) {
       if (node->yes->pdf>0) 
@@ -136,7 +136,7 @@ void LoadQuestions(FILE *fp, Question *q, Mtype type)
    }
 }
 
-HTS_Boolean IsTree (Tree *tree, char *buf)
+HTS21_Boolean IsTree (Tree *tree, char *buf)
 {
    char *s,*l,*r;
 
@@ -153,7 +153,7 @@ HTS_Boolean IsTree (Tree *tree, char *buf)
    return 1;
 }
 
-HTS_Boolean IsNum (char *buf)
+HTS21_Boolean IsNum (char *buf)
 {
    int i;
 

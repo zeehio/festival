@@ -43,21 +43,21 @@
 # ----------------------------------------------------------------- #
 
 TOP=../../..
-DIRNAME=src/modules/hts_engine
+DIRNAME=src/modules/hts22_engine
 
-H =
+H = HTS_engine.h HTS_hidden.h
 
-CPPSRCS = fest2hts_engine.cc
-CSRCS = 
+CPPSRCS = fest2hts22_engine.cc
+CSRCS = HTS22_audio.c HTS22_engine.c HTS22_gstream.c HTS22_label.c HTS22_misc.c HTS22_model.c HTS22_pstream.c HTS22_sstream.c HTS22_vocoder.c
 
 SRCS = $(CPPSRCS) $(CSRCS)
 
 OBJS = $(CPPSRCS:.cc=.o) $(CSRCS:.c=.o)
-INFOS =
+INFOS = README COPYING INSTALL AUTHORS
 
 FILES=Makefile $(SRCS) $(H) $(INFOS)
 
-LOCAL_INCLUDES = -I../include -D FESTIVAL
+LOCAL_INCLUDES = -I ../include -D FESTIVAL
 
 INLIB = $(TOP)/src/lib/libFestival.a
 

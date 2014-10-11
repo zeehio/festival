@@ -4,7 +4,7 @@
 #           http://hts-engine.sourceforge.net/                      #
 # ----------------------------------------------------------------- #
 #                                                                   #
-#  Copyright (c) 2001-2011  Nagoya Institute of Technology          #
+#  Copyright (c) 2001-2010  Nagoya Institute of Technology          #
 #                           Department of Computer Science          #
 #                                                                   #
 #                2001-2008  Tokyo Institute of Technology           #
@@ -43,21 +43,21 @@
 # ----------------------------------------------------------------- #
 
 TOP=../../..
-DIRNAME=src/modules/hts_engine
+DIRNAME=src/modules/hts211_engine
 
-H =
+H = HTS211_engine.h HTS211_hidden.h
 
-CPPSRCS = fest2hts_engine.cc
-CSRCS = 
+CPPSRCS = fest2hts211_engine.cc
+CSRCS = HTS211_audio.c HTS211_engine.c HTS211_gstream.c HTS211_label.c HTS211_misc.c HTS211_model.c HTS211_pstream.c HTS211_sstream.c HTS211_vocoder.c
 
 SRCS = $(CPPSRCS) $(CSRCS)
 
 OBJS = $(CPPSRCS:.cc=.o) $(CSRCS:.c=.o)
-INFOS =
+INFOS = README COPYING INSTALL AUTHORS
 
 FILES=Makefile $(SRCS) $(H) $(INFOS)
 
-LOCAL_INCLUDES = -I../include -D FESTIVAL
+LOCAL_INCLUDES = -I../include -DFESTIVAL
 
 INLIB = $(TOP)/src/lib/libFestival.a
 

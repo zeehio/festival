@@ -39,12 +39,13 @@
 /*                                                                   */ 
 /*                                    2003/06/11 by Heiga Zen        */
 /*  ---------------------------------------------------------------  */
-
+#include <istream>
 FILE *getfp (char *, char *);
 void GetToken (FILE *,char *);
+void GetToken (std::istream &is, char *buff);
 void movem (double *, double *, int);
 
-typedef bool HTS_Boolean;
+typedef bool HTS21_Boolean;
 typedef enum {DUR, LF0, MCP} Mtype;
 
 /* -------------------- End of "misc.h" -------------------- */

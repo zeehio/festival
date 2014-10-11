@@ -298,7 +298,7 @@ void pdf2speech( FILE *rawfp, FILE *lf0fp, FILE *mcepfp,
    int frame, mcepframe, lf0frame;
    int state, lw, rw, k, n;
    Model *m;
-   HTS_Boolean nobound, *voiced;
+   HTS21_Boolean nobound, *voiced;
    
    float f0;
 
@@ -313,7 +313,7 @@ void pdf2speech( FILE *rawfp, FILE *lf0fp, FILE *mcepfp,
    mcepframe  = 0;
    lf0frame = 0;
  
-   voiced = walloc(HTS_Boolean,um->totalframe+1);
+   voiced = walloc(HTS21_Boolean,um->totalframe+1);
    
    for (m=um->mhead; m!=um->mtail ; m=m->next) {
       for (state=2; state<=ms->nstate+1; state++) {
@@ -345,13 +345,13 @@ void pdf2speech( FILE *rawfp, FILE *lf0fp, FILE *mcepfp,
             for (k=0; k<ms->lf0stream; k++) {
                lw = lf0pst->dw.width[k][WLEFT];
                rw = lf0pst->dw.width[k][WRIGHT];
-               nobound = (HTS_Boolean)1;
+               nobound = (HTS21_Boolean)1;
                
                for (n=lw; n<=rw;n++)
                   if (mcepframe+n<0 || um->totalframe<mcepframe+n)
-                     nobound = (HTS_Boolean)0;
+                     nobound = (HTS21_Boolean)0;
                   else
-		      nobound = (HTS_Boolean)((int)nobound & voiced[mcepframe+n]);
+		      nobound = (HTS21_Boolean)((int)nobound & voiced[mcepframe+n]);
                   
                if (voiced[mcepframe]) {
                   lf0pst->sm.mseq[lf0frame][k] = m->lf0mean[state][k+1];

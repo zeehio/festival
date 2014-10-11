@@ -42,12 +42,12 @@
 ##  Alan W Black (awb@cs.cmu.edu)
 ###########################################################################
 TOP=../../..
-DIRNAME=src/modules/hts_engine
+DIRNAME=src/modules/hts21_engine
 H = parser.h
 
 H = defaults.h global.h misc.h mlpg.h model.h tree.h vocoder.h \
     hts21_mlsa_resynthesis.h
-CPPSRCS = hts_engine.cc misc.cc mlpg.cc model.cc tree.cc vocoder.cc \
+CPPSRCS = hts21_engine.cc misc21.cc mlpg21.cc model21.cc tree21.cc vocoder21.cc \
     hts21_mlsa_resynthesis.cc
 SRCS = $(CPPSRCS)
 

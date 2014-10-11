@@ -51,7 +51,7 @@ typedef struct _Model {  /* HMM handler */
    float **lf0variance;   /* variance (diag) elements of log f0 for each state of this HMM */
    float **mcepmean;      /* mean vector of mel-cepstrum pdfs for each state of this HMM */
    float **mcepvariance;  /* variance (diag) elements of mel-cepstrum for each state of this HMM */
-   HTS_Boolean *voiced;       /* voiced/unvoiced decision for each state of this HMM */
+   HTS21_Boolean *voiced;       /* voiced/unvoiced decision for each state of this HMM */
    struct _Model *next;   /* pointer to next HMM */
 } Model; 
 

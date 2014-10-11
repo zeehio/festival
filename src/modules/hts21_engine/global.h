@@ -47,9 +47,9 @@ typedef struct _globalP {
    float   F0_MEAN  ;  /* variable for f0 control                    */
    float   UV       ;  /* variable for U/V threshold                 */
    int     LENGTH   ;  /* total number of frame for generated speech */
-   HTS_Boolean XIMERA   ;  /* output label and f0 for XIMERA             */
-   HTS_Boolean algnst   ;  /* use state level alignment for duration     */
-   HTS_Boolean algnph   ;  /* use phoneme level alignment for duration   */
+   HTS21_Boolean XIMERA   ;  /* output label and f0 for XIMERA             */
+   HTS21_Boolean algnst   ;  /* use state level alignment for duration     */
+   HTS21_Boolean algnph   ;  /* use phoneme level alignment for duration   */
 } globalP;
    
 /* -------------------- End of "global.h" -------------------- */

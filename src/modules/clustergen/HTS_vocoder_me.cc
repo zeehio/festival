@@ -91,7 +91,7 @@
 HTS_VOCODER_ME_C_START;
 
 #include "./HTS_vocoder_me.h"
-#include "../hts_engine/HTS_vocoder.c"
+#include <HTS22_vocoder.c>
 
 /* HTS_Vocoder_initialize_me: initialize vocoder (mixed excitation) */
 void HTS_Vocoder_initialize_me(HTS_Vocoder_ME * v_me,

@@ -50,6 +50,7 @@
 #include <cstring>
 #include <cctype>
 #include "festival.h"
+#include <sstream>
 
 #include "misc.h"
 #include "tree.h"
@@ -66,7 +67,7 @@ void HTS21_Process ( FILE *, FILE *, FILE *, FILE *, PStream *, PStream *,
 		   globalP *, ModelSet *, TreeSet *, VocoderSetup *);
 
 /* OutLabel : output label with frame number or time */
-void OutLabel (UttModel *um, HTS_Boolean XIMERA) 
+void OutLabel (UttModel *um, HTS21_Boolean XIMERA) 
 {
    Model *m;
    char *tmp;
@@ -101,7 +102,7 @@ void HTS21_Process ( FILE *labfp, FILE *rawfp, FILE *lf0fp, FILE *mcepfp,
    int rate, nf;
    int i;
    float f, mean, var;
-   HTS_Boolean hastime;
+   HTS21_Boolean hastime;
    Model *m, *mm, *nm;
    UttModel um;
    
@@ -202,7 +203,7 @@ void HTS21_Process ( FILE *labfp, FILE *rawfp, FILE *lf0fp, FILE *mcepfp,
       m->lf0pdf      = walloc(int,ms->nstate+2);
       m->lf0mean     = walloc(float *,ms->nstate+2);
       m->lf0variance =  walloc(float *,ms->nstate+2);
-      m->voiced      = walloc(HTS_Boolean, ms->nstate);
+      m->voiced      = walloc(HTS21_Boolean, ms->nstate);
       
       for (tree=ts->thead[LF0],state=2; tree!=ts->ttail[LF0]; tree=tree->next,state++) {
          m->lf0pdf[state] = SearchTree(m->name, tree->root);
@@ -272,6 +273,191 @@ void HTS21_Process ( FILE *labfp, FILE *rawfp, FILE *lf0fp, FILE *mcepfp,
    }
 }
 
+
+
+void HTS21_Process ( std::istream &is, FILE *rawfp, FILE *lf0fp, FILE *mcepfp, 
+		   PStream *mceppst, PStream *lf0pst, globalP *gp, 
+		   ModelSet *ms, TreeSet *ts, VocoderSetup *vs )
+{
+   char buf[1024];
+   Tree *tree;
+   int state, diffdur=0;
+   int start, end;
+   int rate, nf;
+   int i;
+   float f, mean, var;
+   HTS21_Boolean hastime;
+   Model *m, *mm, *nm;
+   UttModel um;
+   
+   rate = FPERIOD * 10000000 / RATE;
+   
+   mean = var = 0.0;
+
+   m = walloc(Model,1);
+   um.mtail = um.mhead = m;  
+   um.totalframe = um.nState = um.nModel = 0;
+   start = 0;
+   end = 0;
+   
+   while (!is.end) {
+      GetToken (is,buf);
+      if (!isalnum(buf[0])) break;
+      if (isdigit(buf[0]))
+         hastime = TRUE;
+      else 
+         hastime = FALSE;
+      
+      if (hastime) {
+         if (gp->algnst) {
+            start = atoi(buf);
+            GetToken(is, buf);
+            end = atoi(buf);
+            GetToken(is, buf);
+            GetToken(is, buf);
+         }
+         else if (gp->algnph) {
+            start = atoi(buf);
+            GetToken(is, buf);
+            end = atoi(buf);
+            GetToken(is, buf);
+         }
+         else {
+            do {
+               GetToken(is, buf);
+            } while (isdigit(buf[0]));
+         }
+      }
+      
+      m->name = wstrdup(buf);
+      
+      if (hastime && gp->algnph) {
+         m->durpdf = SearchTree(m->name, ts->thead[DUR]->root);
+         FindDurPDF(m, ms, gp->RHO, diffdur);
+         nf = 0;
+         for (state=2; state<=ms->nstate+1; state++)
+            nf += m->dur[state];
+           
+         fprintf(stderr, ">>>nf=%d %d\n", nf, (end-start)/rate);
+         
+         f = (float)(end-start)/(rate*nf);
+         m->totaldur = 0;
+         
+         for (state=2; state<=ms->nstate+1; state++) {
+            nf = (int)(f*m->dur[state]+0.5);
+            if (nf<=0)  nf=1;
+            fprintf(stderr, "%d: %d %f %d\n", state, m->dur[state], f, nf);
+            m->dur[state] = nf;
+            m->totaldur += m->dur[state];
+         }
+         um.totalframe += m->totaldur;
+      }
+      else if (hastime && gp->algnst) {
+         m->dur = walloc(int,ms->nstate+2);
+         m->dur[2] = (end-start)/rate;
+         m->totaldur = m->dur[2];
+         um.totalframe += m->dur[2];
+         
+         for (state=3; state<=ms->nstate+1; state++) {
+            GetToken(is, buf);
+            start = atoi(buf);
+            GetToken(is, buf); 
+            end = atoi(buf);
+            GetToken(is, buf);
+            m->dur[state] = (end-start)/rate;
+            m->totaldur += m->dur[state];
+            um.totalframe  += m->dur[state];
+         }
+      } 
+      else {
+         m->durpdf = SearchTree(m->name, ts->thead[DUR]->root);   
+         if (gp->LENGTH==0) {
+            FindDurPDF(m, ms, gp->RHO, diffdur);
+            um.totalframe += m->totaldur;
+         }
+         else {   /* if total length of generated speech is specified */
+            for (state=2; state<=ms->nstate+1; state++) {
+               mean += ms->durpdf[m->durpdf][state];
+               var  += ms->durpdf[m->durpdf][state+ms->nstate];
+            }
+         }
+      }
+      
+      /* for excitation */
+      m->lf0pdf      = walloc(int,ms->nstate+2);
+      m->lf0mean     = walloc(float *,ms->nstate+2);
+      m->lf0variance =  walloc(float *,ms->nstate+2);
+      m->voiced      = walloc(HTS21_Boolean, ms->nstate);
+      
+      for (tree=ts->thead[LF0],state=2; tree!=ts->ttail[LF0]; tree=tree->next,state++) {
+         m->lf0pdf[state] = SearchTree(m->name, tree->root);
+         FindLF0PDF(state, m, ms, gp->UV);
+      }
+
+      /* for spectrum */
+      m->mceppdf      = walloc(int,ms->nstate+2);
+      m->mcepmean     = walloc(float *,ms->nstate+2);
+      m->mcepvariance = walloc(float *,ms->nstate+2);
+      
+/*      m->mceppdf -= 2;  m->mcepmean -= 2;  m->mcepvariance -= 2; */
+      
+      for (tree=ts->thead[MCP],state=2; tree!=ts->ttail[MCP]; tree=tree->next,state++) {
+         m->mceppdf[state] = SearchTree(m->name, tree->root);
+         FindMcpPDF(state, m, ms);
+      }
+      
+      m->next = walloc(Model,1);
+      m = um.mtail = m->next;
+      
+      um.nModel++;
+      um.nState+=ms->nstate;
+   }
+   
+   if (gp->LENGTH > 0 && gp->LENGTH < um.nState) {
+      fprintf(stderr, "Specified length of generated speech is too short ! (this sentence HMM is composed from %d states)\n", um.nState);
+      fprintf(stderr, "Please specify more than %.1f seconds.\n", (float)(um.nState*FPERIOD)/RATE);
+      festival_error();
+   }
+   
+   /* if total length of generated speech is specified */
+   /* compute RHO */
+   if (gp->LENGTH>0) {
+      gp->RHO = (gp->LENGTH - mean)/var;
+      /* compute state duration for each state */
+      for (m=um.mhead; m!=um.mtail; m=m->next) {
+         FindDurPDF(m, ms, gp->RHO, diffdur);
+         um.totalframe += m->totaldur;
+      }
+   }
+   
+   /* Output label information */
+   /* OutLabel(&um, gp->XIMERA); */
+   
+   pdf2speech(rawfp, lf0fp, mcepfp, mceppst, lf0pst, gp, ms, &um, vs);
+
+   /* Tidy up memory */
+   for (mm=um.mhead; mm; mm=nm)
+   {
+       nm = mm->next;
+       for (i=0; i<ms->nstate+2; i++)
+       {
+	   if (mm->lf0mean) wfree(mm->lf0mean[i]);
+	   if (mm->lf0variance) wfree(mm->lf0variance[i]);
+       }
+       wfree(mm->mcepvariance);
+       wfree(mm->mcepmean);
+       wfree(mm->mceppdf);
+       wfree(mm->voiced);
+       wfree(mm->lf0variance);
+       wfree(mm->lf0mean);
+       wfree(mm->lf0pdf);
+       wfree(mm->dur);
+       wfree(mm->name);
+       wfree(mm);
+   }
+}
+
+
 static FILE *do_fopen(const char *fname,const char *mode)
 {
     FILE *fd;
@@ -300,6 +486,9 @@ LISP HTS21_Synthesize_Utt(LISP utt)
     globalP      gp;
     VocoderSetup vs;
    
+    const char *labfn;
+    LISP label_string_list;
+    
     /* default value for control parameter */
     gp.RHO      = 0.0; 
     gp.ALPHA    = 0.42;
@@ -313,10 +502,10 @@ LISP HTS21_Synthesize_Utt(LISP utt)
 
     /* Get voice specific params */
     hts_engine_params = siod_get_lval("hts_engine_params",
-			"HTS_ENGINE: no parameters set for module");
+			"HTS21_ENGINE: no parameters set for module");
     /* We should be internalize these ones more */
     hts_output_params = siod_get_lval("hts_output_params",
-			"HTS_ENGINE: no output parameters set for module");
+			"HTS21_ENGINE: no output parameters set for module");
     
     /* initialise TreeSet and ModelSet */
     InitTreeSet (&ts);
@@ -362,8 +551,23 @@ LISP HTS21_Synthesize_Utt(LISP utt)
 				"tmp.f0"), "wb");
     mcepfp = do_fopen(get_param_str("-om",hts_output_params,
 				 "tmp.mcep"), "wb");
-    labfp = do_fopen(get_param_str("-labelfile",hts_output_params,
-				 "utt.feats"), "r");
+    
+    labfn = get_param_str("-labelfile",hts_output_params, NULL);
+    label_string_list = 
+         (LISP) get_param_lisp("-labelstring", hts_output_params, NULL);
+
+   std::stringstream labelstring(std::stringstream::in|std::stringstream::out);
+
+  if (label_string_list != NULL) {
+    LISP b;
+    size_t i;
+    for (i=0, b=label_string_list; b != NIL; b=cdr(b),i++)
+      labelstring << get_c_string(car(b));
+  }
+  labelstring.seekg(0,std::ios_base::beg);
+    if (labfn != NULL) {
+        labfp = do_fopen(labfn, "r");
+    }
 
     gp.RHO      = get_param_float("-r",hts_engine_params,0.0);
     gp.ALPHA    = get_param_float("-a",hts_engine_params,0.42);
@@ -397,23 +601,33 @@ LISP HTS21_Synthesize_Utt(LISP utt)
     }
    
     /* generate speech */
-    if (u->relation("Segment")->first())  /* only if there segments */
+    if (u->relation("Segment")->first()) { /* only if there segments */
+        if (labfp != NULL) {
         HTS21_Process(labfp, rawfp, lf0fp, mcepfp, 
                     &mceppst, &lf0pst, &gp, &ms, &ts, &vs);
+        } else if (label_string_list != NULL) {
+        HTS21_Process(labelstring, rawfp, lf0fp, mcepfp, 
+                    &mceppst, &lf0pst, &gp, &ms, &ts, &vs);
+        }
+    }
 
     /* Load back in the waveform */
     EST_Wave *w = new EST_Wave;
 
-    fclose(ts.fp[DUR]);
-    fclose(ts.fp[LF0]);
+    if (ts.fp[DUR] != NULL)
+       fclose(ts.fp[DUR]);
+    if (ts.fp[LF0] != NULL)
+       fclose(ts.fp[LF0]);
     fclose(ts.fp[MCP]);
     fclose(ms.fp[DUR]);
     fclose(ms.fp[LF0]);
     fclose(ms.fp[MCP]);
-    fclose(rawfp);
+    if (rawfp !=NULL)
+        fclose(rawfp);
     fclose(lf0fp);
     fclose(mcepfp);
-    fclose(labfp);
+    if (labfp!=NULL)
+        fclose(labfp);
 
     wfree(vs.c);
     wfree(lf0pst.dw.fn);

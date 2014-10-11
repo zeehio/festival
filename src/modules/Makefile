@@ -44,7 +44,7 @@ BASE_DIRS = Lexicon base Duration Intonation Text \
 
 LIB_BUILD_DIRS = $(BASE_DIRS)
 BUILD_DIRS = $(LIB_BUILD_DIRS)
-OPTIONAL = diphone clunits clustergen java rxp UniSyn_phonology MultiSyn hts_engine
+OPTIONAL = diphone clunits clustergen java rxp UniSyn_phonology MultiSyn hts22_engine hts211_engine hts21_engine
 
 ALL_DIRS = $(BASE_DIRS) $(OPTIONAL)
 

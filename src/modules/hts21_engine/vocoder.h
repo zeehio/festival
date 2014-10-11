@@ -50,7 +50,7 @@ typedef struct _VocoderSetup {
    int seed;
    int pd;
    long next;
-   HTS_Boolean gauss;
+   HTS21_Boolean gauss;
    double p1;
    double pc;
    double pj;
