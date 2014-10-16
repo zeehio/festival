@@ -21,6 +21,12 @@ script:
   - tar xzf festvox_rablpc16k.tar.gz
   - wget http://www.festvox.org/packed/festival/latest/festlex_OALD.tar.gz
   - tar xzf festlex_OALD.tar.gz
+  - wget http://www.festvox.org/packed/festival/latest/festvox_cmu_us_rms_cg.tar.gz
+  - tar xzf festvox_cmu_us_rms_cg.tar.gz
+  - wget http://www.festvox.org/packed/festival/latest/festvox_cmu_us_awb_cg.tar.gz
+  - tar xzf festvox_cmu_us_awb_cg.tar.gz
+  - wget http://www.festvox.org/packed/festival/latest/festvox_cmu_us_slt_arctic_hts.tar.gz
+  - tar xzf festvox_cmu_us_slt_arctic_hts.tar.gz
   - cd festival
   - make test
 
