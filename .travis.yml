@@ -1,0 +1,37 @@
+language: cpp
+compiler:
+  - gcc
+before_script:
+  - cd ..
+  - git clone https://github.com/zeehio/speech-tools.git speech_tools
+  - cd speech_tools
+  - git checkout 757e0417c02db4a904831a74030dc3d718f2762b
+  - ./configure && make
+  - cd ../festival
+script:
+  - ./configure && make
+  - cd ..
+  - wget http://www.festvox.org/packed/festival/latest/festlex_CMU.tar.gz
+  - tar xzf festlex_CMU.tar.gz
+  - wget http://www.festvox.org/packed/festival/latest/festlex_POSLEX.tar.gz
+  - tar xzf festlex_POSLEX.tar.gz
+  - wget http://www.festvox.org/packed/festival/latest/festvox_kallpc16k.tar.gz
+  - tar xzf festvox_kallpc16k.tar.gz
+  - cd festival
+  - make test
+
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "M7yKdvVZ1GZor7aEfevjz7UEbbSN3VTmjZ8l94pqEqJibIXhx87vvnFR7fn3OO69QDUAyItMo6USolhG3G7kqZS3txODqtEJ7xx7aOua1dbrAJT5fgKHNosLwq/UnllwR3FSOFgJa9+9QNAsZvsg9+7b/gSSxrafV2AvjZUCmE8="
+
+addons:
+  coverity_scan:
+    project:
+      name: "zeehio/festival"
+      description: "Your project description here"
+    notification_email: sergioller@gmail.com
+    build_command_prepend: ./configure
+    build_command: make
+    branch_pattern: coverity_scan
