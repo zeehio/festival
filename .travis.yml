@@ -9,7 +9,15 @@ before_script:
   - cd ../festival
 script:
   - ./configure && make
-
+  - cd ..
+  - wget http://www.festvox.org/packed/festival/latest/festlex_CMU.tar.gz
+  - tar xzf festlex_CMU.tar.gz
+  - wget http://www.festvox.org/packed/festival/latest/festlex_POSLEX.tar.gz
+  - tar xzf festlex_POSLEX.tar.gz
+  - wget http://www.festvox.org/packed/festival/latest/festvox_kallpc16k.tar.gz
+  - tar xzf festvox_kallpc16k.tar.gz
+  - cd festival
+  - make test
 
 env:
   global:
