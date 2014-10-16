@@ -121,36 +121,42 @@ FILE *HTS211_get_fp(const char *name, const char *opt)
 }
 
 /* HTS211_get_pattern_token: get pattern token */
-void HTS211_get_pattern_token(FILE * fp, char *buff)
+HTS211_Boolean HTS211_get_pattern_token(FILE * fp, char *buff)
 {
    char c;
-   int i;
+   int i, c2;
    HTS211_Boolean squote = FALSE, dquote = FALSE;
 
-   c = fgetc(fp);
+   c2 = fgetc(fp);
+   if (c2 < 0) {return FALSE;} else { c = (char) c2;}
 
-   while (c == ' ' || c == '\n')
-      c = fgetc(fp);
+   while (c == ' ' || c == '\n') {
+      c2 = fgetc(fp);
+      if (c2 < 0) {return FALSE;} else { c = (char) c2;}
+   }
 
    if (c == '\'') {             /* single quote case */
-      c = fgetc(fp);
+      c2 = fgetc(fp);
+      if (c2 < 0) {return FALSE;} else { c = (char) c2;}
       squote = TRUE;
    }
 
    if (c == '\"') {             /*double quote case */
-      c = fgetc(fp);
+      c2 = fgetc(fp);
+      if (c2 < 0) {return FALSE;} else { c = (char) c2;}
       dquote = TRUE;
    }
 
    if (c == ',') {              /*special character ',' */
       strcpy(buff, ",");
-      return;
+      return TRUE;
    }
 
    i = 0;
    while (1) {
       buff[i++] = c;
-      c = fgetc(fp);
+      c2 = fgetc(fp);
+      if (c2 < 0) {return FALSE;} else { c = (char) c2;}
       if (squote && c == '\'')
          break;
       if (dquote && c == '\"')
@@ -166,26 +172,30 @@ void HTS211_get_pattern_token(FILE * fp, char *buff)
    }
 
    buff[i] = '\0';
+   return TRUE;
 }
 
 /* HTS211_get_token: get token (separator are space,tab,line break) */
 HTS211_Boolean HTS211_get_token(FILE * fp, char *buff)
 {
    char c;
-   int i;
+   int i, c2;
 
    if (feof(fp))
       return FALSE;
-   c = fgetc(fp);
+   c2 = fgetc(fp);
+   if (c2 < 0) {return FALSE;} else { c = (char) c2;}
    while (c == ' ' || c == '\n' || c == '\t') {
       if (feof(fp))
          return FALSE;
-      c = getc(fp);
+      c2 = getc(fp);
+      if (c2 < 0) {return FALSE;} else { c = (char) c2;}
    }
 
    for (i = 0; c != ' ' && c != '\n' && c != '\t' && !feof(fp); i++) {
       buff[i] = c;
-      c = fgetc(fp);
+      c2 = fgetc(fp);
+      if (c2 < 0) {return FALSE;} else { c = (char) c2;}
    }
 
    buff[i] = '\0';
@@ -205,10 +215,10 @@ HTS211_Boolean HTS211_get_token_from_string(const char *string, int *index, char
    if (c == '\0')
       return FALSE;
    while (c == ' ' || c == '\n' || c == '\t') {
-      if (c == '\0')
-         return FALSE;
       c = string[(*index)++];
    }
+   if (c == '\0')
+      return FALSE;
    for (i = 0; c != ' ' && c != '\n' && c != '\t' && c != '\0'; i++) {
       buff[i] = c;
       c = string[(*index)++];

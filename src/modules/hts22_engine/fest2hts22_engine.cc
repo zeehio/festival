@@ -158,7 +158,7 @@ LISP HTS22_Synthesize_Utt(LISP utt) {
 
   /* open input file pointers */
   labfn =  (char *) get_param_str("-labelfile", hts_output_params, NULL);
-  /* get input label as string */
+  /* get input label as string list */
   label_string_list = 
        (LISP) get_param_lisp("-labelstring", hts_output_params, NULL);
   if (label_string_list != NULL) {

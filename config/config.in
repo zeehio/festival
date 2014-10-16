@@ -59,7 +59,7 @@ ALSO_INCLUDE += clunits clustergen MultiSyn
 
 ## NITECH and Tokyo Institute of Technologies HTS support
 ## hts21_engine offers backwards compatibility with HTS voices for Festival 1.96
-ALSO_INCLUDE += hts21_engine hts211_engine hts22_engine
+ALSO_INCLUDE += hts21_engine hts211_engine hts22_engine hts_engine
 
 ## Old diphone code that will be delete, left in only for some
 ## compatibility

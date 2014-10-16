@@ -474,7 +474,9 @@ static void HTS211_Model_load_pdf(HTS211_Model * model, FILE * fp, int ntree,
    model->npdf = (int *) HTS211_calloc(ntree, sizeof(int));
    model->npdf -= 2;
    /* read the number of pdfs */
-   HTS211_fread_big_endian(&model->npdf[2], sizeof(int), ntree, fp);
+   if (HTS211_fread_big_endian(&model->npdf[2], sizeof(int), ntree, fp) !=  ntree) {
+      HTS211_error(1, "HTS211_Model_load_pdf: Failed to read number of pdfs.\n");
+   }
    for (i = 2; i <= ntree + 1; i++)
       if (model->npdf[i] < 0)
          HTS211_error(1,

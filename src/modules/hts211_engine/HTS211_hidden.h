@@ -76,7 +76,7 @@ void HTS211_error(const int error, char *message, ...);
 FILE *HTS211_get_fp(const char *name, const char *opt);
 
 /* HTS211_get_pattern_token: get pattern token */
-void HTS211_get_pattern_token(FILE * fp, char *buff);
+HTS211_Boolean HTS211_get_pattern_token(FILE * fp, char *buff);
 
 /* HTS211_get_token: get token (separator are space,tab,line break) */
 HTS211_Boolean HTS211_get_token(FILE * fp, char *buff);

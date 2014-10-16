@@ -56,7 +56,7 @@
 HTS211_LABEL_C_START;
 
 #include <stdlib.h>             /* for atof() */
-#include <ctype.h>              /* for isgraph(),isdigit() */
+#include <ctype.h>              /* for isprint(),isdigit() */
 
 /* hts_engine libraries */
 #include "HTS211_hidden.h"
@@ -126,7 +126,7 @@ void HTS211_Label_load_from_fp(HTS211_Label * label, int sampling_rate, int fper
       HTS211_error(1, "HTS211_Label_load_from_fp: label is not initialized.\n");
    /* parse label file */
    while (HTS211_get_token(fp, buff)) {
-      if (!isgraph((int) buff[0]))
+      if (!isprint((int) buff[0]))
          break;
       label->size++;
 
@@ -169,7 +169,7 @@ void HTS211_Label_load_from_string(HTS211_Label * label, int sampling_rate,
       HTS211_error(1, "HTS211_Label_load_from_fp: label list is not initialized.\n");
    /* copy label */
    while (HTS211_get_token_from_string(data, &data_index, buff)) {
-      if (!isgraph((int) buff[0]))
+      if (!isprint((int) buff[0]))
          break;
       label->size++;
 
@@ -213,7 +213,7 @@ void HTS211_Label_load_from_string_list(HTS211_Label * label, int sampling_rate,
       HTS211_error(1, "HTS211_Label_load_from_fp: label list is not initialized.\n");
    /* copy label */
    for (i = 0; i < size; i++) {
-      if (!isgraph((int) data[i][0]))
+      if (!isprint((int) data[i][0]))
          break;
       label->size++;
 
@@ -232,7 +232,7 @@ void HTS211_Label_load_from_string_list(HTS211_Label * label, int sampling_rate,
          HTS211_get_token_from_string(data[i], &data_index, buff);
          end = atof(buff);
          HTS211_get_token_from_string(data[i], &data_index, buff);
-         lstring->name = HTS211_strdup(&buff[data_index]);
+         lstring->name = HTS211_strdup(buff);
          lstring->start = rate * start;
          lstring->end = rate * end;
       } else {
