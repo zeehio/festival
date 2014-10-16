@@ -5,6 +5,7 @@ before_script:
   - cd ..
   - git clone https://github.com/zeehio/speech-tools.git speech_tools
   - cd speech_tools
+  - git checkout
   - ./configure && make
   - cd ../festival
 script:
@@ -16,6 +17,16 @@ script:
   - tar xzf festlex_POSLEX.tar.gz
   - wget http://www.festvox.org/packed/festival/latest/festvox_kallpc16k.tar.gz
   - tar xzf festvox_kallpc16k.tar.gz
+  - wget http://www.festvox.org/packed/festival/latest/festvox_rablpc16k.tar.gz
+  - tar xzf festvox_rablpc16k.tar.gz
+  - wget http://www.festvox.org/packed/festival/latest/festlex_OALD.tar.gz
+  - tar xzf festlex_OALD.tar.gz
+  - wget http://www.festvox.org/packed/festival/latest/festvox_cmu_us_rms_cg.tar.gz
+  - tar xzf festvox_cmu_us_rms_cg.tar.gz
+  - wget http://www.festvox.org/packed/festival/latest/festvox_cmu_us_awb_cg.tar.gz
+  - tar xzf festvox_cmu_us_awb_cg.tar.gz
+  - wget http://www.festvox.org/packed/festival/latest/festvox_cmu_us_slt_arctic_hts.tar.gz
+  - tar xzf festvox_cmu_us_slt_arctic_hts.tar.gz
   - cd festival
   - make test
 
@@ -34,3 +45,4 @@ addons:
     build_command_prepend: ./configure
     build_command: make
     branch_pattern: coverity_scan
+
