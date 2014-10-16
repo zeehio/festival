@@ -44,6 +44,8 @@
 #include "EST_FileType.h"
 #include "clunits.h"
 
+using namespace std;
+
 VAL_REGISTER_CLASS(clunitsdb,CLDB)
 SIOD_REGISTER_CLASS(clunitsdb,CLDB)
 static void cl_load_catalogue(CLDB *cldb,EST_String &indexfile);

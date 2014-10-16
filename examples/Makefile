@@ -40,7 +40,7 @@ EXAMPLES = webdemo.scm ex1.email ex1.ogi example.sable example2.sable \
            tobi.stml example.th example.apml
 SCRIPTS = saytime.sh text2pos.sh latest.sh \
            scfg_parse_text.sh text2wave.sh make_utts.sh dumpfeats.sh \
-           durmeanstd.sh powmeanstd.sh run-festival-script.sh
+           durmeanstd.sh powmeanstd.sh run-festival-script.sh text2utt.sh
 SHELL_SCRIPTS = benchmark festival_client.pl
 SCMS = toksearch.scm th-mode.scm addr-mode.scm
 SAMPLEC = festival_client.c festival_client.h

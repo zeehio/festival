@@ -42,6 +42,8 @@
 #include "festival.h"
 #include "festivalP.h"
 
+using namespace std;
+
 static LISP item_features(LISP sitem, LISP leval = NIL);
 static LISP item_features(EST_Item *s, bool evaluate_ff=false);
 static LISP stream_tree_to_lisp(EST_Item *s);

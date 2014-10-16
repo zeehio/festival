@@ -40,6 +40,8 @@
 
 #include "module_support.h"
 
+using namespace std;
+
 // implemented as a call to scheme so that redefineing how parameters
 // are accessed in scheme will affect things as required. Of course
 // this isn't as efficient as it might be, but we aren't going to be

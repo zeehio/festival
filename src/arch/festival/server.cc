@@ -54,6 +54,9 @@
 #include "festival.h"
 #include "festivalP.h"
 
+using namespace std;
+
+
 #define DEFAULT_MAX_CLIENTS 10
 
 /* The folloing gives a server that never forks */
@@ -241,15 +244,19 @@ static int client_access_check(int fd,int client)
     if ((client_access == TRUE) && (passwd != NULL))
     {
 	char *client_passwd = walloc(char,strlen(get_c_string(passwd))+1);
-	read(fd,client_passwd,strlen(get_c_string(passwd)));
-	client_passwd[strlen(get_c_string(passwd))] = '\0';
-	if (streq(get_c_string(passwd),client_passwd))
-	    client_access = TRUE;
-	else
-	{
-	    client_access = FALSE;
-	    reason = "bad passwd";
-	}
+	if (read(fd,client_passwd,strlen(get_c_string(passwd)))!= (int)strlen(get_c_string(passwd))) {
+           client_access = FALSE;
+           reason = "could not read passwd";
+        } else {
+		client_passwd[strlen(get_c_string(passwd))] = '\0';
+		if (streq(get_c_string(passwd),client_passwd))
+		    client_access = TRUE;
+		else
+		{
+		    client_access = FALSE;
+		    reason = "bad passwd";
+		}
+        }
 	wfree(client_passwd);
     }
     char *message = walloc(char,20+strlen(client_hostname)+strlen(reason));

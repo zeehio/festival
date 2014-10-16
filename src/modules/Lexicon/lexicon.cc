@@ -43,6 +43,8 @@
 #include "lexiconP.h"
 #include "lts.h"
 
+using namespace std;
+
 static int bl_match_entry(LISP entry,const EST_String &word);
 static int match_features(LISP req_feats, LISP act_feats);
 
@@ -271,7 +273,11 @@ void Lexicon::binlex_init(void)
 		"\" not found or unreadble " << endl;
 	    festival_error();
 	}
-	fread(magic_number,sizeof(char),4,binlexfp);
+	if (fread(magic_number,sizeof(char),4,binlexfp) != 4) {
+	    cerr << "Lexicon: compile file \"" << bl_filename <<
+	        "\" has wrong format (could not read magic number)" << endl;
+	    festival_error();
+	}
 	magic_number[4] = '\0';
 	if ((EST_String)"MNCM" == (EST_String)magic_number)
 	{   // A compiled lexicon plus features

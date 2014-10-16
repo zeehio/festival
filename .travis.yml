@@ -5,7 +5,7 @@ before_script:
   - cd ..
   - git clone https://github.com/zeehio/speech-tools.git speech_tools
   - cd speech_tools
-  - git checkout 757e0417c02db4a904831a74030dc3d718f2762b
+  - git checkout b92184a8b5d86f5fbed7bb52f0b42016c7fb7ad0
   - ./configure && make
   - cd ../festival
 script:
@@ -45,3 +45,4 @@ addons:
     build_command_prepend: ./configure
     build_command: make
     branch_pattern: coverity_scan
+

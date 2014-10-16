@@ -40,6 +40,8 @@
 #include "festival.h"
 #include "festivalP.h"
 
+using namespace std;
+
 static LISP ngram_loaded_list = NIL;
 static EST_Ngrammar *load_ngram(const EST_String &filename);
 static LISP add_ngram(const EST_String &name,EST_Ngrammar *n);

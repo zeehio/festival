@@ -109,7 +109,7 @@ Festival Speech Synthesis System: 2.1:release November 2010
               are printed (default if stdin not a tty)
 --language <string>
               Run in named language, default is
-              english, spanish and welsh are available
+              English, Spanish, Russian, Welsh and others are available
 --server      Run in server mode waiting for clients
               of server_port (1314)
 --script <ifile>

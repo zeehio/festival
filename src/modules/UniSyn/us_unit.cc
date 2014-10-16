@@ -46,8 +46,9 @@
 #include "EST_ling_class.h"
 #include "us_synthesis.h"
 #include <cmath>
-
 #include "Phone.h"
+
+using namespace std;
 
 void merge_features(EST_Item *from, EST_Item *to, int keep_id);
 
@@ -92,15 +93,20 @@ static void window_frame(EST_Wave &frame, EST_Wave &whole, float scale,
   else
     send = whole.num_samples();
 
-  
+  #if defined(EST_DEBUGGING)
   int print_centre;
+  #endif
   if ( centre_index < 0 ){
     window_function( window_length, window, -1 );
+    #if defined(EST_DEBUGGING)
     print_centre = (window_length-1)/2+start;
+    #endif
   }
   else{
     window_function( window_length, window, (centre_index-start));
+    #if defined(EST_DEBUGGING)
     print_centre = centre_index;
+    #endif
   }
 
 
@@ -379,13 +385,10 @@ void us_unit_raw_concat(EST_Utterance &utt)
 {
     EST_Wave *sig, *unit_sig;
     EST_Track *unit_coefs=0;
-    float window_factor;
     int i, j, k;
     int first_pm, last_pm, last_length;
     float first_pos, last_pos;
 
-    window_factor = get_c_float(siod_get_lval("window_factor",
-					      "UniSyn: no window_factor"));
     sig = new EST_Wave;
 
     sig->resize(1000000);
@@ -404,9 +407,9 @@ void us_unit_raw_concat(EST_Utterance &utt)
 	last_pm = (int)(last_pos * (float)unit_sig->sample_rate());
 	last_length = unit_sig->num_samples() - last_pm;
 
-//	cout << "first pm: " << first_pm << endl;
-//	cout << "last pm: " << last_pm << endl;
-//	cout << "last length: " << last_length << endl;
+//	std::cout << "first pm: " << first_pm << endl;
+//	std::cout << "last pm: " << last_pm << endl;
+//	std::cout << "last length: " << last_length << endl;
 
 	j -= first_pm;
 
@@ -436,7 +439,7 @@ void concatenate_unit_coefs(EST_Relation &unit_stream, EST_Track &source_lpc)
     int num_source_frames   = 0;
     int num_source_channels = 0;;
     float prev_time, abs_offset, rel_offset, period, offset;
-    int i, j, k, l;
+    ssize_t i, j, k;
     EST_Track *coefs;
 
     EST_Item *u = unit_stream.head();
@@ -460,7 +463,7 @@ void concatenate_unit_coefs(EST_Relation &unit_stream, EST_Track &source_lpc)
       
       prev_time = 0.0;
       // copy basic information
-      for (i = 0, l = 0, u = unit_stream.head(); u; u = u->next())
+      for (i = 0, u = unit_stream.head(); u; u = u->next())
 	{
 	  coefs = track(u->f("coefs"));
 	  
@@ -486,7 +489,7 @@ void concatenate_unit_coefs(EST_Relation &unit_stream, EST_Track &source_lpc)
     rel_offset = get_c_float(siod_get_lval("us_rel_offset", "zz"));
 
     if( abs_offset!=0.0 || rel_offset!=0.0 ){
-      cerr << "Adjusting pitchmarks" << endl;
+      std::cerr << "Adjusting pitchmarks" << std::endl;
       for (i = 0; i < source_lpc.num_frames(); ++i){
 	period = get_time_frame_size(source_lpc, (i));
 	offset = abs_offset + (rel_offset * period);
@@ -586,14 +589,14 @@ void us_linear_smooth_amplitude( EST_Utterance *utt )
 
       //if( (ffeature(join_phone_left, "ph_vc")).S() == "+"){ // ideally for sonorants
 
-      cerr << "smoothing phone " << join_phone_left->S("name") << "\n";
+      std::cerr << "smoothing phone " << join_phone_left->S("name") << std::endl;
       
       //      EST_Item *join_phone_right = item(diphone_right->f("ph1"));
 
-      int left_end_index = energy->index(diphone_left->F("end"));
-      int right_start_index = left_end_index + 1; 
-      float left_power  = energy->a(left_end_index,0);
-      float right_power = energy->a(right_start_index,0);
+      ssize_t left_end_index = energy->index(diphone_left->F("end"));
+      ssize_t right_start_index = left_end_index + 1; 
+      float left_power  = energy->a(left_end_index,0L);
+      float right_power = energy->a(right_start_index,0L);
 
       float mean_power = (left_power+right_power)/2.0;
       float left_factor  = left_power/mean_power;
@@ -608,7 +611,7 @@ void us_linear_smooth_amplitude( EST_Utterance *utt )
       float factor_incr = (left_factor-1.0)/(float)(left_end_index - smooth_start_index);
       for( int i=smooth_start_index; i<=left_end_index; ++i, factor+=factor_incr ){
 	(*pp)[i].rescale( factor, 0 );
-	cerr << "rescaled frame " << i << "(factor " << factor << ")\n";
+	std::cerr << "rescaled frame " << i << "(factor " << factor << ")" << std::endl;
       }
 
       // rescale right pitch periods
@@ -616,13 +619,13 @@ void us_linear_smooth_amplitude( EST_Utterance *utt )
       factor_incr = (1.0-right_factor)/(float)(smooth_end_index-right_start_index);
       for( int i=right_start_index; i<=smooth_end_index; ++i, factor+=factor_incr){
 	(*pp)[i].rescale( factor, 0 );
-	cerr << "rescaled frame " << i << "(factor " << factor << ")\n";
+	std::cerr << "rescaled frame " << i << "(factor " << factor << ")" << std::endl;
       }
     }
     else
-      cerr << "no smoothing for " << join_phone_left->S("name") << "\n";
+      std::cerr << "no smoothing for " << join_phone_left->S("name") << std::endl;
 
-    cerr <<endl;
+    std::cerr << std::endl;
   }  
 
   fclose( ofile );

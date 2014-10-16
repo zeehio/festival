@@ -50,6 +50,9 @@
 #include "EST_TargetCost.h"
 #include "EST_DiphoneCoverage.h"
 
+using namespace std;
+
+
 /* 
  * This file contains some functions which may be useful for diphone
  * selection. Not quite sure exactly how yet...

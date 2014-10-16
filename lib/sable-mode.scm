@@ -38,6 +38,7 @@
 ;;;  distributed with Festival                                            ;;
 ;;;                                                                       ;;
 
+(require 'tts) ; where xml_dtd_dir is defined
 (require_module 'rxp)
 
 ;;(set! auto-text-mode-alist
@@ -53,11 +54,11 @@
 
 
 (xml_register_id "-//SABLE//DTD SABLE speech mark up//EN"
-		(path-append libdir "Sable.v0_2.dtd")
+		(path-append xml_dtd_dir "Sable.v0_2.dtd")
 		)
 
 (xml_register_id "-//SABLE//ENTITIES Added Latin 1 for SABLE//EN"
-		 (path-append libdir  "sable-latin.ent")
+		 (path-append xml_dtd_dir  "sable-latin.ent")
 		 )
 
 ;; (print (xml_registered_ids))

@@ -72,8 +72,7 @@ class EST_JoinCost {
  public:
   
   EST_JoinCost() 
-    : defCost(1),
-    f0_weight (1.0),
+    : f0_weight (1.0),
     power_weight(1.0),
     spectral_weight(1.0)
     {};
@@ -97,7 +96,6 @@ class EST_JoinCost {
  private: 
   // member data all used by the older implementation (taking EST_Item* not
   // DiphoneCandidate*)
-  float defCost;
   mutable const EST_Item *cachedItem;
   mutable const EST_FVector *cachedItemVector;
   mutable unsigned int cached_jccid;

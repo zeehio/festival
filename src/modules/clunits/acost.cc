@@ -49,6 +49,8 @@
 #include "festival.h"
 #include "clunits.h"
 
+using namespace std;
+
 static void find_unit_distances(LISP units, const EST_String &fname);
 
 static float duration_penalty_weight=1.0;

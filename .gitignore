@@ -1,0 +1,4 @@
+*.o
+.buildlib_Festival
+make.depend
+*~

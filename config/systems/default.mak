@@ -61,10 +61,10 @@ NAS_INCLUDE = /usr/X11R6/include
 NAS_LIB = /usr/X11R6/lib
 
 ###########################################################################
-## Where to find Enlightenment Speech Demon
+## Where to find PulseAudio
 
-ESD_INCLUDE = /usr/local/include
-ESD_LIB = /usr/local/lib
+PULSE_INCLUDE = /usr/include
+PULSE_LIB = /usr/lib
 
 ###########################################################################
 ## Where to find X11

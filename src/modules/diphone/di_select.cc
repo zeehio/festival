@@ -43,6 +43,8 @@
 #include "festival.h"
 #include "diphone.h"
 
+using namespace std;
+
 static void bresenham_mod(DIPHONE_SPN *ps, DIPHONE_ACOUSTIC *as);
 static void nochange_mod(DIPHONE_SPN *ps, DIPHONE_ACOUSTIC *as);
 

@@ -50,6 +50,9 @@
 #include "EST_TargetCost.h"
 #include "siod.h"
 
+using namespace std;
+
+
 static const EST_String simple_pos(const EST_String &s);
 static const EST_Utterance *tc_get_utt(const EST_Item *seg);
 static const EST_Item* tc_get_syl(const EST_Item *seg);

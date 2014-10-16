@@ -49,6 +49,8 @@
 #include "festival.h"
 #include "donovan.h"
 
+using namespace std;
+
 static CONFIG *make_config(void);
 static void delete_config(CONFIG *config);
 static SPN *make_spn(EST_Utterance &u);

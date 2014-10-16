@@ -43,6 +43,8 @@
 #include "festival.h"
 #include "festivalP.h"
 
+using namespace std;
+
 #ifdef NO_SPOOLER
 void audsp_play_wave(EST_Wave *w) { cerr << "no spooler available\n"; }
 LISP l_audio_mode(LISP mode) { return NIL; }
@@ -86,9 +88,16 @@ static void audsp_send(const char *c)
 	festival_error();
     }
 	
-    write(audfds[0],c,strlen(c));
-    write(audfds[0],"\n",1);
-    read(audfds[1],reply,3);  /* confirmation */
+    if (write(audfds[0],c,strlen(c))!= (int)strlen(c)) {
+        cerr << "Could not write to audio spooler pipe" << endl;
+    }
+    if (write(audfds[0],"\n",1) != 1){
+        cerr << "Could not write to audio spooler pipe" << endl;
+    }
+
+    if (read(audfds[1],reply,3) != 3) {
+        cerr << "Could not read confirmation from the audio spooler" << endl;  /* confirmation */
+    }
 }
 
 LISP l_audio_mode(LISP mode)
@@ -179,7 +188,7 @@ static void pipe_close(int *fds)
 
 static int *pipe_open(const char *command)
 {
-    // Starts a subprocess with its stdin and stdout bounad to pipes
+    // Starts a subprocess with its stdin and stdout bound to pipes
     // the ends of which are returned in an array
     int argc;
     char **argv;
@@ -205,7 +214,6 @@ static int start_sub_process(int *fds, int argc, char **argv)
     int pid;
     int in[2];
     int out[2];
-    (void)argc;
 
     if ((pipe(in) != 0) ||
 	(pipe(out) != 0))
@@ -221,7 +229,8 @@ static int start_sub_process(int *fds, int argc, char **argv)
 	dup2(in[0],0);         /* reassign stdin to the pipe */
 	close(out[0]);
 	dup2(out[1],1);        /* reassign stdout to the pipe */
-	execvp(argv[0],argv);
+    if (argc > 0)          /* If program name is given, use it */
+      execvp(argv[0],argv);
 	cerr << "pipe_open: failed to start " << argv[0] << endl;
 	exit(-1);      /* should only get here on failure */
       case -1:

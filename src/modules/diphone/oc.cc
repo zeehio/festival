@@ -56,8 +56,8 @@ static float find_best_left(LISP d,LISP ds,LISP weights);
 static float find_best_right(LISP d,LISP ds,LISP weights);
 static float frametoms(int frame,float frame_shift);
 static int mstoframe(float ms,float frame_shift);
-static float frame_distance(EST_Track &a, int fa, 
-			    EST_Track &b, int fb,
+static float frame_distance(EST_Track &a, ssize_t fa, 
+			    EST_Track &b, ssize_t fb,
 			    int size, double *weights);
 
 static EST_String coeffs_dir = "coeffs/";
@@ -149,7 +149,7 @@ static float find_best_left(LISP d,LISP ds,LISP weights)
     // in d
     EST_Track a,b;
     LISP l;
-    int i,j,best,bestj;;
+    int i,j,best/*,bestj*/;
     double b_dist,dist;
     float best_pos;
 
@@ -181,7 +181,7 @@ static float find_best_left(LISP d,LISP ds,LISP weights)
 		{
 		    b_dist = dist;
 		    best = i;
-		    bestj = j;
+		    /*bestj = j;*/
 		}
 	    }
 	}
@@ -215,7 +215,7 @@ static float find_best_right(LISP d,LISP ds,LISP weights)
     // in d
     EST_Track a,b;
     LISP l;
-    int i,j,best,bestj;;
+    int i,j,best/*,bestj*/;
     double b_dist,dist;
     float best_pos;
 
@@ -246,7 +246,7 @@ static float find_best_right(LISP d,LISP ds,LISP weights)
 		{
 		    b_dist = dist;
 		    best = i;
-		    bestj = j;
+		   /* bestj = j;*/
 		}
 	    }
 	}
@@ -283,12 +283,12 @@ static int mstoframe(float ms,float frame_shift)
 
 // RJC - change for Track reorg.
 
-static float frame_distance(EST_Track &a, int fa, 
-			    EST_Track &b, int fb,
+static float frame_distance(EST_Track &a, ssize_t fa, 
+			    EST_Track &b, ssize_t fb,
 			    int size, double *weights)
 {
     float cost = 0.0,diff;
-    int i;
+    ssize_t i;
 
     for (i=0; i < size; i++)
     {

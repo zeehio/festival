@@ -42,6 +42,8 @@
 #include "festival.h"
 #include "diphone.h"
 
+using namespace std;
+
 static int interpolated_freq(int k, DIPHONE_SPN *ps,int def_f0);
 static int interpolate(int a,int b,int c,int d,int e);
 

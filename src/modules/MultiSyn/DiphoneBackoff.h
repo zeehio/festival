@@ -59,8 +59,8 @@ class DiphoneBackoff {
   EST_String backoff(EST_String left, EST_String right);
   int backoff(EST_Item *left_phone);
   
-  ostream& print(ostream &st = cout) const;
-  friend ostream& operator << (ostream &st, const DiphoneBackoff &dbo);
+  std::ostream& print(ostream &st = std::cout) const;
+  friend std::ostream& operator << (std::ostream &st, const DiphoneBackoff &dbo);
 
  private:
   int is_defaultbackoff(const EST_Item *it) const;

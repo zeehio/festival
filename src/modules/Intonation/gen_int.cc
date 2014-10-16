@@ -49,6 +49,8 @@
 #include "festival.h"
 #include "intonation.h"
 
+using namespace std;
+
 static void check_targs(EST_Utterance *u);
 static EST_Item *find_nearest_seg(EST_Utterance *u,float pos);
 
@@ -58,7 +60,7 @@ LISP FT_Int_Targets_General_Utt(LISP utt)
     EST_Utterance *u = get_c_utt(utt);
     EST_Item *s;
     EST_Item *seg;
-    EST_Relation *targrel;
+    /*EST_Relation *targrel;*/
     LISP gen_params, targets, t;
     LISP tfunc;  // a lisp function that returns list of targets and values
 
@@ -72,7 +74,7 @@ LISP FT_Int_Targets_General_Utt(LISP utt)
 	festival_error();
     }
     
-    targrel = u->create_relation("Target");
+    /*targrel =*/ u->create_relation("Target");
     
     for (s=u->relation("Syllable")->first(); s != 0 ; s=s->next())
     {
@@ -82,7 +84,7 @@ LISP FT_Int_Targets_General_Utt(LISP utt)
 	for (t=targets; t != NIL; t=cdr(t))
 	{
 	    seg = find_nearest_seg(u,get_c_float(car(car(t))));
-	    add_target(u,seg,get_c_float(car(car(t))),
+	    add_target(*u,seg,get_c_float(car(car(t))),
 		       get_c_float(car(cdr(car(t)))));
 	}
     }

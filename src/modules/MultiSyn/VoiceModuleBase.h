@@ -60,16 +60,12 @@ class VoiceBase;
 
 class VoiceModuleBase {
 public:
-  VoiceModuleBase( VoiceBase *parent = 0 ): _parentVoice(parent) {};
   virtual ~VoiceModuleBase() {};
   virtual void initialise(const EST_TargetCost *tc, bool ignore_bad_tag=false) = 0;
   virtual unsigned int numModuleUnits() const = 0;
   virtual unsigned int numUnitTypes() const = 0;
   virtual unsigned int numAvailableCandidates( const EST_String &unit ) const =0;
 
-private:
-  //EST_Features params;
-  const VoiceBase *_parentVoice;
 };
 
 SIOD_REGISTER_CLASS_DCLS(voicemodule,VoiceModuleBase)

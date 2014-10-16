@@ -41,6 +41,8 @@
 #include "festival.h"
 #include "intonation.h"
 
+using namespace std;
+
 LISP FT_Intonation_Default_Utt(LISP utt)
 {
     return utt;
@@ -68,9 +70,9 @@ LISP FT_Int_Targets_Default_Utt(LISP utt)
     if (seg->length() == 0)
 	return utt;
 
-    add_target(u,seg->first(),0,start);
+    add_target(*u,seg->first(),0,start);
     s = seg->last();
-    add_target(u,s,(float)ffeature(s,"segment_end"),end);
+    add_target(*u,s,(float)ffeature(s,"segment_end"),end);
 
     return utt;
 }
@@ -82,7 +84,7 @@ LISP FT_Int_Targets_Relation_Utt(LISP utt, LISP relname)
     EST_Track *pm = 0;
     LISP params;
     float start,end;
-    int n_frames;
+    ssize_t n_frames;
     
     *cdebug << "Intonation duff module\n";
 
@@ -108,7 +110,7 @@ LISP FT_Int_Targets_Relation_Utt(LISP utt, LISP relname)
     float m = (end-start) /end_time;
     float c = start;
 
-    for (int i = 0; i < n_frames; ++ i)
+    for (ssize_t i = 0; i < n_frames; ++ i)
 	f0->a(i) = (m * ((float) i) * 0.01) + c;
 
     u->create_relation("f0");

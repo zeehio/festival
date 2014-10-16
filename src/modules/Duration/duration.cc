@@ -41,6 +41,8 @@
 #include "festival.h"
 #include "durationP.h"
 
+using namespace std;
+
 LISP FT_Duration_Ave_Utt(LISP utt)
 {
     // Predict average duration on segments

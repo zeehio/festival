@@ -50,11 +50,11 @@
 #include "EST_FlatTargetCost.h"
 #include "siod.h"
 
-static const int simple_phone(const EST_String&);
-static const int simple_id(const EST_String&);
-static const int simple_pos(const EST_String &s);
-static const int simple_punc(const EST_String &s);
-static const int get_bad_f0(const EST_Item *seg);
+static int simple_phone(const EST_String&);
+static int simple_id(const EST_String&);
+static int simple_pos(const EST_String &s);
+static int simple_punc(const EST_String &s);
+static int get_bad_f0(const EST_Item *seg);
 static const EST_Item* tc_get_syl(const EST_Item *seg);
 static const EST_Item* tc_get_word(const EST_Item *seg);
 
@@ -456,7 +456,7 @@ float EST_FlatTargetCost::operator()(const TCData* targ, const TCData* cand) con
  *   Auxillary target cost functions
  */
 
-static const int simple_phone(const EST_String &phone)
+static int simple_phone(const EST_String &phone)
 {
   if(phonehash.present(phone))
     return phonehash.val(phone);
@@ -466,13 +466,13 @@ static const int simple_phone(const EST_String &phone)
 
 }
 
-static const int simple_id(const EST_String &id)
+static int simple_id(const EST_String &id)
 {
   return id.after("_").Int();
 }
 
 
-static const int simple_punc(const EST_String &punc)
+static int simple_punc(const EST_String &punc)
 {
   if ( punc == "NONE")
     return 0;
@@ -490,7 +490,7 @@ static const int simple_punc(const EST_String &punc)
     return 0;
 }
 
-static const int simple_pos(const EST_String &s)
+static int simple_pos(const EST_String &s)
 {
   if( s == "nn" || s == "nnp" || s == "nns" || s == "nnps" || s == "fw" || s == "sym" || s == "ls")
     return 1;
@@ -502,7 +502,7 @@ static const int simple_pos(const EST_String &s)
   return 0;
  }
 
-static const int get_bad_f0(const EST_Item *seg)
+static int get_bad_f0(const EST_Item *seg)
 {
   // by default, the last element of join cost coef vector is
   // the f0 (i.e. fv->a_no_check( fv->n()-1 ) )

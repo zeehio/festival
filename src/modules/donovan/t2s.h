@@ -33,7 +33,7 @@
 /*             Author :  Alistair Conkie and Steve Isard                 */
 /*-----------------------------------------------------------------------*/
 
-#ifndef _T2S_H
+#ifndef _T2S_H_
 #define _T2S_H_
 #define NDIPHS 3000
 #define NFRAMES 23000
@@ -260,10 +260,6 @@ void tags(CONFIG *config, BUFFER *buffer, LING_LIST *ling_list);
 
 /* transcribe.c  */
 void transcribe(CONFIG *config, LING_LIST *ling_list);
-
-/* ulaw.c  */
-unsigned char linear2ulaw(int sample);
-int ulaw2linear(unsigned char ulawbyte);
 
 /* utils.c  */
 char **split(char *in);

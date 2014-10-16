@@ -126,10 +126,11 @@ ostream& EST_JoinCostCache::write( ostream &os ) const
   return os;
 }
 
-bool EST_JoinCostCache::computeAndCache( const EST_TList<EST_Item*> &list,
+bool EST_JoinCostCache::computeAndCache(const EST_TList<EST_Item*> &list,
 					 const EST_JoinCost &jc, 
 					 bool verbose )
 {
+  (void)verbose;
   unsigned char qcost; // quantized cost
   
   unsigned int qleveln = maxVal-minVal;

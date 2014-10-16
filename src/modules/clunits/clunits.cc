@@ -78,6 +78,8 @@
 #include "festival.h"
 #include "clunits.h"
 
+using namespace std;
+
 static EST_String static_unit_prev_move = "unit_prev_move";
 static EST_String static_unit_this_move = "unit_this_move";
 static EST_String static_jscore = "local_join_cost";
@@ -355,7 +357,7 @@ static LISP clunits_smoothedjoin_wave(LISP utt)
     EST_Utterance *u = get_c_utt(utt);
     EST_Wave *w = new EST_Wave;
     EST_Wave *w1 = 0;
-    EST_Track *t1 = 0;
+    /*EST_Track *t1 = 0;*/
     EST_Item *witem = 0;
     EST_Item *s;
     int size,i,wi;
@@ -389,7 +391,7 @@ static LISP clunits_smoothedjoin_wave(LISP utt)
 	       (float)samp_end/(float)w->sample_rate(),
 	       w1->num_samples(),
 	       samp_end); */
-	t1 = track(s->f("coefs"));
+	/*t1 = */track(s->f("coefs"));
 	for (i=samp_start; i<samp_end; i++,wi++)
 	    w->a_no_check(wi) = w1->a_no_check(i);
 /*	printf("%d %f\n",wi,(float)wi/(float)w->sample_rate()); */

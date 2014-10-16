@@ -36,15 +36,22 @@
 /*                                                                       */
 /* Phrase break prediction                                               */
 /*                                                                       */
+/* Modified Jul 2011: aup added support for CART phrasing (phrasyn)      */
+/*                                                                       */
 /*=======================================================================*/
 #include <cstdio>
 #include "festival.h"
 #include "modules.h"
 
-static void phrasing_none(EST_Utterance *u);
-static void phrasing_by_cart(EST_Utterance *u);
-static void phrasing_by_probmodels(EST_Utterance *u);
-static void phrasing_by_fa(EST_Utterance *u);
+using namespace std;
+
+static void phrasing_none(EST_Utterance &u);
+static void phrasing_by_cart(EST_Utterance &u);
+static void phrasing_by_probmodels(EST_Utterance &u);
+static void phrasing_by_fa(EST_Utterance &u);
+static void phrasing_by_cart_viterbi(EST_Utterance &u); // Addition by AUP
+static void phrasing_by_cart_probmodels_combined(EST_Utterance &u); // Addition by AUP
+static EST_VTCandidate *cart_bb_candlist(EST_Item *s, EST_Features &f); // Addition by AUP
 static EST_VTCandidate *bb_candlist(EST_Item *s,EST_Features &f);
 static EST_VTPath *bb_npath(EST_VTPath *p,EST_VTCandidate *c,EST_Features &f);
 static double find_b_prob(EST_VTPath *p,int n,int *state);
@@ -65,6 +72,8 @@ static LISP bb_tags = NIL;
 static LISP pos_map = NIL;
 static LISP phrase_type_tree = NIL;
 
+static LISP bb_unigrams = NIL;
+
 /* Interslice */
 static EST_Track *bb_track = 0;
 
@@ -75,17 +84,19 @@ LISP FT_Classic_Phrasify_Utt(LISP utt)
     LISP phrase_method = ft_get_param("Phrase_Method");
 
     *cdebug << "Phrasify module\n";
-
+    *cdebug << "Using method: " << get_c_string(phrase_method) << endl;
     if (u->relation_present("Phrase"))
 	return utt;               // already specified
     else if (phrase_method == NIL)
-	phrasing_none(u);  // all one phrase
+	phrasing_none(*u);  // all one phrase
     else if (streq("prob_models",get_c_string(phrase_method)))
-	phrasing_by_probmodels(u);
+	phrasing_by_probmodels(*u);
+    else if (streq("prob_cart_combined", get_c_string(phrase_method)))
+        phrasing_by_cart_probmodels_combined(*u);
     else if (streq("cart_tree",get_c_string(phrase_method)))
-	phrasing_by_cart(u);
+	phrasing_by_cart(*u);
     else if (streq("forced_align",get_c_string(phrase_method)))
-	phrasing_by_fa(u);
+	phrasing_by_fa(*u);
     else
     {
 	cerr << "PHRASIFY: unknown phrase method \"" <<
@@ -96,14 +107,14 @@ LISP FT_Classic_Phrasify_Utt(LISP utt)
     return utt;
 }
 
-static void phrasing_none(EST_Utterance *u)
+static void phrasing_none(EST_Utterance& u)
 {
     // All in a single phrase
     EST_Item *w,*phr=0;
 
-    u->create_relation("Phrase");
+    u.create_relation("Phrase");
 
-    for (w=u->relation("Word")->first(); w != 0; w = w->next())
+    for (w=u.relation("Word")->first(); w != 0; w = w->next())
     {
 	if (phr == 0)
 	    phr = add_phrase(u);
@@ -118,16 +129,16 @@ static void phrasing_none(EST_Utterance *u)
     
 }
 
-static void phrasing_by_cart(EST_Utterance *u)
+static void phrasing_by_cart(EST_Utterance &u)
 {
     EST_Item *w,*phr=0;
     LISP tree;
     EST_Val pbreak;
 
-    u->create_relation("Phrase");
+    u.create_relation("Phrase");
     tree = siod_get_lval("phrase_cart_tree","no phrase cart tree");
 
-    for (w=u->relation("Word")->first(); w != 0; w = w->next())
+    for (w=u.relation("Word")->first(); w != 0; w = w->next())
     {
 	if (phr == 0)
 	    phr = add_phrase(u);
@@ -164,6 +175,9 @@ static void pbyp_get_params(LISP params)
 
     bb_name = get_param_str("break_ngram_name",params,"");
     bb_break_filename = get_param_str("break_ngram_filename",params,"");
+
+    *cdebug << "File: "<<bb_break_filename<<endl;
+
     if ((bb_ngram = get_ngram(bb_name,bb_break_filename)) == 0)
     {
 	cerr << "PHRASIFY: no ngram called \"" <<
@@ -172,6 +186,9 @@ static void pbyp_get_params(LISP params)
     }
     bb_tags = get_param_lisp("break_tags",params,NIL);
     phrase_type_tree = get_param_lisp("phrase_type_tree",params,NIL);
+
+    *cdebug << "Tree: "<<phrase_type_tree << endl;
+    bb_unigrams = get_param_lisp("break_unigrams", params, NIL);
 
     bb_track_name = get_param_str("break_track_name",params,"");
     if (bb_track_name != "")
@@ -197,9 +214,10 @@ static void pbyp_get_params(LISP params)
     l1 = siod_get_lval("pos_n_start_tag",NULL);
     if (l1 != NIL) 
 	pos_n_start_tag = bb_pos_ngram->get_vocab_word(get_c_string(l1));
+
 }
 
-static void phrasing_by_probmodels(EST_Utterance *u)
+static void phrasing_by_probmodels(EST_Utterance& u)
 {
     // Predict phrasing using POS and prob models of B distribution 
     EST_Item *w,*phr=0;
@@ -209,7 +227,7 @@ static void phrasing_by_probmodels(EST_Utterance *u)
     pbyp_get_params(siod_get_lval("phr_break_params",NULL));
     gc_protect(&bb_tags);
 
-    for (w=u->relation("Word")->first(); w != 0; w = w->next())
+    for (w=u.relation("Word")->first(); w != 0; w = w->next())
     {   // Set up tag index for pos ngram
 	EST_String lpos = map_pos(pos_map,w->f("pos").string());
 	w->set("phr_pos",lpos);
@@ -222,16 +240,16 @@ static void phrasing_by_probmodels(EST_Utterance *u)
     num_states = bb_ngram->num_states();
     EST_Viterbi_Decoder v(bb_candlist,bb_npath,num_states);
 
-    v.initialise(u->relation("Word"));
+    v.initialise(u.relation("Word"));
     v.search();
     v.result("pbreak_index");
 
     // Given predicted break, go through and add phrases 
-    u->create_relation("Phrase");
-    for (w=u->relation("Word")->first(); w != 0; w = w->next())
+    u.create_relation("Phrase");
+    for (w=u.relation("Word")->first(); w != 0; w = w->next())
     {
-	w->set("pbreak",bb_ngram->
-		 get_vocab_word(w->f("pbreak_index").Int()));
+      w->set("pbreak",bb_ngram->
+      	 get_vocab_word(w->f("pbreak_index").Int()));
 	if (phr == 0)
 	    phr = add_phrase(u);
 	append_daughter(phr,"Phrase",w);
@@ -256,6 +274,140 @@ static void phrasing_by_probmodels(EST_Utterance *u)
     bb_tags = NIL;
 }
 
+static void phrasing_by_cart_viterbi(EST_Utterance &u)
+{
+  EST_Item *w, *phr = 0;
+  /*LISP tree;
+  LISP answer;*/
+  int num_states;
+  EST_String pbreak;
+
+  *cdebug << "Inside phrasing_by_cart_viterbi"<<endl;
+
+    pbyp_get_params(siod_get_lval("phr_break_params",NULL));
+    gc_protect(&bb_tags);
+
+    B_word = bb_ngram->get_vocab_word("B");
+    NB_word = bb_ngram->get_vocab_word("NB");
+    BB_word = bb_ngram->get_vocab_word("BB");
+
+
+    *cdebug << "States: "<<bb_ngram->num_states()<<endl;
+    *cdebug << "Order: "<<bb_ngram->order()<<endl;
+    *cdebug << "B word: "<<B_word<<endl;
+    *cdebug << "BB word: "<<BB_word<<endl;
+    *cdebug << "NB word: "<<NB_word<<endl;
+
+    num_states = bb_ngram->num_states();
+    EST_Viterbi_Decoder v(cart_bb_candlist,bb_npath,num_states);
+
+    v.initialise(u.relation("Word"));
+    v.search();
+    int x = v.result("pbreak_index");
+    *cdebug << "Viterbi result ended in "<<x<<endl;
+
+    // Given predicted break, go through and add phrases 
+    u.create_relation("Phrase");
+    for (w=u.relation("Word")->first(); w != 0; w = w->next())
+    {
+      w->set("pbreak",bb_ngram->
+	     get_vocab_word(w->f("pbreak_index").Int()));
+	if (phr == 0)
+	    phr = add_phrase(u);
+	append_daughter(phr,"Phrase",w);
+	if (phrase_type_tree != NIL)
+	{
+	    EST_Val npbreak = wagon_predict(w,phrase_type_tree);
+	    w->set("pbreak",npbreak.string());  // may reset to BB
+	    *cdebug << "Reset: " << npbreak << endl; ;
+	}
+	pbreak = (EST_String)w->f("pbreak");
+	if (pbreak == "B")
+	    w->set("blevel",3);
+	else if (pbreak == "mB")
+	    w->set("blevel",2);
+	if ((pbreak == "B") || (pbreak == "BB") || (pbreak == "mB"))
+	{
+	    phr->set_name((EST_String)pbreak);
+	    phr = 0;
+	}
+    }
+
+    gc_unprotect(&bb_tags);
+    bb_tags = NIL;
+}
+
+static EST_VTCandidate *cart_bb_candlist(EST_Item *s, EST_Features &f)
+{
+  (void) f;
+  double prob=1.0;
+  double divisor = 1.0;
+  EST_VTCandidate *all_c = 0;
+
+  EST_VTCandidate *c;
+  LISP l;
+  LISP m;
+  LISP answer, tree;
+  tree = siod_get_lval("phrase_cart_tree", "no phrase cart tree");
+
+  answer = wagon_pd(s, car(tree));
+  //*cdebug << get_c_string(answer) <<endl;
+  //*cdebug << endl;
+  
+  if (s->next() == 0)  // end of utterances so force a break
+    {   
+      EST_VTCandidate *c = new EST_VTCandidate;
+      c->s = s;
+      c->name = B_word;
+      c->score = log(0.95);  // very very likely, but not absolute
+      c->next = all_c;
+      all_c = c;
+      return all_c;
+    }
+
+
+  m = bb_unigrams;
+
+  for (l=bb_tags; l !=0; l=cdr(l))
+    {
+      if(m == NIL)
+	divisor = 1.0;
+      else 
+	{
+	  divisor = get_c_float(car(m));
+	  m = cdr(m);
+	}
+
+      c = new EST_VTCandidate;
+      c->s = s;
+      c->name = bb_ngram->get_vocab_word(get_c_string(car(l)));
+      prob = get_param_float(get_c_string(car(l)), answer, 0.001);
+
+      if (prob == 0) prob = 0.0000001;
+      if (prob == 1) prob = 0.9999999;
+      // Divide by unigram probability to get "Reverse" score      
+
+      //*cdebug << "Prob: "<<log(prob)<<endl;
+      c->score = log(prob) - log(divisor);
+      s->set("phrase_score", c->score);
+      c->next = all_c;
+      all_c = c;
+    }
+
+  return all_c;
+}
+
+
+static void phrasing_by_cart_probmodels_combined(EST_Utterance &u)
+{
+  *cdebug << "Using Phrasing Method: prob_cart_combined"<<endl;
+  
+  // Simply return the cart viterbi!
+  phrasing_by_cart_viterbi(u);
+
+}
+
+
 static EST_VTCandidate *bb_candlist(EST_Item *s,EST_Features &f)
 {
     // Find candidates with a priori probabilities
@@ -274,6 +426,7 @@ static EST_VTCandidate *bb_candlist(EST_Item *s,EST_Features &f)
 	    window[2] = s->next()->I("pos_index",0);
 	else
 	    window[2] = pos_n_start_tag;
+	*cdebug << window[0] << " " << window[1] << " " << window[2] << " " ;
     }
     else if (bb_pos_ngram->order() == 3)
     {
@@ -363,6 +516,7 @@ static EST_VTCandidate *bb_candlist(EST_Item *s,EST_Features &f)
 	    window[bb_pos_ngram->order()-1] = tag;
 	    const EST_DiscreteProbDistribution &pd = 
 		bb_pos_ngram->prob_dist(window);
+
 	    if (pd.samples() == 0)
 	    {
 		if (tag == B_word)
@@ -392,7 +546,6 @@ static EST_VTCandidate *bb_candlist(EST_Item *s,EST_Features &f)
 	    c->name = tag;
 	    window[bb_pos_ngram->order()-1] = tag;
 	    prob = bb_pos_ngram->reverse_probability(window);
-
 	    // If this word came from inside a token reduce the
 	    // probability of a break
  	    if ((ffeature(s,"R:Token.n.name") != "0") &&
@@ -440,6 +593,8 @@ static EST_VTPath *bb_npath(EST_VTPath *p,EST_VTCandidate *c,EST_Features &f)
     lang_prob = (1.0 * c->score) + gscale_p;
     lang_prob = c->score;
 
+    //*cdebug << "Addition: "<<(lang_prob+lprob)<<endl;
+
 //    np->set_feature(lscorename,lang_prob+lprob);
     if (p==0)
 	np->score = (lang_prob+lprob);
@@ -454,6 +609,18 @@ static double find_b_prob(EST_VTPath *p,int n,int *state)
     int oldstate=0;
     double prob;
 
+    
+    /*
+    //1-gram LM enforced
+     *state = 0;
+     if(n == B_word) return 0.06;
+     else return 0.94;
+    */
+    /*
+    //0-gram LM enforced
+     *state = 0;
+     return 0.5;
+    */
     if (p == 0)
     {
 	int order = bb_ngram->order();
@@ -474,9 +641,12 @@ static double find_b_prob(EST_VTPath *p,int n,int *state)
 	prob = (double)pd.probability(n);
     // This is too specific
     if (n == B_word)
-	prob *= gscale_s;
-    *state = bb_ngram->find_next_state_id(oldstate,n);
+      prob *= gscale_s;
 
+    *state = bb_ngram->find_next_state_id(oldstate,n);
+    //*cdebug << "oldstate: "<<oldstate<<" newstate: "<<*state<<" for word "<<n<<endl;
+
+    //return 0;
     return prob;
 
 }
@@ -486,10 +656,10 @@ static double find_b_prob(EST_VTPath *p,int n,int *state)
 static double find_b_faprob(EST_VTPath *p,int n,int *state)
 {
     int oldstate=0;
-    int i,j;
+    ssize_t i,j;
     EST_VTPath *d;
     double prob;
-    double atime, wtime, wstddev=0, z;
+    double atime, wtime, wstddev=0, z=0.0;
     static int ATOTH_BREAK=2;
     static int ATOTH_NBREAK=1;
 
@@ -510,7 +680,7 @@ static double find_b_faprob(EST_VTPath *p,int n,int *state)
     // Skip over break if we're at one
     for (i = oldstate; i < bb_track->num_frames(); i++)
     {
-	if (bb_track->a(i,0) == ATOTH_NBREAK)
+	if (bb_track->a(i,0L) == ATOTH_NBREAK)
 	    break;
     }
     
@@ -519,14 +689,14 @@ static double find_b_faprob(EST_VTPath *p,int n,int *state)
     {
 	wtime += ffeature(d->c->s,"word_duration").Float();
 	wstddev += ffeature(d->c->s,"lisp_word_stddev").Float();
-	if (bb_track->a(d->state,0) == ATOTH_BREAK)
+	if (bb_track->a((ssize_t)d->state,0L) == ATOTH_BREAK)
 	    break;
     }
 
     // time since last break in acoustics
     for (atime=0.01,j=i; j>0; j--)
     {
-	if (bb_track->a(j,0) == ATOTH_BREAK)
+	if (bb_track->a(j,0L) == ATOTH_BREAK)
 	    break;
 	atime += bb_track->t(j) - ( i == 0 ? 0 : bb_track->t(j-1));
     }
@@ -539,7 +709,7 @@ static double find_b_faprob(EST_VTPath *p,int n,int *state)
 	/* extend acoustics until next break */
 	for (; i < bb_track->num_frames(); i++)
 	{
-	    if (bb_track->a(i,0) == ATOTH_BREAK)
+	    if (bb_track->a(i,0L) == ATOTH_BREAK)
 		break;
 	    atime += bb_track->t(i) - ( i == 0 ? 0 : bb_track->t(i-1));
 	}
@@ -548,7 +718,7 @@ static double find_b_faprob(EST_VTPath *p,int n,int *state)
     else
     {   /* cost of having a non-break here */
 	for ( i++,z = fabs((atime-wtime)/wstddev); 
-	      (i < bb_track->num_frames()) && (bb_track->a(i,0) == ATOTH_NBREAK);
+	      (i < bb_track->num_frames()) && (bb_track->a(i,0L) == ATOTH_NBREAK);
 	      i++)
 	{
 	    atime += bb_track->t(i) - ( i == 0 ? 0 : bb_track->t(i-1));
@@ -582,7 +752,7 @@ static double find_b_faprob(EST_VTPath *p,int n,int *state)
 	prob = 0.999999;
 
     // prob of atime given (wtime,wstddev)
-    printf("%d %d %f %f %f %f %s %s %f\n",oldstate,i,atime,wtime,wstddev,z,
+    printf("%d %ld %f %f %f %f %s %s %f\n",oldstate,i,atime,wtime,wstddev,z,
 	   ( p && p->c && p->c->s ? (const char *)ffeature(p->c->s,"name").String() : "null"),
 	   ( n == B_word ? "B" : "NB"),
 	   prob
@@ -624,7 +794,7 @@ static EST_VTPath *bb_fapath(EST_VTPath *p,EST_VTCandidate *c,EST_Features &f)
     return np;
 }
 
-static void phrasing_by_fa(EST_Utterance *u)
+static void phrasing_by_fa(EST_Utterance& u)
 {
     // Predict phrasing using POS and prob models of B distribution 
     EST_Item *w,*phr=0;
@@ -634,7 +804,7 @@ static void phrasing_by_fa(EST_Utterance *u)
     pbyp_get_params(siod_get_lval("phr_break_params",NULL));
     gc_protect(&bb_tags);
 
-    for (w=u->relation("Word")->first(); w != 0; w = w->next())
+    for (w=u.relation("Word")->first(); w != 0; w = w->next())
     {   // Set up tag index for pos ngram
 	EST_String lpos = map_pos(pos_map,w->f("pos").string());
 	w->set("phr_pos",lpos);
@@ -645,13 +815,13 @@ static void phrasing_by_fa(EST_Utterance *u)
 
     EST_Viterbi_Decoder v(bb_candlist,bb_fapath,num_states);
 
-    v.initialise(u->relation("Word"));
+    v.initialise(u.relation("Word"));
     v.search();
     v.result("pbreak_index");
 
     // Given predicted break, go through and add phrases 
-    u->create_relation("Phrase");
-    for (w=u->relation("Word")->first(); w != 0; w = w->next())
+    u.create_relation("Phrase");
+    for (w=u.relation("Word")->first(); w != 0; w = w->next())
     {
 	w->set("pbreak",bb_ngram->
 		 get_vocab_word(w->f("pbreak_index").Int()));
@@ -680,9 +850,9 @@ static void phrasing_by_fa(EST_Utterance *u)
 }
 
 
-EST_Item *add_phrase(EST_Utterance *u)
+EST_Item *add_phrase(EST_Utterance& u)
 {
-    EST_Item *item = u->relation("Phrase")->append();
+    EST_Item *item = u.relation("Phrase")->append();
 
     item->set_name("phrase");
     

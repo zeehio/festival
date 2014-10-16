@@ -44,6 +44,8 @@
 #include "lexiconP.h"
 #include "lts.h"
 
+using namespace std;
+
 static LISP check_and_fix(LISP entry);
 static void check_sylphones(const char *name,LISP syls);
 
@@ -135,7 +137,7 @@ LISP lexicon_compile(LISP finname, LISP foutname)
 	wfree(ent_list[i]->entry);
 	delete ent_list[i];
     }
-    delete ent_list;
+    delete[] ent_list;
     fclose(fout);
 
     cwarn << "Compiled lexicon \"" << get_c_string(finname) <<
